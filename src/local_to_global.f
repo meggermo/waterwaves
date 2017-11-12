@@ -1,0 +1,28 @@
+      SUBROUTINE LOCAL_TO_GLOBAL (N, LDU, CRD, U_L, U_G)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+C      
+      INTEGER(KIND=IK) N
+      INTEGER(KIND=IK) LDU
+      REAL   (KIND=RK) CRD (4, *)
+      REAL   (KIND=RK) U_L (LDU, *)
+      REAL   (KIND=RK) U_G (LDU, *)
+C
+      INTEGER(KIND=IK) I
+      REAL   (KIND=RK) X_XI, Z_XI, J_INV, U_S, U_N
+C
+      DO I = 1, N
+         X_XI  = CRD (3, I)
+         Z_XI  = CRD (4, I)
+         J_INV = 1.0D0 / SQRT (X_XI ** 2 + Z_XI ** 2)
+         U_S   = U_L (1, I)
+         U_N   = U_L (2, I)
+         U_G (1, I) = (X_XI * U_S - Z_XI * U_N) * J_INV
+         U_G (2, I) = (X_XI * U_N + Z_XI * U_S) * J_INV
+      END DO
+C
+      RETURN
+      END

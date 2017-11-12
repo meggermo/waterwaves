@@ -1,2 +1,80 @@
 bin_PROGRAMS = waterwaves
-waterwaves_SOURCES = main.f
+
+waterwaves_FFLAGS = -I/usr/include -I./../include $(AM_FFLAGS)
+
+waterwaves_SOURCES =  analytic.f \
+analytic_t.f \
+back_subs.f \
+bcd.f \
+bem.f \
+boundary_conditions.f \
+check_coefs.f \
+check_interfaces.f \
+check_network_parameters.f \
+circlesect_grid.f \
+coefficients.f \
+compute_ngp_nae.f \
+compute_ngp_sd.f \
+compute_nnw.f \
+contour_integral.f \
+copy_ngp_to_nw_ipar.f \
+couple_edges.f \
+cubic_grid.f \
+d1mach.f \
+derivatives.f \
+diff_eqns.f \
+dipole_coef.f \
+done.f \
+dot_4.f \
+dqag.f \
+dqags.f \
+error.f \
+eval.f \
+generate_grid.f \
+get_set.f \
+get_tokens.f \
+global_to_local.f \
+i1mach.f \
+i_assert.f \
+init.f \
+init_common_blocks.f \
+iterate.f \
+iterate_double.f \
+line_grid.f \
+local_to_global.f \
+main.f \
+net_cdf.f \
+open_output_files.f \
+pltout.f \
+prog_arguments.f \
+r_assert.f \
+read_analytic_parameters.f \
+read_chk_parameters.f \
+read_linwave.f \
+read_netw_par.f \
+read_network_parameters.f \
+read_ngp_nw.f \
+read_nnw_sd.f \
+read_nsd.f \
+read_parameters.f \
+read_rfwave.f \
+read_solve_parameters.f \
+read_time_parameters.f \
+regrid.f \
+relax.f \
+rhs.f \
+rk4.f \
+scale.f \
+set_tangent.f \
+setup_ax_b_double.f \
+setup_diags.f \
+solve_bie.f \
+solve_laplace.f \
+solve_sd_double.f \
+source_coef.f \
+spline.f \
+stretched_grid.f \
+wavemaker.f \
+weight.f \
+write_coef_sd.f \
+xerror.f

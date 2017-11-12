@@ -1,3 +1,7 @@
+Water waves
+-----------
 
 
-  autoreconf --install
+```
+  autoreconf --install && ./configure && make
+```
