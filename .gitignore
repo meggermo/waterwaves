@@ -1,7 +1,13 @@
 /autom4te.cache/
 aclocal.m4
+config.h
 config.h.in
+config.status
 configure
 install-sh
 Makefile.in
+Makefile
 missing
+src/Makefile.in
+stamp-h1
+*.log
