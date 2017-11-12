@@ -3,23 +3,23 @@ C ---------------------------------------------------------------------------
 C     PAR (1) : Wave Amplitude
 C     PAR (2) : Wave Length
 C     PAR (3) : Water depth
-C     PAR (4) : Wave crest offset 
+C     PAR (4) : Wave crest offset
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'rle_params.inc'
       INCLUDE 'usr_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL   (KIND=RK) PAR (*)
       REAL   (KIND=RK) PERIOD
-C      
+C
       INTEGER(KIND=IK) I
       REAL   (KIND=RK) K, H
-      CHARACTER*72     LINE
-C      
-      CALL GET_TOKENS (USR_I, 4, LINE)
-      READ (LINE, *) (PAR (I), I = 1, 4)
+C     CHARACTER*72     LINE
+C
+C     CALL GET_TOKENS (USR_I, 4, LINE)
+      READ (USR_I, *) (PAR (I), I = 1, 4)
 
       K  = TWO_PI / PAR (2)
       H  = PAR (3)
@@ -31,8 +31,8 @@ C
       WRITE (USR_O, '(1X,A,F10.4)') '    Wave height:', 2.0D0 * PAR (1)
       WRITE (USR_O, '(1X,A,F10.4)') '    Water depth:', H
       WRITE (USR_O, '(1X,A,F10.4)') '    Crest offs.:', PAR (4)
-C      
+C
       GRID_TIME_DEPENDENT = .FALSE.
-C      
+C
       RETURN
       END

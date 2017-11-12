@@ -1,7 +1,7 @@
       SUBROUTINE READ_NGP_NW
      &           (NNW, NGP_NW)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -11,10 +11,10 @@ C
       INTEGER(KIND=IK) NGP_NW (*)
 C
       INTEGER(KIND=IK) INW
-      CHARACTER*72     LINE
-C     
-      CALL GET_TOKENS (USR_I, NNW, LINE)
-      READ (LINE, *) (NGP_NW (INW), INW = 1, NNW)
-C     
+C     CHARACTER*72     LINE
+C
+C     CALL GET_TOKENS (USR_I, NNW, LINE)
+      READ (USR_I, *) (NGP_NW (INW), INW = 1, NNW)
+C
       RETURN
       END

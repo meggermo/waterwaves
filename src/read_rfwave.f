@@ -7,7 +7,7 @@ C-----------------------------------------------------------------------------
       INCLUDE 'fle_params.inc'
       INCLUDE 'usr_params.inc'
       INCLUDE 'rle_params.inc'
-C      
+C
       REAL(KIND=RK) PAR (33, 3)
       REAL(KIND=RK) PERIOD
 C
@@ -19,8 +19,8 @@ C
       CHARACTER*72 LINE
 
       WRITE (USR_O, *)              '    -> R & F wave'
-      CALL GET_TOKENS (USR_I, 1, LINE)
-      READ  (LINE,  *)     File_Name
+C     CALL GET_TOKENS (USR_I, 1, LINE)
+      READ  (USR_I,  *)     File_Name
       OPEN  (STD_T, FILE = File_Name, STATUS= 'OLD')
       WRITE (USR_O, '(1X,A,A    )') '    Data file:  ', File_Name
       READ  (STD_T, *) waterdepth
@@ -43,8 +43,8 @@ C
       par (1, 1) = waveheigth
       par (2, 1) = wavelength
       par (3, 1) = waterdepth
-      CALL GET_TOKENS (USR_I, 1, LINE)
-      READ (LINE, *)
+C     CALL GET_TOKENS (USR_I, 1, LINE)
+      READ (USR_I, *)
      +par (4, 1)
       WRITE (USR_O, '(1X,A,F10.4)') '    Crest offs.:', par (4,1)
       par (5, 1) = omega

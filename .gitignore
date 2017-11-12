@@ -15,3 +15,5 @@ missing
 src/Makefile.in
 stamp-h1
 *.log
+*.o
+src/waterwaves

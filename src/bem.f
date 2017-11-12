@@ -1,6 +1,6 @@
       PROGRAM BEM
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -13,14 +13,15 @@ C
       INTEGER(KIND=IK) NNW_SD (NSD_MAX)  ! nr. of networks per subdomain
       INTEGER(KIND=IK) NGP_SD (NSD_MAX)  ! nr. of grid points per subd.
       INTEGER(KIND=IK) NGP_NW (NNW_MAX)  ! nr. of grid points per netw.
-C     
+C
+      WRITE(*,'(A80)') 'BEM'
       CALL INIT
      &     (NSD, NNW, NGP, NAE, NNW_SD, NGP_SD, NGP_NW)
-C      
+C
       CALL MAIN
      &     (NSD, NNW, NGP, NAE, NNW_SD, NGP_SD, NGP_NW)
-C     
+C
       CALL DONE
      &     (NSD, NNW_SD)
-C      
+C
       END
