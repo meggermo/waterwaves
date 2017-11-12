@@ -1,10 +1,11 @@
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
-      REAL(KIND=IK)  GET_TIME, GET_TBEG, GET_TEND, 
-     &               GET_DELTA_T, GET_DT_PLT, GET_PERIOD
-      EXTERNAL       GET_TIME, GET_TBEG, GET_TEND, 
-     &               GET_DELTA_T, GET_DT_PLT, GET_PERIOD
+      REAL   (KIND=RK) GET_TIME, GET_TBEG, GET_TEND,
+     &                 GET_DELTA_T, GET_PERIOD
+      INTEGER(KIND=IK) GET_DT_PLT
+      EXTERNAL         GET_TIME, GET_TBEG, GET_TEND,
+     &                 GET_DELTA_T, GET_DT_PLT, GET_PERIOD
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------

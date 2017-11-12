@@ -1,11 +1,11 @@
       SUBROUTINE RK4
      &           (NSD,     NGP,      THE_END,
-     &            NNW_SD,  NGP_SD, 
+     &            NNW_SD,  NGP_SD,
      &            NW_IPAR, NW_RPAR,
-     &            CRD,     PHI,      PHN, 
+     &            CRD,     PHI,      PHN,
      &            S_0,     S_1,      D_0,      D_1)
 C ---------------------------------------------------------------------------
-C     Performs a RK-4 time step by integrating the ODE's 
+C     Performs a RK-4 time step by integrating the ODE's
 C     from T to T + DT
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
@@ -38,19 +38,20 @@ C
       T  = GET_TIME    ()
       TE = GET_TEND    ()
       DT = GET_DELTA_T ()
-C      
+      WRITE(USR_O,*) T, TE, DT
+C
       IF (DT .NE. 0.0D0) THEN
          WRITE (USR_O, 1001) 'TIME = ', T / TE, ' * T_END'
       END IF
-      
-C     STAGE 1      
-      CALL DIFF_EQNS 
+
+C     STAGE 1
+      CALL DIFF_EQNS
      &     (1,          NSD,
      &      NNW_SD,     NGP_SD,     NW_IPAR,    NW_RPAR,
      &      CRD (1, 1), PHI (1, 1), PHN (1, 1),
      &      CRD (1, 2), PHI (1, 2), PHN (1, 2),
      &      S_0,        S_1,        D_0,        D_1)
-C     Check if we need to do more timestepping         
+C     Check if we need to do more timestepping
       IF (DT .NE. 0.0D0 .AND. T .LT. TE) THEN
 C     Add the RHS's to the time dependent ODE's
       DO I = 0, NGP - 1
@@ -68,8 +69,8 @@ C     Compute the spline derivatives for the integrated variables
 
 C     Set the physical time
       CALL SET_TIME (T + 0.5 * DT)
-C     STAGE 2      
-      CALL DIFF_EQNS 
+C     STAGE 2
+      CALL DIFF_EQNS
      &     (2,          NSD,
      &      NNW_SD,     NGP_SD,     NW_IPAR,    NW_RPAR,
      &      CRD (1, 1), PHI (1, 1), PHN (1, 1),
@@ -87,12 +88,12 @@ C     Add the RHS's to the time dependent ODE's
          PHI (IS, 1)= PHI (IS,1) + 0.5D0*DT * (PHI (IS,3) - PHI (IS,2))
       END DO
 C     Compute the spline derivatives for the integrated variables
-      CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)     
+      CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)
 
 C     Set the physical time
       CALL SET_TIME (T + 0.5 * DT)
-C     STAGE 3      
-      CALL DIFF_EQNS 
+C     STAGE 3
+      CALL DIFF_EQNS
      &     (3,          NSD,
      &      NNW_SD,     NGP_SD,     NW_IPAR,    NW_RPAR,
      &      CRD (1, 1), PHI (1, 1), PHN (1, 1),
@@ -114,12 +115,12 @@ C     Add the RHS's to the time dependent ODE's
          PHI (IS, 2) = PHI (IS,2) + 2.0D0 * PHI (IS,3)
       END DO
 C     Compute the spline derivatives for the integrated variables
-      CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)     
+      CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)
 
 C     Set the physical time
       CALL SET_TIME (T + DT)
 C     STAGE 4
-      CALL DIFF_EQNS 
+      CALL DIFF_EQNS
      &     (4,          NSD,
      &      NNW_SD,     NGP_SD,     NW_IPAR,    NW_RPAR,
      &      CRD (1, 1), PHI (1, 1), PHN (1, 1),
@@ -132,7 +133,7 @@ C     Add the RHS's to the time dependent ODE's
          IP = 1 + 2 * I
          IS = 2 + 2 * I
          CRD (IX, 1) = CRD (IX, 1)
-     &         + DT * (CRD (IX, 2) 
+     &         + DT * (CRD (IX, 2)
      &              +  CRD (IX, 3) - 4.0D0 * CRD (IX, 4)) / 6.0D0
          CRD (IZ, 1) = CRD (IZ, 1)
      &         + DT * (CRD (IZ, 2)
@@ -145,11 +146,11 @@ C     Add the RHS's to the time dependent ODE's
      &              +  PHI (IS, 3) - 4.0D0 * PHI (IS, 4)) / 6.0D0
       END DO
 C     Compute the spline derivatives for the integrated variables
-      CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)     
+      CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)
       ELSE
       THE_END = .TRUE.
       END IF
-C      
+C
       RETURN
  1001 FORMAT (1X,A,F7.3,A)
       END
@@ -157,8 +158,8 @@ C
       SUBROUTINE DERIVS
      &           (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)
 C ---------------------------------------------------------------------------
-C     
-C    
+C
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -181,7 +182,7 @@ C
          NNW = NNW_SD (ISD)
          NGP = NGP_SD (ISD)
          CALL DERIVS_SD
-     &        (NNW,          NW_IPAR (1, INW), 
+     &        (NNW,          NW_IPAR (1, INW),
      &         CRD (1, IGP), PHI (1, IGP),     PHN (1, IGP))
          INW = INW + NNW
          IGP = IGP + NGP
@@ -193,8 +194,8 @@ C
       SUBROUTINE DERIVS_SD
      &           (NNW, NW_IPAR, CRD, PHI, PHN)
 C ---------------------------------------------------------------------------
-C     
-C    
+C
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'

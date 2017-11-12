@@ -14,7 +14,6 @@ C
       INTEGER(KIND=IK) NGP_SD (NSD_MAX)  ! nr. of grid points per subd.
       INTEGER(KIND=IK) NGP_NW (NNW_MAX)  ! nr. of grid points per netw.
 C
-      WRITE(*,'(A80)') 'BEM'
       CALL INIT
      &     (NSD, NNW, NGP, NAE, NNW_SD, NGP_SD, NGP_NW)
 C

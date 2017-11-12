@@ -1,5 +1,5 @@
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       INTEGER(KIND=IK) IT_CUR
       INTEGER(KIND=IK) IT_BEG
@@ -10,7 +10,7 @@ C
       PARAMETER       (IT_BEG = IT_CUR + 1)
       PARAMETER       (IT_END = IT_BEG + 1)
       PARAMETER       (IT_STP = IT_END + 1)
-C      
+C
       INTEGER(KIND=IK) NT_RPAR
       PARAMETER       (NT_RPAR = IT_STP)
 C
@@ -21,12 +21,12 @@ C
       LOGICAL(KIND=LK) FIRST_TIME
       REAL   (KIND=RK) TM_RPAR (NT_RPAR)
 C
-      COMMON /TME_PARAMS/ TM_RPAR, 
+      COMMON /TME_PARAMS/ TM_RPAR,
      &                    I_PLOT,
      &                    I_PLOT_MOD,
-     &                    PROB_TIME_DEPENDENT, 
+     &                    PROB_TIME_DEPENDENT,
      &                    GRID_TIME_DEPENDENT,
      &                    FIRST_TIME
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------

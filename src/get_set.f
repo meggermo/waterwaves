@@ -1,7 +1,7 @@
       FUNCTION GET_NGP
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
-C    Returns the number of grid points for the network 
+C    Returns the number of grid points for the network
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -11,13 +11,13 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       GET_NGP = NW_IPAR (I_NGP)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_NGP
      &           (NGP, NW_IPAR)
 C ---------------------------------------------------------------------------
-C    Sets the number of grid points to NGP for the network 
+C    Sets the number of grid points to NGP for the network
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -29,10 +29,10 @@ C
 C
       CALL I_ASSERT (NGP_MIN, NGP, NGP_MAX, 'NGP', 'SET_NGP')
       NW_IPAR (I_NGP) = NGP
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_BCT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -46,13 +46,13 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       GET_BCT = NW_IPAR (I_BCT)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_BCT
      &           (BCT, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -64,30 +64,30 @@ C
 C
       CALL I_ASSERT (BCT_FIRST, ABS (BCT), BCT_LAST, 'BCT', 'SET_BCT')
       NW_IPAR (I_BCT) = BCT
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_PLT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'net_params.inc'
-C 
+C
       INTEGER(KIND=IK) GET_PLT
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       GET_PLT = NW_IPAR (I_PLT)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_PLT
      &           (PLT, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -97,14 +97,14 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       NW_IPAR (I_PLT) = PLT
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_GRT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -114,13 +114,13 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       GET_GRT = NW_IPAR (I_GRT)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_GRT
      &           (GRT, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -132,14 +132,14 @@ C
 C
       CALL I_ASSERT (GRD_FIRST, GRT, GRD_LAST, 'GRD', 'SET_GRT')
       NW_IPAR (I_GRT) = GRT
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_GMT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -149,13 +149,13 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       GET_GMT = NW_IPAR (I_GMT)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_GMT
      &           (GMT, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -165,14 +165,14 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       NW_IPAR (I_GMT) = GMT
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_GAT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -182,13 +182,13 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       GET_GAT = NW_IPAR (I_GAT)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_GAT
      &           (GAT, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -198,14 +198,14 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       NW_IPAR (I_GAT) = GAT
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_SPT
      &         (ISP, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -217,13 +217,13 @@ C
 C
       CALL I_ASSERT (1, ISP, N_SPT, 'ISP', 'GET_SPT')
       GET_SPT = NW_IPAR (I_SPT + ISP - 1)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_SPT
      &           (ISP, SPT, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -236,14 +236,14 @@ C
       CALL I_ASSERT ( 1, ISP, N_SPT, 'ISP', 'GET_SPT')
       CALL I_ASSERT (-1, SPT, 4,     'SPT', 'SET_SPT')
       NW_IPAR (I_SPT + ISP - 1) = SPT
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_ITF
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -253,13 +253,13 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       GET_ITF = NW_IPAR (I_ITF)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_ITF
      &           (ITF, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -271,14 +271,14 @@ C
 C
       CALL I_ASSERT (0, ITF, NSD_MAX - 1, 'ITF', 'SET_ITF')
       NW_IPAR (I_ITF) = ITF
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_AED
      &         (IED, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -289,15 +289,15 @@ C
       INTEGER(KIND=IK) NW_IPAR (N_IP)
 C
       CALL I_ASSERT (1, IED, 2, 'IED', 'GET_AED')
-C      
+C
       GET_AED = NW_IPAR (I_AED + IED - 1)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_AED
      &           (IED, AED, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -309,16 +309,16 @@ C
 C
       CALL I_ASSERT (1, IED, 2, 'IED', 'SET_AED')
       CALL I_ASSERT (1, AED, 2, 'IED', 'SET_AED')
-C     
+C
       NW_IPAR (I_AED + IED - 1) = AED
-C      
+C
       RETURN
       END
-      
+
       FUNCTION GET_ANW
      &         (IED, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -331,13 +331,13 @@ C
       CALL I_ASSERT (1, IED, 2, 'IED', 'GET_AED')
 C
       GET_ANW = NW_IPAR (I_ANW + IED - 1)
-C      
+C
       RETURN
       END
       SUBROUTINE SET_ANW
      &           (IED, ANW, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -350,27 +350,27 @@ C
       CALL I_ASSERT (1, IED, 2, 'IED', 'SET_AED')
 C
       NW_IPAR (I_ANW + IED - 1) = ANW
-C      
+C
       RETURN
       END
-     
+
       FUNCTION GET_AGP (IED, INW, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'net_params.inc'
-C      
+C
       INTEGER(KIND=IK) GET_AGP
       INTEGER(KIND=IK) IED
       INTEGER(KIND=IK) INW
       INTEGER(KIND=IK) NW_IPAR (N_IP, *)
-C      
+C
       INTEGER(KIND=IK) ANW, AED, AGP, I
       INTEGER(KIND=IK) GET_ANW, GET_AED, GET_NGP
       EXTERNAL         GET_ANW, GET_AED, GET_NGP
-C     
+C
       ANW = GET_ANW (IED, NW_IPAR (1, INW))
       AED = GET_AED (IED, NW_IPAR (1, INW))
       AGP = 1
@@ -380,11 +380,11 @@ C
       GET_AGP = AGP + (AED - 1) * (GET_NGP (NW_IPAR (1, ANW)) - 1)
       RETURN
       END
-      
+
       SUBROUTINE GET_BCP
      &           (NW_RPAR, PAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -398,13 +398,13 @@ C
       DO IP = 1, N_BCP
          PAR (IP) = NW_RPAR (I_BCP + IP - 1)
       END DO
-C      
+C
       RETURN
-      END      
+      END
       SUBROUTINE SET_BCP
      &           (PAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -418,14 +418,14 @@ C
       DO IP = 1, N_BCP
          NW_RPAR (I_BCP + IP - 1) = PAR (IP)
       END DO
-C      
+C
       RETURN
-      END      
-      
+      END
+
       SUBROUTINE GET_GRP
      &           (NW_RPAR, PAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -439,13 +439,13 @@ C
       DO IP = 1, N_GRP
          PAR (IP) = NW_RPAR (I_GRP + IP - 1)
       END DO
-C      
+C
       RETURN
       END
       SUBROUTINE SET_GRP
      &           (PAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -459,14 +459,14 @@ C
       DO IP = 1, N_GRP
          NW_RPAR (I_GRP + IP - 1) = PAR (IP)
       END DO
-C      
+C
       RETURN
-      END      
-      
+      END
+
       SUBROUTINE GET_GMP
      &           (NW_RPAR, PAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -480,13 +480,13 @@ C
       DO IP = 1, N_GMP
          PAR (IP) = NW_RPAR (I_GMP + IP - 1)
       END DO
-C      
+C
       RETURN
       END
       SUBROUTINE SET_GMP
      &           (PAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -500,14 +500,14 @@ C
       DO IP = 1, N_GMP
          NW_RPAR (I_GMP + IP - 1) = PAR (IP)
       END DO
-C      
+C
       RETURN
-      END      
+      END
 
       SUBROUTINE GET_GAP
      &           (NW_RPAR, PAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -521,13 +521,13 @@ C
       DO IP = 1, N_GAP
          PAR (IP) = NW_RPAR (I_GAP + IP - 1)
       END DO
-C      
+C
       RETURN
       END
       SUBROUTINE SET_GAP
      &           (PAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -541,18 +541,18 @@ C
       DO IP = 1, N_GAP
          NW_RPAR (I_GAP + IP - 1) = PAR (IP)
       END DO
-C      
+C
       RETURN
       END
 
       FUNCTION GET_TIME ()
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL(KIND=RK) GET_TIME
 C
       GET_TIME = TM_RPAR (IT_CUR)
@@ -561,27 +561,27 @@ C
       END
       SUBROUTINE SET_TIME (T)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL(KIND=RK) T
 C
       TM_RPAR (IT_CUR) = T
 C
       RETURN
       END
-     
+
       FUNCTION GET_TBEG ()
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL(KIND=RK) GET_TBEG
 C
       GET_TBEG = TM_RPAR (IT_BEG)
@@ -590,27 +590,27 @@ C
       END
       SUBROUTINE SET_TBEG (T)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL(KIND=RK) T
 C
       TM_RPAR (IT_BEG) = T
 C
       RETURN
       END
-      
+
       FUNCTION GET_TEND ()
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL(KIND=RK) GET_TEND
 C
       GET_TEND = TM_RPAR (IT_END)
@@ -619,27 +619,27 @@ C
       END
       SUBROUTINE SET_TEND (T)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL(KIND=RK) T
 C
       TM_RPAR (IT_END) = T
 C
       RETURN
       END
-      
+
       FUNCTION GET_DELTA_T ()
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL(KIND=RK) GET_DELTA_T
 C
       GET_DELTA_T = TM_RPAR (IT_STP)
@@ -648,12 +648,12 @@ C
       END
       SUBROUTINE SET_DELTA_T (DT)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_params.inc'
-C      
+C
       REAL(KIND=RK) DT
 C
       TM_RPAR (IT_STP) = DT
@@ -663,7 +663,7 @@ C
 
       FUNCTION GET_PERIOD ()
 C ---------------------------------------------------------------------------
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -686,18 +686,18 @@ C        REINECKER & FENTON PERIOD
 C        ANY OTHER TYPE
          GET_PERIOD = 1.0D0
       END IF
-C      
+C
       RETURN
       END
 
       FUNCTION GET_INT_ABS ()
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       REAL(KIND=RK) GET_INT_ABS
 C
       GET_INT_ABS = SO_RPAR (IS_INT_ABS)
@@ -706,12 +706,12 @@ C
       END
       SUBROUTINE SET_INT_ABS (INT_ABS)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       REAL(KIND=RK) INT_ABS
 C
       CALL R_ASSERT (0.0D0, INT_ABS, 1.0D0, 'INT_ABS', 'SET_INT_ABS')
@@ -722,12 +722,12 @@ C
 
       FUNCTION GET_INT_REL ()
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       REAL(KIND=RK) GET_INT_REL
 C
       GET_INT_REL = SO_RPAR (IS_INT_REL)
@@ -736,12 +736,12 @@ C
       END
       SUBROUTINE SET_INT_REL (INT_REL)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       REAL(KIND=RK) INT_REL
 C
       CALL R_ASSERT (0.0D0, INT_REL, 1.0D0, 'INT_REL', 'SET_INT_REL')
@@ -752,12 +752,12 @@ C
 
       FUNCTION GET_ITR_TOL (I)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C     
+C
       INTEGER(KIND=IK) I
       REAL(KIND=RK) GET_ITR_TOL
 C
@@ -768,31 +768,31 @@ C
       END
       SUBROUTINE SET_ITR_TOL (I, TOL)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       INTEGER(KIND=IK) I
       REAL(KIND=RK) TOL
 C
       CALL I_ASSERT (1,     I,   2,     'I',   'SET_ITR_TOL')
       CALL R_ASSERT (0.0D0, TOL, 1.0D0, 'TOL', 'SET_ITR_TOL')
-C     
+C
       SO_RPAR (IS_ITR_TOL + I - 1) = TOL
 C
       RETURN
       END
-      
+
       FUNCTION GET_ITR_OMG (I)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C     
+C
       INTEGER(KIND=IK) I
       REAL(KIND=RK) GET_ITR_OMG
 C
@@ -803,30 +803,30 @@ C
       END
       SUBROUTINE SET_ITR_OMG (I, OMG)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       INTEGER(KIND=IK) I
       REAL(KIND=RK) OMG
 C
       CALL I_ASSERT (1,     I,   2,     'I',   'SET_ITR_OMG')
       CALL R_ASSERT (0.0D0, OMG, 1.0D0, 'OMG', 'SET_ITR_OMG')
-C     
+C
       SO_RPAR (IS_ITR_OMG + I - 1) = OMG
 C
       RETURN
       END
       FUNCTION GET_ITR_MAXIT ()
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       INTEGER(KIND=IK) GET_ITR_MAXIT
 C
       GET_ITR_MAXIT = SO_IPAR (IS_ITR_MAXIT)
@@ -835,13 +835,13 @@ C
       END
       SUBROUTINE SET_ITR_MAXIT (MAXIT)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
       INCLUDE 'max_params.inc'
-C      
+C
       INTEGER(KIND=IK) MAXIT
 C
       CALL I_ASSERT (0, MAXIT, ITR_MAX, 'MAXIT', 'SET_ITR_MAXIT')
@@ -849,15 +849,15 @@ C
 C
       RETURN
       END
-      
+
       FUNCTION GET_DOD_TOL (I)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C     
+C
       INTEGER(KIND=IK) I
       REAL(KIND=RK) GET_DOD_TOL
 C
@@ -868,31 +868,31 @@ C
       END
       SUBROUTINE SET_DOD_TOL (I, TOL)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       INTEGER(KIND=IK) I
       REAL(KIND=RK) TOL
 C
       CALL I_ASSERT (1,     I,   2,     'I',   'SET_DOD_TOL')
       CALL R_ASSERT (0.0D0, TOL, 1.0D0, 'TOL', 'SET_DOD_TOL')
-C     
+C
       SO_RPAR (IS_DOD_TOL + I - 1) = TOL
 C
       RETURN
       END
-      
+
       FUNCTION GET_DOD_OMG (I)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C     
+C
       INTEGER(KIND=IK) I
       REAL(KIND=RK) GET_DOD_OMG
 C
@@ -903,30 +903,30 @@ C
       END
       SUBROUTINE SET_DOD_OMG (I, OMG)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       INTEGER(KIND=IK) I
       REAL(KIND=RK) OMG
 C
       CALL I_ASSERT (1,     I,   2,     'I',   'SET_DOD_TOL')
       CALL R_ASSERT (0.0D0, OMG, 1.0D0, 'TOL', 'SET_DOD_TOL')
-C     
+C
       SO_RPAR (IS_DOD_OMG + I - 1) = OMG
 C
       RETURN
       END
       FUNCTION GET_DOD_MAXIT ()
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       INTEGER(KIND=IK) GET_DOD_MAXIT
 C
       GET_DOD_MAXIT = SO_IPAR (IS_DOD_MAXIT)
@@ -935,12 +935,12 @@ C
       END
       SUBROUTINE SET_DOD_MAXIT (MAXIT)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'slv_params.inc'
-C      
+C
       INTEGER(KIND=IK) MAXIT
 C
       CALL I_ASSERT (0, MAXIT, 1000, 'MAXIT', 'SET_DOD_MAXIT')
