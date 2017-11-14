@@ -22,7 +22,6 @@ C
 C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ  (USR_I, *) ANL_TYPE
 
-      PERIOD = 1.0D0
       IF (ANL_TYPE .EQ. ANL_LINWAVE) THEN
 C        Linear wave
          CALL READ_LINWAVE (ANL_PAR, PERIOD)
