@@ -11,7 +11,7 @@ C
       REAL(KIND=RK) PAR (33, 3)
       REAL(KIND=RK) PERIOD
 C
-      LOGICAL(KIND=IK) ldummy
+      LOGICAL(KIND=LK) ldummy
       INTEGER(KIND=IK) i, n
       CHARACTER*32     File_Name
       REAL   (KIND=RK) waterdepth, waveheigth, rho, gravity,
