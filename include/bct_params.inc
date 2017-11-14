@@ -7,11 +7,11 @@ C     Neumann   : PHN is given PHI is unknown
 C
 C     Boundary condition types:
 C     -------------------------
-C	BCT_UNKNOWN   :
-C	BCT_ANALYTIC  :     BC. is given analytically
-C	BCT_BERNOULLI :     phi_t + 1/2 grad (phi) ** 2 + g z = 0
-C	BCT_SOMMERFELD:     phi_t + c phi_x = 0
-C	BCT_LINBERNOU :     phi_t + g z = 0, eta_t - phi_z = 0
+C     BCT_UNKNOWN   :
+C     BCT_ANALYTIC  :     BC. is given analytically
+C     BCT_BERNOULLI :     phi_t + 1/2 grad (phi) ** 2 + g z = 0
+C     BCT_SOMMERFELD:     phi_t + c phi_x = 0
+C     BCT_LINBERNOU :     phi_t + g z = 0, eta_t - phi_z = 0
 C
 C ---------------------------------------------------------------------------
       INTEGER(KIND=IK) BCK_DIRICHLET   ! -> -1

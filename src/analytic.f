@@ -335,5 +335,4 @@ C
       END IF
 C
       RETURN
- 101  FORMAT (1X,4F10.4)
       END

@@ -25,8 +25,8 @@ C     Loop over all networks
          NGP = GET_NGP (NW_IPAR (1, INW))
          GRT = GET_GRT (NW_IPAR (1, INW))
          WRITE (USR_O, 101) INW, NGP
-C	 Get the number of grid points and the grid type
-C	 Get the grid parameters
+C        Get the number of grid points and the grid type
+C        Get the grid parameters
          CALL GET_GRP (NW_RPAR (1, INW), GRID_PAR)
 C        Generate the grid depending on the value of GRT
          IF (GRT .EQ. GRD_LINE) THEN
