@@ -12,7 +12,6 @@ C
      &       +  T ** 2          * (T - 1.0D0)         * F (1, 2, 2)
       RETURN
       END
-      
       FUNCTION EVAL_1 (T, LDF, F)
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -27,7 +26,6 @@ C
      &       + (3.0D0 * T - 2.0D0) *  T          * F (1, 2, 2)
       RETURN
       END
-      
       FUNCTION EVAL_2 (T, LDF, F)
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'

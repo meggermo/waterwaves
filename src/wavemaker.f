@@ -1,10 +1,10 @@
       SUBROUTINE INTERP_WVM (NGP, U_NR, T, F, CRD_0, CRD, ANL)
 C ---------------------------------------------------------------------------
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) NGP
       INTEGER(KIND=IK) U_NR
       REAL   (KIND=RK) F (4, 4)
@@ -19,11 +19,11 @@ C
       REAL   (KIND=RK) U, V, OMG
 C
       CALL INTERPOLATE (4, U_NR, T, F, G)
-C      
+C
       U   = G (1, 2)
       V   = G (1, 3)
       OMG = G (1, 4)
-C      
+C
       DO IGP = 1, NGP
          DX = CRD (1, IGP) - CRD_0 (1)
          DZ = CRD (2, IGP) - CRD_0 (2)
@@ -36,41 +36,39 @@ C
          ANL (IGP, 5) = 0.0D0             ! : PHI_XX
          ANL (IGP, 6) = 0.0D0             ! : PHI_XZ
       END DO
-C      
+C
       END
-      
       SUBROUTINE INTERPOLATE (N, U_NR, TIME, F, G)
 C ---------------------------------------------------------------------------
 C     Interpolates F_I (T) and DF_I/DT (T)  at T = TIME, where F_I (T)
 C     are third degree Hermite splines and returns them in G.
-C      
+C
 C     G (1, I) =  F_I    (T = TIME)  I = 1 .. N
 C     G (2, I) = DF_I/DT (T = TIME)  I = 1 .. N
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) U_NR
       REAL   (KIND=RK) TIME
       REAL   (KIND=RK) F (4, N)
       REAL   (KIND=RK) G (2, N)
-C     
+C
       REAL   (KIND=RK) XI
       REAL   (KIND=RK) GET_XI
       EXTERNAL         GET_XI
-C     find the interval containing TIME 
-      DO 
+C     find the interval containing TIME
+      DO
          XI = GET_XI (TIME, F)
          IF (0.0 .LE. XI .AND. XI .LE. 1.0) EXIT
          CALL READ_NEXT_ELEMENTS (N, U_NR, F)
       END DO
-C     and evaluate F at XI 
+C     and evaluate F at XI
       CALL EVAL (N, XI, F, G)
-C      
+C
       END
-  
       FUNCTION GET_XI (TIME, T)
 C ---------------------------------------------------------------------------
 C     Solves T (XI) - TIME = 0 by means of Newton iteration,
@@ -81,12 +79,12 @@ C ---------------------------------------------------------------------------
       REAL   (KIND=RK) GET_XI
       REAL   (KIND=RK) TIME
       REAL   (KIND=RK) T (4)
-C      
+C
       REAL   (KIND=RK) XI
       REAL   (KIND=RK) TI (2)
 C     initial guess for XI (is exact if T (XI) is linear)
       XI = (TIME - T (1)) / (T (2) - T (1))
-      DO 
+      DO
 C        interpolate T (XI) and T_XI (XI)
          CALL EVAL (1, XI, T, TI)
 C        check if we're close enough
@@ -94,42 +92,40 @@ C        check if we're close enough
 C        improve guess by using Newton
          XI = XI - (TI (1) - TIME) / TI (2)
       END DO
-      GET_XI = XI 
+      GET_XI = XI
       END
-      
       SUBROUTINE INITIALIZE (N, U_NR, F)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) U_NR
       REAL   (KIND=RK) F (4, N)
 C     read two rows of data to get the first spline element
       CALL READ_NEXT_ELEMENTS (N, U_NR, F)
       CALL READ_NEXT_ELEMENTS (N, U_NR, F)
-C     
+C
       END
-
       SUBROUTINE READ_NEXT_ELEMENTS (N, U_NR, F)
 C ---------------------------------------------------------------------------
 C     Reads the next spline elements from a unit and stores them is F.
 C     The data in unit U_NR should look like this:
-C     
-C     T   T_XI   F_1   DF_1/DT   F_2   DF_2/DT   ......   F_N   DF_N/DT 
-C     T   T_XI   F_1   DF_1/DT   F_2   DF_2/DT   ......   F_N   DF_N/DT 
+C
+C     T   T_XI   F_1   DF_1/DT   F_2   DF_2/DT   ......   F_N   DF_N/DT
+C     T   T_XI   F_1   DF_1/DT   F_2   DF_2/DT   ......   F_N   DF_N/DT
 C     T  ........
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) U_NR
       REAL   (KIND=RK) F (4, N)
-C      
+C
       INTEGER(KIND=IK) I
 C     Copy the old end node data to the begin node data
       DO I = 1, N
@@ -138,12 +134,11 @@ C     Copy the old end node data to the begin node data
       END DO
 C     and read the new end node data
       READ (U_NR, *) (F (2, I), F (4, I), I = 1, N)
-C      
+C
       END
-      
       SUBROUTINE EVAL (N, XI, F, G)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -152,7 +147,7 @@ C
       REAL   (KIND=RK) XI
       REAL   (KIND=RK) F (4, N)
       REAL   (KIND=RK) G (2, N)
-C    
+C
       INTEGER(KIND=IK) I, J
       REAL   (KIND=RK) W (4, 2)
 C     precomute the weights for function and derivative evaluation
@@ -167,5 +162,5 @@ C     compute the function and derivative evaluations
       DO I = 2, N
          G (2, I) = G (2, I) / G (2, 1)
       END DO
-C      
+C
       END

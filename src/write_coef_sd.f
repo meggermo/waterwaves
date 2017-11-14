@@ -15,7 +15,7 @@ C
       REAL   (KIND=RK) D1 (*)        ! Dipole coeffs. (IN)
 C
       CHARACTER*9 FILE_NAME
-C      
+C
       WRITE (FILE_NAME, 101) 'S0', ISD
       CALL WRITE_MATRIX (FILE_NAME, NGP, NGP, S0)
 C
@@ -31,7 +31,6 @@ C
       RETURN
   101 FORMAT (A,'_',I1,'.out')
       END
-
        SUBROUTINE WRITE_MATRIX
      &           (FILE_NAME, N, M, C)
 C ---------------------------------------------------------------------------
@@ -61,7 +60,6 @@ C
       RETURN
   101 FORMAT (E16.8,$)
       END
-      
       SUBROUTINE WRITE_VECTOR
      &           (FILE_NAME, N, V)
 C ---------------------------------------------------------------------------

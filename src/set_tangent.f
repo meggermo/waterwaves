@@ -1,12 +1,12 @@
       SUBROUTINE SET_TANGENT (NNW, NW_IPAR, CRD, PHI, PHN, F, G)
 C ---------------------------------------------------------------------------
-C       
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'net_params.inc'
       INCLUDE 'net_funcs.inc'
-C      
+C
       INTEGER(KIND=IK) NNW
       INTEGER(KIND=IK) NW_IPAR (N_IP, *)
       REAL   (KIND=RK) CRD (4, *)
@@ -19,7 +19,7 @@ C
       INTEGER(KIND=IK) IGP, JGP, AGP, NGP, BCT, ANW, ACT
       INTEGER(KIND=IK) SPT (2)
       DATA             SPT /1, 1/
-C      
+C
       REAL   (KIND=RK) U_G (2)
       REAL   (KIND=RK) U_L (2)
       REAL   (KIND=RK) X_XI, Z_XI, J_INV
@@ -33,7 +33,7 @@ C
             ANW = GET_ANW (IED, NW_IPAR (1, INW))
             AGP = GET_AGP (IED, INW, NW_IPAR)
             ACT = GET_BCT (NW_IPAR (1, ANW))
-C           GET Velocities of adjacent network in global coordinates    
+C           GET Velocities of adjacent network in global coordinates
             X_XI  = CRD (3, AGP)
             Z_XI  = CRD (4, AGP)
             J_INV = 1.0D0 / SQRT (X_XI ** 2 + Z_XI ** 2)
@@ -46,7 +46,7 @@ C           GET Velocities of adjacent network in global coordinates
             END IF
             CALL LOCAL_TO_GLOBAL (1, 2, CRD (1, AGP), U_L, U_G)
             CALL GLOBAL_TO_LOCAL (1, 2, CRD (1, JGP), U_G, U_L)
-C           Set the value of phi_xi to that of adjacent network    
+C           Set the value of phi_xi to that of adjacent network
             X_XI  = CRD (3, JGP)
             Z_XI  = CRD (4, JGP)
             J_INV = 1.0D0 / SQRT (X_XI ** 2 + Z_XI ** 2)
@@ -62,16 +62,15 @@ C
       RETURN
   101 FORMAT (1X,A,I3,':',3E14.6)
       END
-      
       SUBROUTINE SET_TANGENT_2 (NNW, NW_IPAR, CRD, PHI, PHN, F, G)
 C ---------------------------------------------------------------------------
-C       
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'net_params.inc'
       INCLUDE 'net_funcs.inc'
-C      
+C
       INTEGER(KIND=IK) NNW
       INTEGER(KIND=IK) NW_IPAR (N_IP, *)
       REAL   (KIND=RK) CRD (4, *)
@@ -85,7 +84,7 @@ C
       INTEGER(KIND=IK) JGP
       INTEGER(KIND=IK) SPT (2)
       DATA             SPT /1, 1/
-C     
+C
       REAL   (KIND=RK) J_I,   J_I2, J_XI
       REAL   (KIND=RK) X_XI,  X_XIXI
       REAL   (KIND=RK) Z_XI,  Z_XIXI
@@ -135,11 +134,11 @@ C
             END IF
             PH_NS =  PH_N_XI * J_I
             PH_SS = (PH_XIXI - J_XI * J_I * PH_XI) * J_I2
-            R_11  = (X_XI - Z_XI) * (X_XI + Z_XI) 
+            R_11  = (X_XI - Z_XI) * (X_XI + Z_XI)
             R_12  =  X_XI * Z_XI  * 2.0D0
             PH_XX = (R_11 * PH_SS - R_12 * PH_NS) * J_I2
             PH_XZ = (R_11 * PH_NS + R_12 * PH_SS) * J_I2
-C            
+C
             X_XI  = CRD (3, JGP)
             Z_XI  = CRD (4, JGP)
             J_I2  = 1.0D0 / (X_XI ** 2 + Z_XI ** 2)

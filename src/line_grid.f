@@ -1,7 +1,7 @@
       SUBROUTINE LINE_GRID (N, PAR, X)
 C ---------------------------------------------------------------------------
 C     Generates the equidistant coordinates of a line defined by:
-C      
+C
 C     PAR (1, 1) - PAR (2, 1) : Start coordinate
 C     PAR (1, 2) - PAR (2, 2) : End coordinate
 C
@@ -18,7 +18,7 @@ C
       INTEGER(KIND=IK) I
       REAL   (KIND=RK) DX (2)
 C
-      WRITE (USR_O, 1001) 
+      WRITE (USR_O, 1001)
       WRITE (USR_O, 1101) 'from', PAR (1, 1), PAR (2, 1)
       WRITE (USR_O, 1101) 'to',   PAR (1, 2), PAR (2, 2)
 C

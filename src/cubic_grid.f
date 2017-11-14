@@ -1,6 +1,6 @@
       SUBROUTINE CUBIC_GRID (N, PAR, X)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -10,13 +10,13 @@ C ---------------------------------------------------------------------------
       REAL(KIND=RK) X   (4, N)
 C
       INTEGER(KIND=IK) I
-      REAL(KIND=RK) XI, S, DS 
+      REAL(KIND=RK) XI, S, DS
       REAL(KIND=RK) A
       REAL(KIND=RK) DX (2)
 C
       DX (1) = PAR (1, 2) - PAR (1, 1)
       DX (2) = PAR (2, 2) - PAR (2, 1)
-C     
+C
       A = PAR (1, 3)
       IF (A .GE. 0.0D0) THEN
          A = 1.0D0 + 0.5D0 * A

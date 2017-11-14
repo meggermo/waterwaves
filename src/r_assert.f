@@ -1,11 +1,11 @@
       SUBROUTINE R_ASSERT
      &           (D_LO, D_VALUE, D_HI, VAL_STR, SUB_STR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C 
+C
       REAL(KIND=RK) D_LO
       REAL(KIND=RK) D_VALUE
       REAL(KIND=RK) D_HI

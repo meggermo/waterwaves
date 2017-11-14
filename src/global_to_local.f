@@ -4,7 +4,7 @@ C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) LDU
       REAL   (KIND=RK) CRD (4, *)

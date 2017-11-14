@@ -14,7 +14,7 @@ C
       INTEGER(KIND=IK) NGP_SD (*)       ! nr. of gridp. per subd. (OUT)
 C
       INTEGER(KIND=IK) ISD, INW, JNW, NNW, NGP, NGN
-C      
+C
       INW = 1
       DO ISD = 1, NSD
          NNW = NNW_SD (ISD)
@@ -28,6 +28,6 @@ C
          NGP_SD (ISD) = NGP
          INW = INW + NNW
       END DO
-C     
+C
       RETURN
       END

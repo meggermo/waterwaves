@@ -17,7 +17,6 @@ C
       REAL   (KIND=RK) waterdepth, waveheigth, rho, gravity,
      &                 phasevelocity, Q, R, rdummy, omega, wavelength
       CHARACTER*72 LINE
-
       WRITE (USR_O, *)              '    -> R & F wave'
 C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ  (USR_I,  *)     File_Name

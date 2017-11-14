@@ -1,5 +1,5 @@
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       INTEGER(KIND=IK) GRD_LINE         ! -> 1
       INTEGER(KIND=IK) GRD_STRETCHED    ! -> 2
@@ -8,7 +8,7 @@ C ---------------------------------------------------------------------------
       INTEGER(KIND=IK) GRD_FROMFILE     ! -> 5
       INTEGER(KIND=IK) GRD_FIRST
       INTEGER(KIND=IK) GRD_LAST
-C      
+C
       PARAMETER   (GRD_LINE       = 1)
       PARAMETER   (GRD_FIRST      = GRD_LINE)
       PARAMETER   (GRD_STRETCHED  = 2)
@@ -33,7 +33,7 @@ C                                    A < 0 compression at end of grid
 C
 C     GRD_CIRCLESECT  6*DBLE         (x,z) centre of circle
 C                                    (rx,rz) x- and z-radius
-C                                    (theta_begin,theta_end) 
+C                                    (theta_begin,theta_end)
 C
 C     GRD_FROMFILE    1*STRING       Filename
 C

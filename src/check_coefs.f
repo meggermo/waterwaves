@@ -35,7 +35,6 @@ C
       RETURN
  1001 FORMAT (1X,'CHECK SUBDOMAIN',I4,':')
       END
-
       SUBROUTINE CHECK_SUBDOMAIN (NGP, FPH, FPN, S0, S1, D0, D1)
 C ---------------------------------------------------------------------------
 C     Computes the Max, L1 and L2 norm of the integral equations.

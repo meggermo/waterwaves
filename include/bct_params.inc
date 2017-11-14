@@ -4,10 +4,10 @@ C     ---------------------------
 C     Dirichlet : PHI is given PHN is unknown
 C     Mixed     : PHI and PHN are unknown
 C     Neumann   : PHN is given PHI is unknown
-C    
+C
 C     Boundary condition types:
 C     -------------------------
-C	BCT_UNKNOWN   : 	
+C	BCT_UNKNOWN   :
 C	BCT_ANALYTIC  :     BC. is given analytically
 C	BCT_BERNOULLI :     phi_t + 1/2 grad (phi) ** 2 + g z = 0
 C	BCT_SOMMERFELD:     phi_t + c phi_x = 0
@@ -17,7 +17,7 @@ C ---------------------------------------------------------------------------
       INTEGER(KIND=IK) BCK_DIRICHLET   ! -> -1
       INTEGER(KIND=IK) BCK_MIXED       ! ->  0
       INTEGER(KIND=IK) BCK_NEUMANN     ! ->  1
-C      
+C
       PARAMETER       (BCK_DIRICHLET = -1)
       PARAMETER       (BCK_MIXED     =  0)
       PARAMETER       (BCK_NEUMANN   =  1)
@@ -48,5 +48,5 @@ C
       PARAMETER       (BCD_PHI   = 1)
       PARAMETER       (BCD_PHI_T = 2)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------

@@ -13,7 +13,6 @@ C
       REAL   (KIND=RK) TB, TE, DT
 C
       WRITE (USR_O, *) '========== TIME PARAMETERS ========'
-
       READ  (USR_I, *) TB
       READ  (USR_I, *) TE
       READ  (USR_I, *) DT
@@ -23,7 +22,6 @@ C
       CALL SET_TBEG    (PERIOD * TB)
       CALL SET_TEND    (PERIOD * TE)
       CALL SET_DELTA_T (PERIOD * DT)
-
       IF (DT .EQ. 0.0D0) THEN
          PROB_TIME_DEPENDENT = .FALSE.
          CALL SET_TIME (0.0D0)

@@ -18,7 +18,7 @@ C
 C
       INW = 1
       IGP = 1
-C      
+C
       DO ISD = 1, NSD
          NNW = NNW_SD (ISD)
          NGP = NGP_SD (ISD)
@@ -27,10 +27,9 @@ C
          INW = INW + NNW
          IGP = IGP + NGP
       END DO
-C      
+C
       RETURN
       END
-
       SUBROUTINE REGRID_SD
      &           (NNW, NW_IPAR, NW_RPAR, CRD)
 C ---------------------------------------------------------------------------
@@ -49,17 +48,16 @@ C
       INTEGER(KIND=IK) INW, IGP, NGP
 C
       IGP = 1
-C      
+C
       DO INW = 1, NNW
          NGP = GET_NGP (NW_IPAR (1, INW))
          CALL REGRID_NW
      &        (NGP, NW_IPAR (1, INW), NW_RPAR (1, INW), CRD (1, IGP))
          IGP = IGP + NGP
       END DO
-C      
+C
       RETURN
       END
-      
       SUBROUTINE REGRID_NW
      &           (NGP, NW_IPAR, NW_RPAR, CRD)
 C ---------------------------------------------------------------------------
@@ -78,7 +76,7 @@ C
       REAL   (KIND=RK) CRD (4, *)
 C
       INTEGER(KIND=IK) BCT
-C      
+C
       IF (FIRST_TIME .AND. ANL_TYPE .EQ. ANL_RFWAVE) THEN
          BCT = GET_BCT (NW_IPAR)
          CALL REGRID_RF (BCT, NGP, ANL_PAR, ANL_PAR (67), CRD)
@@ -86,7 +84,6 @@ C
 C
       RETURN
       END
-
       SUBROUTINE REGRID_RF (BCT, N, A, B, CRD)
 C ---------------------------------------------------------------------------
 C

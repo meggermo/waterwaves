@@ -24,7 +24,6 @@ C
       INTEGER(KIND=IK) IGP_SD             ! grid point    index pointer
       INTEGER(KIND=IK) IAE_SD             ! array element index pointer
       INTEGER(KIND=IK) NNW, NGP
-
 C     Initialize the index pointers
       INW_SD = 1
       IGP_SD = 1
@@ -36,16 +35,16 @@ C        Get the number of networks and grid points of the subdomain
          NGP = NGP_SD (ISD)
 C        Compute the source and dipole coefficients of this subdomain
          CALL COMP_COEF_SD
-     &        (NNW, NGP,          
+     &        (NNW, NGP,
      &         NW_IPAR (1, INW_SD),
      &         CRD (1, IGP_SD),
      &         S0 (IAE_SD),  S1 (IAE_SD),
      &         D0 (IAE_SD),  D1 (IAE_SD))
 C        Modify the diagonal elements so that the rowsum is 0
-         CALL DIAG_COEF_SD 
+         CALL DIAG_COEF_SD
      &        (NGP, D0 (IAE_SD))
 C        Write the source and dipole coefficients to file (if needed)
-         IF (CHK_COEFS_WRITE) THEN 
+         IF (CHK_COEFS_WRITE) THEN
             CALL WRITE_COEFS_SD (ISD, NGP, S0, S1, D0, D1)
          END IF
 C        Increment the index pointers
@@ -56,7 +55,6 @@ C        Increment the index pointers
 C
       RETURN
       END
-
       SUBROUTINE COMP_COEF_SD
      &           (NNW, NGP, NW_IPAR, CRD, SRC_0, SRC_1, DIP_0, DIP_1)
 C ---------------------------------------------------------------------------
@@ -93,9 +91,9 @@ C
       PARAMETER       (EPS   = 1.0D-3)
 C
       CALL DCOPY (4 * NGP, CRD, 1, CRD_TMP, 1)
-C     
+C
       IGP_NW = 1
-C     
+C
       DO INW = 1, NNW
          NGP_NW = GET_NGP (NW_IPAR (1, INW))
          BCT    = GET_BCT (NW_IPAR (1, INW))
@@ -119,17 +117,17 @@ C
      &               W (1) * CRD  (2, JGP) + W (2) * CRD (2, JGP + 1)
      &             + W (3) * CRD  (4, JGP) + W (4) * CRD (4, JGP + 1)
      &             + DELTA (2)
-                  WRITE (*, *) KGP, ':', 
+                  WRITE (*, *) KGP, ':',
      &            CRD_TMP (1, KGP), CRD_TMP (2, KGP), XI
                END IF
             END DO
          END IF
          IGP_NW = IGP_NW + NGP_NW
       END DO
-C     
+C
       TOL (1) = GET_INT_ABS ()
       TOL (2) = GET_INT_REL ()
-C      
+C
       IGP_NW = 1
 C
       DO INW = 1, NNW
@@ -142,18 +140,17 @@ C
          END DO
 C        WRITE (*, *) 'NETWORK ' , INW
          CALL COMP_COEF_NW
-     &        (NGP,               NGP_NW, 
+     &        (NGP,               NGP_NW,
      &         TOL,
      &         CRD_TMP,           CRD   (1, IGP_NW),
      &         SRC_0 (1, IGP_NW), SRC_1 (1, IGP_NW),
-     &         DIP_0 (1, IGP_NW), DIP_1 (1, IGP_NW), 
+     &         DIP_0 (1, IGP_NW), DIP_1 (1, IGP_NW),
      &         DWRK,              IWRK)
          IGP_NW = IGP_NW + NGP_NW
       END DO
 C
       RETURN
       END
-
       SUBROUTINE DIAG_COEF_SD (NGP, DIP)
 C ---------------------------------------------------------------------------
 C
@@ -184,13 +181,12 @@ C
 C
       RETURN
       END
-
-      SUBROUTINE COMP_COEF_NW 
-     &   (NGP,   NGP_NW, 
+      SUBROUTINE COMP_COEF_NW
+     &   (NGP,   NGP_NW,
      &    TOL,
-     &    CRD,   CRD_NW, 
+     &    CRD,   CRD_NW,
      &    SRC_0, SRC_1,
-     &    DIP_0, DIP_1, 
+     &    DIP_0, DIP_1,
      &    DWRK,  IWRK)
 C ---------------------------------------------------------------------------
 C
@@ -235,7 +231,6 @@ C        WRITE(*,*) '(DXE,DYE) =  ', CRD_NW (3, I+1), CRD_NW (4, I+1)
 C
       RETURN
       END
-
       FUNCTION IS_FLAT (EL)
 C ---------------------------------------------------------------------------
 C
@@ -258,27 +253,21 @@ C
       LEN_ELM    = SQRT (DX_ELM (1) ** 2 + DX_ELM (2) ** 2)
       DX_ELM (1) = DX_ELM (1) / LEN_ELM
       DX_ELM (2) = DX_ELM (2) / LEN_ELM
-
       LEN_BEG    = SQRT (EL (3, 1) ** 2 + EL (3, 2) ** 2)
       DX_BEG (1) = EL (3, 1) / LEN_BEG
       DX_BEG (2) = EL (3, 2) / LEN_BEG
-
       LEN_END    = SQRT (EL (4, 1) ** 2 + EL (4, 2) ** 2)
       DX_END (1) = EL (4, 1) / LEN_END
       DX_END (2) = EL (4, 2) / LEN_END
-
 C     WRITE (*, *) DX_ELM
 C     WRITE (*, *) DX_BEG
 C     WRITE (*, *) DX_END
-
       IS_FLAT = ABS (DX_ELM (1) - DX_BEG (1)) .LT. EPS
      &    .AND. ABS (DX_ELM (2) - DX_BEG (2)) .LT. EPS
      &    .AND. ABS (DX_ELM (1) - DX_END (1)) .LT. EPS
      &    .AND. ABS (DX_ELM (2) - DX_END (2)) .LT. EPS
-
       RETURN
       END
-
       FUNCTION IS_SINGULAR (P, EL)
 C ---------------------------------------------------------------------------
 C
@@ -300,12 +289,11 @@ C
      &      + (P (2) - EL (2, 2)) ** 2) .LT. EPS
       RETURN
       END
-
-      SUBROUTINE COMP_COEF_EL 
-     &           (NGP, 
-     &            TOL,   
-     &            CRD, 
-     &            SRC_0, SRC_1, 
+      SUBROUTINE COMP_COEF_EL
+     &           (NGP,
+     &            TOL,
+     &            CRD,
+     &            SRC_0, SRC_1,
      &            DIP_0, DIP_1,
      &            DWRK,  IWRK)
 C ---------------------------------------------------------------------------
@@ -360,7 +348,6 @@ C        And store them in the Source and Dipole matrices
 C
       RETURN
       END
-
       SUBROUTINE COEF_SINGULAR (FLAT, EABS, EREL, SRC, DIP, DWRK, IWRK)
 C ---------------------------------------------------------------------------
 C
@@ -414,7 +401,6 @@ C        A flat panel has dipole coefficients 0.0
 C
       RETURN
       END
-
       SUBROUTINE COEF_REGULAR (FLAT, EABS, EREL, SRC, DIP, DWRK, IWRK)
 C ---------------------------------------------------------------------------
 C

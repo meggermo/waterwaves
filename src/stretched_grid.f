@@ -1,19 +1,19 @@
       SUBROUTINE STRETCHED_GRID (N, PAR, X)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'rle_params.inc'
       INCLUDE 'grd_params.inc'
       INCLUDE 'usr_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       REAL   (KIND=RK) PAR (2, *)
       REAL   (KIND=RK) X   (4, *)
 C
       INTEGER(KIND=IK) I
-      REAL   (KIND=RK) XI, S1, C1, S, DS 
+      REAL   (KIND=RK) XI, S1, C1, S, DS
       REAL   (KIND=RK) K
       REAL   (KIND=RK) A
       REAL   (KIND=RK) DX (2)
@@ -23,13 +23,13 @@ C
 C
       K = PAR (2, 3)
       A = PAR (1, 3) / K / PI
-C     
-      WRITE (USR_O, 1001) 
+C
+      WRITE (USR_O, 1001)
       WRITE (USR_O, 1101) 'from', PAR (1, 1), PAR (2, 1)
       WRITE (USR_O, 1101) 'to',   PAR (1, 2), PAR (2, 2)
       WRITE (USR_O, 1201) 'Amplitude:',       PAR (1, 3)
       WRITE (USR_O, 1201) 'Periodicity:',     PAR (2, 3)
-C     
+C
       DO I = 1, N
          XI = DBLE (I -1) / DBLE (N - 1)
          S1 = A * SIN (PI * K * XI)

@@ -24,17 +24,15 @@ C
       DO ISD = 1, NSD
          NNW = NNW + NNW_SD (ISD)
       END DO
-C      
+C
       RES (1) = 0.0D0
       RES (2) = 0.0D0
 C
       IGP_A = 1
-C      
+C
       DO INW_A = 1, NNW
-
          NGP_A = GET_NGP (NW_IPAR (1, INW_A))
          ITF_A = GET_ITF (NW_IPAR (1, INW_A))
-         
          IF (ITF_A .NE. 0) THEN
             IGP_B = IGP_A
             DO INW_B = INW_A + 1, NNW
@@ -47,7 +45,7 @@ C
                TBC_A = GET_BCT (NW_IPAR (1, INW_A))
                TBC_B = GET_BCT (NW_IPAR (1, INW_B))
                IF (TBC_A .GT. 0) THEN
-                  CALL RELAX_PHI (NGP_A, NGP_B, TBC_A, TBC_B, 
+                  CALL RELAX_PHI (NGP_A, NGP_B, TBC_A, TBC_B,
      &                 ALPHA (1), RES, PHI (1,IGP_A), PHI (1,IGP_B))
                ELSE
                   CALL RELAX_PHN (NGP_A, NGP_B, TBC_A, TBC_B,
@@ -62,8 +60,7 @@ C
 C
       RETURN
       END
-      
-      SUBROUTINE RELAX_PHI (NGP_A, NGP_B, TBC_A, TBC_B, 
+      SUBROUTINE RELAX_PHI (NGP_A, NGP_B, TBC_A, TBC_B,
      &                      ALPHA, RES, PHA, PHB)
 C ---------------------------------------------------------------------------
 C
@@ -95,10 +92,10 @@ C
          PHA_N (1) = (1.0D0 - ALPHA) * PHA (1, I)
      &                      + ALPHA  * PHB (1, J)
          PHB_N (1) = (1.0D0 - ALPHA) * PHB (1, J)
-     &                      + ALPHA  * PHA (1, I) 
+     &                      + ALPHA  * PHA (1, I)
          PHA_N (2) = (1.0D0 - ALPHA) * PHA (2, I)
      &                      - ALPHA  * PHB (2, J)
-         PHB_N (2) = (1.0D0 - ALPHA) * PHB (2, J) 
+         PHB_N (2) = (1.0D0 - ALPHA) * PHB (2, J)
      &                      - ALPHA  * PHA (2, I)
          PHA (1, I) = PHA_N (1)
          PHB (1, J) = PHB_N (1)
@@ -110,9 +107,7 @@ C     CALL SPLINE (BC, NGP_B, 1, 2, PHB (1, 1), PHB (2, 1))
 C
       RETURN
       END
-
-
-      SUBROUTINE RELAX_PHN (NGP_A, NGP_B, TBC_A, TBC_B, 
+      SUBROUTINE RELAX_PHN (NGP_A, NGP_B, TBC_A, TBC_B,
      &                      ALPHA, RES, PNA, PNB)
 C ---------------------------------------------------------------------------
 C
@@ -147,7 +142,7 @@ C
      &                      - ALPHA  * PNA (1, I)
          PNA_N (2) = (1.0D0 - ALPHA) * PNA (2, I)
      &                      + ALPHA  * PNB (2, J)
-         PNB_N (2) = (1.0D0 - ALPHA) * PNB (2, J) 
+         PNB_N (2) = (1.0D0 - ALPHA) * PNB (2, J)
      &                      + ALPHA  * PNA (2, I)
          PNA (1, I) = PNA_N (1)
          PNB (1, J) = PNB_N (1)

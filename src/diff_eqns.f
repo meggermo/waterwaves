@@ -1,6 +1,6 @@
       SUBROUTINE DIFF_EQNS
      &           (STAGE,   NSD,
-     &            NNW_SD,  NGP_SD,  
+     &            NNW_SD,  NGP_SD,
      &            NW_IPAR, NW_RPAR,
      &            CRD,     PHI,     PHN,
      &            DCRD_DT, DPHI_DT, DPHN_DT,
@@ -32,7 +32,6 @@ C
       REAL   (KIND=RK) S1 (*)
       REAL   (KIND=RK) D0 (*)
       REAL   (KIND=RK) D1 (*)
-
 C     Solve Delta(Phi) = 0 (by means of Boundary Integral Equations)
       CALL SOLVE_LAPLACE
      &     (BCD_PHI, NSD,
@@ -40,12 +39,12 @@ C     Solve Delta(Phi) = 0 (by means of Boundary Integral Equations)
      &      NW_IPAR, NW_RPAR,
      &      CRD,     PHI,     PHN,
      &      S0,      S1,      D0,      D1)
-C      
+C
       IF (PROB_TIME_DEPENDENT .AND. GET_TIME () .LE. GET_TEND ()) THEN
 C        Compute the righthand sides the the time-dependent DE's
          CALL RIGHTHAND_SIDES
      &        (STAGE,   NSD,
-     &         NNW_SD,  NGP_SD,  
+     &         NNW_SD,  NGP_SD,
      &         NW_IPAR, NW_RPAR,
      &         CRD,     PHI,     PHN,
      &         DCRD_DT, DPHI_DT, DPHN_DT)
@@ -57,24 +56,23 @@ C    &      NW_IPAR,   NW_RPAR,
 C    &      CRD,       DPHI_DT,   DPHN_DT,
 C    &      S0,        S1,        D0,        D1)
       END IF
-C     
+C
       IF (STAGE .EQ. 1 .AND. I_PLOT .EQ. 0) THEN
-         CALL PLTOUT 
-     &        (NSD,     NNW_SD,  NW_IPAR, 
-     &         CRD,      PHI,     PHN, 
-     &         DCRD_DT, DPHI_DT, DPHN_DT)   
+         CALL PLTOUT
+     &        (NSD,     NNW_SD,  NW_IPAR,
+     &         CRD,      PHI,     PHN,
+     &         DCRD_DT, DPHI_DT, DPHN_DT)
          IF (CHK_CONTOUR) THEN
             CALL CONTOUR_INTEGRAL
      &           (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHN)
          END IF
       END IF
-C      
+C
       RETURN
       END
-
       SUBROUTINE RIGHTHAND_SIDES
      &           (STAGE,   NSD,
-     &            NNW_SD,  NGP_SD,  
+     &            NNW_SD,  NGP_SD,
      &            NW_IPAR, NW_RPAR,
      &            CRD,     PHI,     PHN,
      &            DCRD_DT, DPHI_DT, DPHN_DT)
@@ -99,10 +97,10 @@ C
       REAL   (KIND=RK) DPHN_DT (2, *)
 C
       INTEGER(KIND=IK) ISD, INW, IGP, NNW, NGP
-C      
+C
       INW = 1
       IGP = 1
-C      
+C
       DO ISD = 1, NSD
          NNW = NNW_SD (ISD)
          NGP = NGP_SD (ISD)
@@ -114,10 +112,9 @@ C
          INW = INW + NNW
          IGP = IGP + NGP
       END DO
-C      
+C
       RETURN
       END
-
       SUBROUTINE RHS_SD
      &           (STAGE,   NNW,     NGP,
      &            NW_IPAR, NW_RPAR,
@@ -156,10 +153,9 @@ C
      &         CRD,     PHI,     PHN,
      &         DCRD_DT, DPHI_DT, DPHN_DT)
       END IF
-C      
-      RETURN 
+C
+      RETURN
       END
-      
       SUBROUTINE PARTIAL_DERIVS
      &           (STAGE,   NNW,
      &            NW_IPAR, NW_RPAR,
@@ -189,7 +185,7 @@ C
       REAL   (KIND=RK) X_XI, Z_XI, J_I, U_L (2), U_G (2)
 C
       IGP = 1
-C      
+C
       DO INW = 1, NNW
          NGP = GET_NGP (NW_IPAR (1, INW))
          BCT = GET_BCT (NW_IPAR (1, INW))
@@ -201,25 +197,25 @@ C
          END DO
          IF (BCT .EQ. -BCT_BERNOULLI) THEN
             CALL BERNOULLI
-     &           (NGP, 
+     &           (NGP,
      &            NW_IPAR (1, INW), NW_RPAR (1, INW),
      &            CRD     (1, IGP), PHI     (1, IGP), PHN (1, IGP),
      &            CRD_T   (1, IGP), PHI_T   (1, IGP))
          ELSE IF (BCT .EQ. -BCT_LINBERNOU) THEN
             CALL LINBERNOU
-     &           (NGP, 
+     &           (NGP,
      &            NW_IPAR (1, INW), NW_RPAR (1, INW),
      &            CRD     (1, IGP), PHI     (1, IGP), PHN (1, IGP),
      &            CRD_T   (1, IGP), PHI_T   (1, IGP))
          ELSE IF (BCT .EQ. -BCT_SOMMERFELD) THEN
             CALL SOMMERFELD
-     &           (NGP, 
+     &           (NGP,
      &            NW_IPAR (1, INW), NW_RPAR (1, INW),
      &            CRD     (1, IGP), PHI     (1, IGP), PHN (1, IGP),
      &            CRD_T   (1, IGP), PHI_T   (1, IGP))
          ELSE IF (BCT .EQ. -BCT_TIME_POLY) THEN
             CALL TIME_POLY
-     &           (NGP, 
+     &           (NGP,
      &            NW_IPAR (1, INW), NW_RPAR (1, INW),
      &            CRD     (1, IGP), PHI     (1, IGP), PHN (1, IGP),
      &            CRD_T   (1, IGP), PHI_T   (1, IGP))
@@ -237,11 +233,10 @@ C           WRITE (*, 1001) JGP, PHI_T (1, JGP), U_G
          END DO
          IGP = IGP + NGP
       END DO
-C      
+C
       RETURN
  1001 FORMAT (1X, I2, ':', 3E16.8)
       END
-      
       SUBROUTINE BERNOULLI
      &           (NGP,
      &            NW_IPAR, NW_RPAR,
@@ -266,7 +261,7 @@ C
 C
       INTEGER(KIND=IK) IGP
       REAL   (KIND=RK) X_XI, Z_XI, J_I, U_L (2), Q
-C      
+C
       DO IGP = 1, NGP
          X_XI = CRD (3, IGP)
          Z_XI = CRD (4, IGP)
@@ -274,14 +269,13 @@ C
          U_L (1) = PHI (2, IGP) * J_I
          U_L (2) = PHN (1, IGP)
          Q       = U_L (1) ** 2 + U_L (2) ** 2
-C        phi_t + 1/2 grad (phi) ** 2 + g z = 0         
+C        phi_t + 1/2 grad (phi) ** 2 + g z = 0
          PHI_T (1, IGP) =  -0.5D0 * Q - GRAV * CRD (2, IGP)
       END DO
-C      
+C
       RETURN
   101 FORMAT (1X,I4,':', 10E14.6)
       END
-      
       SUBROUTINE LINBERNOU
      &           (NGP,
      &            NW_IPAR, NW_RPAR,
@@ -313,7 +307,6 @@ C
 C
       CALL DCOPY (NGP, CRD (2, 1), 4, ETA (1, 1), 2)
       CALL Spline (BC, NGP, 1, 2, ETA (1, 1), ETA (2, 1))
-      
       DO IGP = 1, NGP
          X_XI = CRD (3, IGP)
          Z_XI = CRD (4, IGP)
@@ -330,11 +323,10 @@ C        eta_t =  Phi_z
          CRD_T (2, IGP) = U_G (2)
 C        WRITE (*, *) IGP, ':', PHI_T (1, IGP), PHI_T (2, IGP)
       END DO
-C      
+C
       RETURN
   101 FORMAT (1X,10E14.6)
       END
-      
       SUBROUTINE SOMMERFELD
      &           (NGP,
      &            NW_IPAR, NW_RPAR,
@@ -360,17 +352,16 @@ C
       REAL   (KIND=RK) PAR (N_BCP), C, B
 C
       CALL GET_BCP (NW_RPAR, PAR)
-C     
-      C = PAR (1)      
+C
+      C = PAR (1)
       B = PAR (2)
 C     B = g * (R- H) - 1/2 * C ** 2 (see page 48 of PdH's thesis)
       DO IGP = 1, NGP
          PHI_T (1, IGP) =  C * PHN (1, IGP) - B
       END DO
-C      
+C
       RETURN
       END
-
       SUBROUTINE TIME_POLY
      &           (NGP,
      &            NW_IPAR, NW_RPAR,
@@ -402,10 +393,9 @@ C
       DO IGP = 1, NGP
          PHI_T (1, IGP) = 3.0D0 * C * T ** 2
       END DO
-C      
+C
       RETURN
       END
-
       SUBROUTINE MATERIAL_DERIVS
      &           (STAGE,   NNW,     NGP,
      &            NW_IPAR, NW_RPAR,
@@ -432,13 +422,12 @@ C
 C
       CALL GRID_VELOCITY
      &     (NNW, NGP, NW_IPAR, NW_RPAR, CRD, PHI, PHN, DCRD_DT)
-C      
+C
       CALL TO_MATERIAL
      &     (NGP, CRD, PHI, PHN, DCRD_DT, DPHI_DT)
-C      
+C
       RETURN
       END
-      
       SUBROUTINE GRID_VELOCITY
      &           (NNW, NGP, NW_IPAR, NW_RPAR, CRD, PHI, PHN, V_GRID)
 C ---------------------------------------------------------------------------
@@ -459,19 +448,18 @@ C
 C
       CALL BASIC_VELOCITY
      &     (NGP, CRD, PHI, PHN, V_GRID)
-C      
+C
       CALL CORRECT_TANGENTIAL
      &     (NNW, NW_IPAR, NW_RPAR, CRD, PHI, PHN, V_GRID)
 C
       CALL ALIGN_NORMAL
      &     (NNW, NW_IPAR, NW_RPAR, CRD, PHI, PHN, V_GRID)
-C      
+C
       CALL ALIGN_TANGENTIAL
      &     (NNW, NW_IPAR, NW_RPAR, CRD, PHI, PHN, V_GRID)
-C      
+C
       RETURN
       END
-      
       SUBROUTINE BASIC_VELOCITY
      &           (NGP, CRD, PHI, PHN, V_GRID)
 C ---------------------------------------------------------------------------
@@ -494,14 +482,13 @@ C
          X_XI  = CRD (3, JGP)
          Z_XI  = CRD (4, JGP)
          J_INV = 1.0D0 / SQRT (X_XI ** 2 + Z_XI ** 2)
-C        d/dT (X) = Grad (Phi) = (phi_s, phi_n)            
+C        d/dT (X) = Grad (Phi) = (phi_s, phi_n)
          V_GRID (1, JGP) = PHI (2, JGP) * J_INV
          V_GRID (2, JGP) = PHN (1, JGP)
       END DO
-C      
+C
       RETURN
       END
-      
       SUBROUTINE CORRECT_TANGENTIAL
      &           (NNW, NW_IPAR, NW_RPAR, CRD, PHI, PHN, V_GRID)
 C ---------------------------------------------------------------------------
@@ -552,10 +539,9 @@ C           are  bernoulli kind of networks
          END IF
          IGP = IGP + NGP
       END DO
-C      
+C
       RETURN
       END
-
       SUBROUTINE ALIGN_NORMAL
      &           (NNW, NW_IPAR, NW_RPAR, CRD, PHI, PHN, V_GRID)
 C ---------------------------------------------------------------------------
@@ -586,7 +572,7 @@ C
          DO IED = 1, 2
             ANW = GET_ANW (IED, NW_IPAR (1, INW))
             ACT = GET_BCT      (NW_IPAR (1, ANW))
-            IF  (ACT .EQ. -BCT_BERNOULLI 
+            IF  (ACT .EQ. -BCT_BERNOULLI
      &     .AND. BCT .NE.  BCT_WAVEMAKER) THEN
 C              only align the normal velocities of lateral networks that
 C              are coupled to a network with a bernoulli kind of bc
@@ -604,10 +590,9 @@ C                 V_GRID (2, JGP) = PHN (1, IGP + (NGP - 1) * (IED - 1))
          END DO
          IGP = IGP + NGP
       END DO
-C      
+C
       RETURN
       END
-      
       SUBROUTINE ALIGN_TANGENTIAL
      &           (NNW, NW_IPAR, NW_RPAR, CRD, PHI, PHN, V_GRID)
 C ---------------------------------------------------------------------------
@@ -644,7 +629,7 @@ C           are NOT bernoulli kind of networks
                CALL EDGE_VELOCITY
      &              (JGP, AGP, CRD, V_GRID, U_A (1, IED))
             END DO
-C           make the tangential velocity be linear, starting at 
+C           make the tangential velocity be linear, starting at
 C           U_A (1, 1) and ending at U_A (1, 2)
             DVS = (U_A (1, 2) - U_A (1, 1)) / DBLE (NGP - 1)
             DO JGP = IGP, IGP + NGP - 1
@@ -653,10 +638,9 @@ C           U_A (1, 1) and ending at U_A (1, 2)
          END IF
          IGP = IGP + NGP
       END DO
-C      
+C
       RETURN
       END
-
       SUBROUTINE EDGE_VELOCITY
      &           (IGP, AGP, CRD, VEL, U_A)
 C ---------------------------------------------------------------------------
@@ -674,31 +658,29 @@ C
       REAL   (KIND=RK) U_A (2)
 C
       REAL   (KIND=RK) X_XI, Z_XI, J_INV, U_G (2)
-      
-C     GET Velocities of adjacent network in global coordinates    
+C     GET Velocities of adjacent network in global coordinates
       X_XI    = CRD (3, AGP)
       Z_XI    = CRD (4, AGP)
       J_INV   = 1.0D0 / SQRT (X_XI ** 2 + Z_XI ** 2)
       U_G (1) = (X_XI * VEL (1, AGP) - Z_XI * VEL (2, AGP)) * J_INV
       U_G (2) = (X_XI * VEL (2, AGP) + Z_XI * VEL (1, AGP)) * J_INV
-C     And transform them to the local coordinates      
+C     And transform them to the local coordinates
       X_XI    = CRD (3, IGP)
       Z_XI    = CRD (4, IGP)
       J_INV   = 1.0D0 / SQRT (X_XI ** 2 + Z_XI ** 2)
       U_A (1) = (X_XI * U_G (1) + Z_XI * U_G (2)) * J_INV
       U_A (2) = (X_XI * U_G (2) - Z_XI * U_G (1)) * J_INV
-C      
+C
       RETURN
       END
- 
       SUBROUTINE TO_MATERIAL
      &           (NGP, CRD, PHI, PHN, V_GRID, DPHI_DT)
 C ---------------------------------------------------------------------------
 C     Converts the partial derivatives to the material derivatives and
-C     converts the grid velocity from local to global coordinates. 
-C      
-C     D/Dt = d/dt + dx/dt * Grad      
-C      
+C     converts the grid velocity from local to global coordinates.
+C
+C     D/Dt = d/dt + dx/dt * Grad
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'

@@ -1,12 +1,12 @@
       SUBROUTINE DERIVATIVES (PH_ONE, PN_ONE, NNW, NW_IPAR, F, G)
 C ---------------------------------------------------------------------------
-C       
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'net_params.inc'
       INCLUDE 'net_funcs.inc'
-C      
+C
       INTEGER(KIND=IK) PH_ONE
       INTEGER(KIND=IK) PN_ONE
       INTEGER(KIND=IK) NNW

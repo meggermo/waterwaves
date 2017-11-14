@@ -10,7 +10,7 @@ C ---------------------------------------------------------------------------
       INCLUDE 'usr_params.inc'
 C
       INTEGER(KIND=IK) NNW               ! nr. of networks (IN)
-      INTEGER(KIND=IK) NW_IPAR (N_IP, *) ! integer network params (IN) 
+      INTEGER(KIND=IK) NW_IPAR (N_IP, *) ! integer network params (IN)
       REAL   (KIND=RK) NW_RPAR (N_RP, *) ! real network params (IN)
       REAL   (KIND=RK) CRD (4, *)        ! grid point coordinates (OUT)
 C
@@ -30,7 +30,7 @@ C	 Get the grid parameters
          CALL GET_GRP (NW_RPAR (1, INW), GRID_PAR)
 C        Generate the grid depending on the value of GRT
          IF (GRT .EQ. GRD_LINE) THEN
-            CALL LINE_GRID 
+            CALL LINE_GRID
      &           (NGP, GRID_PAR, CRD (1, IGP))
          ELSE IF (GRT .EQ. GRD_STRETCHED) THEN
             CALL STRETCHED_GRID

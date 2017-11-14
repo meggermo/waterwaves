@@ -1,9 +1,9 @@
-      SUBROUTINE PLTOUT 
-     &           (NSD,   NNW_SD, NW_IPAR, 
+      SUBROUTINE PLTOUT
+     &           (NSD,   NNW_SD, NW_IPAR,
      &            CRD,   PHI,    PHN,
      &            CRD_T, PHI_T,  PHN_T)
 C ---------------------------------------------------------------------------
-C    
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -12,7 +12,7 @@ C ---------------------------------------------------------------------------
       INCLUDE 'net_params.inc'
       INCLUDE 'net_funcs.inc'
       INCLUDE 'tme_funcs.inc'
-C      
+C
       INTEGER(KIND=IK) NSD
       INTEGER(KIND=IK) NNW_SD (*)
       INTEGER(KIND=IK) NW_IPAR (N_IP, *)
@@ -22,7 +22,7 @@ C
       REAL   (KIND=RK) CRD_T (4, *)
       REAL   (KIND=RK) PHI_T (2, *)
       REAL   (KIND=RK) PHN_T (2, *)
-C      
+C
       INTEGER(KIND=IK) ISD, INW, JNW, NNW, IGP, NGP, PLT, BCT, CDF
       REAL   (KIND=RK) T, PERIOD
       REAL   (KIND=RK) NRM (6)
@@ -33,10 +33,10 @@ C
       WRITE (PLT_PHI, '(''# T = '',F8.4, '' * PERIOD'')') T / PERIOD
       WRITE (PLT_PHN, '(''# T = '',F8.4, '' * PERIOD'')') T / PERIOD
       WRITE (PLT_NRM, 101) T
-C      
+C
       INW = 1
       IGP = 1
-C     
+C
       DO ISD = 1, NSD
          NNW = NNW_SD (ISD)
          DO JNW = INW, INW + NNW - 1
@@ -44,9 +44,9 @@ C
             BCT = GET_BCT (NW_IPAR (1, JNW))
             PLT = GET_PLT (NW_IPAR (1, JNW))
             IF (PLT .NE. 0) THEN
-               CALL PLT_NW 
+               CALL PLT_NW
      &              (NGP, ABS (BCT), PLT,
-     &               T, 
+     &               T,
      &               CRD   (1, IGP), PHI   (1, IGP), PHN   (1, IGP),
      &               CRD_T (1, IGP), PHI_T (1, IGP), PHN_T (1, IGP),
      &               NRM)
@@ -63,14 +63,13 @@ C
   111 FORMAT (1X, 'INW ', 6A10)
   121 FORMAT (1X, E14.6,10E12.4)
       END
-
-      SUBROUTINE PLT_NW 
-     &           (NGP,   BCT,   PLT, 
-     &            T, 
-     &            CRD,   PHI,   PHN, 
+      SUBROUTINE PLT_NW
+     &           (NGP,   BCT,   PLT,
+     &            T,
+     &            CRD,   PHI,   PHN,
      &            CRD_T, PHI_T, PHN_T, NRM)
 C ---------------------------------------------------------------------------
-C    
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -79,7 +78,7 @@ C ---------------------------------------------------------------------------
       INCLUDE 'net_params.inc'
       INCLUDE 'bct_params.inc'
       INCLUDE 'fle_params.inc'
-C      
+C
       INTEGER(KIND=IK) NGP
       INTEGER(KIND=IK) BCT
       INTEGER(KIND=IK) PLT
@@ -100,7 +99,7 @@ C
       EXTERNAL         IDAMAX
       REAL   (KIND=RK) DNRM2, DASUM
       EXTERNAL         DNRM2, DASUM
-C      
+C
       IF (BCT .EQ. BCT_LINBERNOU) THEN
          DO I = 1, NGP
             W   (I, 8) = CRD (2, I)
@@ -113,7 +112,7 @@ C
             CRD (2, I) = W (I, 8)
          END DO
       END IF
-C      
+C
        DO I = 1, NGP
          X_XI  = CRD (3, I)
          Z_XI  = CRD (4, I)
@@ -134,7 +133,7 @@ C
       WRITE (PLT_CRD, *)
       WRITE (PLT_PHI, *)
       WRITE (PLT_PHN, *)
-C     
+C
       NRM (1, 1) = W (IDAMAX (NGP, W (1, 6), 1), 6)
       NRM (2, 1) =     DASUM (NGP, W (1, 6), 1)
       NRM (3, 1) =     DNRM2 (NGP, W (1, 6), 1)

@@ -26,9 +26,9 @@ C
       INTEGER(KIND=IK)  BC (2)
       DATA              BC /0, 0/
       REAL   (KIND=RK)  T
-C     
+C
       T = GET_TIME ()
-C     
+C
       IGP = 1
       INW = 1
       DO ISD = 1, NSD
@@ -40,13 +40,13 @@ C
             IF (BCT .EQ. BCT_WAVEMAKER) THEN
                ANL_SAVE = ANL_TYPE
                ANL_TYPE = ANL_WAVEMAKER
-               CALL BOUND_COND 
+               CALL BOUND_COND
      &              (BCD, NGP, BCT, T, NW_RPAR (1, JNW),
      &               CRD (1, IGP), PHI (1, IGP), PHN (1, IGP))
                CALL Spline (BC, NGP, 1, 2, PHN (1, IGP), PHN (2, IGP))
                ANL_TYPE = ANL_SAVE
             ELSE IF  (ABS (BCT) .EQ. BCT_ANALYTIC .OR. FIRST_TIME)  THEN
-               CALL BOUND_COND 
+               CALL BOUND_COND
      &              (BCD, NGP, BCT, T, ANL_PAR,
      &               CRD (1, IGP), PHI (1, IGP), PHN (1, IGP))
             END IF
@@ -57,7 +57,6 @@ C
 C
       RETURN
       END
-
       SUBROUTINE BOUND_COND (BCD, NGP, BCT, T, PAR, CRD, PHI, PHN)
 C ---------------------------------------------------------------------------
 C     Computes the analytical solution for PHI if BCT < 0 and for PHI_N
@@ -82,18 +81,14 @@ C
       INTEGER(KIND=IK) I
       REAL   (KIND=RK) X_XI, Z_XI, J_INV, PROD, DIFF
       REAL   (KIND=RK) W (NGP, 7)
-      
 C     Get the analytic solution at the grid points at time = T and store
 C     them in W
-     
       IF (BCD .EQ. BCD_PHI) THEN
-C        Get bc's for problem of type Laplace (Phi) = 0              
+C        Get bc's for problem of type Laplace (Phi) = 0
          CALL ANALYTIC (NGP, T, PAR, CRD, W)
-         
       ELSE IF (BCD .EQ. BCD_PHI_T) THEN
-C        Get bc's for problem of type Laplace (Phi_t) = 0              
+C        Get bc's for problem of type Laplace (Phi_t) = 0
          CALL ANALYTIC_T (NGP, T, PAR, CRD, W)
-         
       END IF
 C
       DO I = 1, NGP

@@ -1,7 +1,7 @@
       SUBROUTINE CHECK_NETW_PAR
      &           (ISD, NNW, NW_IPAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -20,14 +20,13 @@ C
      &           (ISD, INW, IED, NNW, NW_IPAR, NW_RPAR)
          END DO
       END DO
-C      
+C
       RETURN
       END
-      
       SUBROUTINE CHECK_CONNECTIONS
      &           (ISD, INW, IED, NNW, NW_IPAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -58,19 +57,17 @@ C
       IF (INW .NE. BNW) THEN
          WRITE (USR_O, 101) ISD
          WRITE (USR_O, 121) IED, INW, ANW
-         WRITE (USR_O, 121) AED, ANW, BNW 
+         WRITE (USR_O, 121) AED, ANW, BNW
          CALL ERROR ('CHECK_NETW_IPAR', 'Network ID mismatch')
       END IF
       IF (IED .NE. BED) THEN
          WRITE (USR_O, 101) ISD
          WRITE (USR_O, 121) IED, INW, ANW
-         WRITE (USR_O, 121) AED, ANW, BNW 
+         WRITE (USR_O, 121) AED, ANW, BNW
          CALL ERROR ('CHECK_NETW_IPAR', 'Edge ID mismatch')
       END IF
-      
       CALL GET_GRP (NW_RPAR (1, INW), PAR_I)
       CALL GET_GRP (NW_RPAR (1, ANW), PAR_A)
-
       IF (NNW .NE. 1) THEN
       IF (PAR_I (1 + 2 * (IED - 1)) .NE. PAR_A (1 + 2 * (AED -1)) .OR.
      &    PAR_I (2 + 2 * (IED - 1)) .NE. PAR_A (2 + 2 * (AED -1))) THEN
@@ -82,7 +79,7 @@ C
          CALL ERROR ('CHECK_NETW_IPAR', 'Coordinate mismatch')
       END IF
       END IF
-C     
+C
       RETURN
   101 FORMAT ('IN SUBDOMAIN',I2)
   111 FORMAT ('EDGE',I2,' OF NETW',I4,' CANNOT CONNECT TO NETW',I4)

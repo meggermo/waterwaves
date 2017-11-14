@@ -1,11 +1,11 @@
       SUBROUTINE I_ASSERT
      &   (I_LO, I_VALUE, I_HI, VAL_STR, SUB_STR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C 
+C
       INTEGER(KIND=IK) I_LO
       INTEGER(KIND=IK) I_VALUE
       INTEGER(KIND=IK) I_HI

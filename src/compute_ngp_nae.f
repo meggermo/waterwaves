@@ -2,7 +2,7 @@
      &           (NSD, NGP_SD, NGP, NAE)
 C ---------------------------------------------------------------------------
 C     Computes the total number of grid points and the total number of
-C     array elements  
+C     array elements
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -14,12 +14,12 @@ C
 C
       INTEGER(KIND=IK) ISD
 C
-      NGP = 0 
+      NGP = 0
       NAE = 0
       DO ISD = 1, NSD
          NGP = NGP + NGP_SD (ISD)
          NAE = NAE + NGP_SD (ISD) ** 2
       END DO
-C      
+C
       RETURN
       END

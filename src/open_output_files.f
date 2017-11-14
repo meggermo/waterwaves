@@ -16,5 +16,5 @@ C     the norms are written to
       OPEN (UNIT = PLT_NRM, FILE = 'nrm.out', STATUS = 'UNKNOWN')
 C     the contour integrals are written to
       OPEN (UNIT = PLT_CTR, FILE = 'ctr.out', STATUS = 'UNKNOWN')
-C     
+C
       END

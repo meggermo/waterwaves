@@ -1,6 +1,6 @@
       SUBROUTINE DONE (NSD, NNW_SD)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -11,10 +11,9 @@ C
       CALL CLOSE_FILES (NSD, NNW_SD)
 C
       END
-
       SUBROUTINE CLOSE_FILES (NSD, NNW_SD)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -37,6 +36,5 @@ C
       IF (USR_O .EQ. PLT_O) THEN
          CLOSE (USR_O)
       END IF
-C     
+C
       END
-

@@ -1,7 +1,7 @@
       SUBROUTINE READ_NETWORK_PARAMETERS
      &           (NSD, NNW_SD, PERIOD, NW_IPAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -24,24 +24,23 @@ C
          NNW = NNW_SD (ISD)
          CALL READ_NETW_PARAMETERS
      &        (NNW, PERIOD, NW_IPAR (1, INW), NW_RPAR (1, INW))
-         CALL CHECK_NETW_PAR 
+         CALL CHECK_NETW_PAR
      &        (ISD, NNW,    NW_IPAR (1, INW), NW_RPAR (1, INW))
          INW = INW + NNW
       END DO
       WRITE (STD_T, *)
       CLOSE (UNIT = STD_T)
-C      
+C
       CALL CHECK_INTERFACES
      &     (NSD, NNW_SD, NW_IPAR)
 C
   101 FORMAT (1X,'========== SUBDOMAIN',I3,' ==========')
       RETURN
       END
-      
       SUBROUTINE READ_NETW_PARAMETERS
      &           (NNW, PERIOD, NW_IPAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'

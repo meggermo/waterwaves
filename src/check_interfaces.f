@@ -1,7 +1,7 @@
       SUBROUTINE CHECK_INTERFACES
      &           (NSD, NNW_SD, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -28,14 +28,12 @@ C
          CALL ERROR ('CHECK_INTERFACES', 'Number of ITF''s is odd')
       END IF
       CALL CHECK_INTERF (NNW, NTF, NW_IPAR)
-      
       RETURN
       END
-      
       SUBROUTINE CHECK_INTERF
      &           (NNW, NTF, NW_IPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -79,7 +77,7 @@ C        IF (ITF_ID (ITF) .NE. ITF_ID (ITF + 1)) THEN
 C           CALL ERROR ('CHECK_INTERF', 'WRONG INTERFACE ID''s')
 C        END IF
       END DO
-C      
+C
       RETURN
   101 FORMAT (1X,'AT INTERFACE',I2,' OF NETWORK',I4)
       END

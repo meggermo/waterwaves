@@ -1,5 +1,5 @@
 C ---------------------------------------------------------------------------
-C     fle_params.inc: 
+C     fle_params.inc:
 C     Contains parameters for unit numbers of in and output files
 C ---------------------------------------------------------------------------
       INTEGER(KIND=IK) STD_I    ! Standard input stream  (SYSTEM DEPENDENT)
@@ -13,10 +13,10 @@ C ---------------------------------------------------------------------------
       INTEGER(KIND=IK) PLT_NRM  ! Norms   output file
       INTEGER(KIND=IK) PLT_CTR  ! Contour output file
       INTEGER(KIND=IK) WVM_IN   ! Contour output file
-C      
+C
       PARAMETER (STD_I = 5)     ! NOTE: This parameter is system dependent
       PARAMETER (STD_O = 6)     ! NOTE: This parameter is system dependent
-C      
+C
       PARAMETER (STD_T = STD_O + 1)
       PARAMETER (PLT_I = STD_T + 1)
       PARAMETER (PLT_O = PLT_I + 1)

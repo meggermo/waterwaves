@@ -37,7 +37,7 @@ C
       REAL   (KIND=RK) RES (2)
       DATA             RES /2*0.0D0/
       REAL   (KIND=RK) Y (NGP, 2)
-C      
+C
       WRITE (USR_O, *) '=== ITERATE =='
 C
       IF (CHK_EQNS) CALL CHECK_EQNS (NGP, A0, A1, X, B)
@@ -46,7 +46,7 @@ C
       COUNTER   = 0
 C     A0 <- Inverse (A0)
       CALL INVERT (NGP, A0)
-C      
+C
       DO WHILE (.NOT. CONVERGED .AND. COUNTER. LT. MAX_IT)
 C         Y (:, 1) <- X (:, 2)
           CALL DCOPY (NGP, X (1, 2), 1, Y, 1)
@@ -56,7 +56,7 @@ C         Y (:, 1) <- INVERSE (A0) * Y (:, 2)
           CALL SOLVE_AX_B (NGP, A0, A1, Y, B)
 C         X (:, 1) <- (1 - alpha) * Y (:, 1) + alpha * X (:, 1)
           CALL RESIDUAL (NGP, 1, ALPHA, Y, X, RES)
-          CALL SET_TANGENT (NNW, NW_IPAR, CRD, 
+          CALL SET_TANGENT (NNW, NW_IPAR, CRD,
      &                      PHI, PHN, X (1, 1), X (1, 2))
           CALL DERIVATIVES (1, 1, NNW, NW_IPAR, X (1,1), X (1,2))
 C         CHECK CONVERGENCE
@@ -76,14 +76,13 @@ C
  1001 FORMAT (1X,'ITR:',2E9.1,' USING ', I4,' ITERATIONS')
  1101 FORMAT (1X,'ITR:',2E9.1,' AT ITERATION ', I4)
       END
-
       SUBROUTINE SOLVE_AX_B (N, A0_INV, A1, X, B)
 C ---------------------------------------------------------------------------
 C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       REAL   (KIND=RK) A0_INV (N, N)
       REAL   (KIND=RK) A1 (N, N)
@@ -100,7 +99,6 @@ C     X (:, 1) <- INVERSE (A0) * X (:, 2)
 C
       RETURN
       END
-
       SUBROUTINE INVERT (N, A)
 C ---------------------------------------------------------------------------
 C
@@ -134,7 +132,6 @@ C
   201 FORMAT (1X,A,': ARGUMENT',I2,' IS INCORRECT')
   211 FORMAT (1X,A,': MATRIX BECAME SINGULAR AT ROW',I4)
       END
-
       SUBROUTINE RESIDUAL (N, K, ALPHA, Y, X, RES)
 C ---------------------------------------------------------------------------
 C
@@ -165,7 +162,6 @@ C
 C
       RETURN
       END
-
       SUBROUTINE CHECK_EQNS (NGP, A0, A1, X, B)
 C ---------------------------------------------------------------------------
 C

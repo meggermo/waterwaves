@@ -4,13 +4,13 @@ C
 C     PAR (1, 1) - PAR (2, 1) : circle centre coordinates
 C     PAR (2, 2) - PAR (2, 2) : circle radius in x- and z-direction
 C     PAR (1, 3) - PAR (2, 3) : start- and end angle
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'usr_params.inc'
       INCLUDE 'rle_params.inc'
-C     
+C
       INTEGER(KIND=IK) N
       REAL   (KIND=RK) PAR (2, *)
       REAL   (KIND=RK) X   (4, *)
@@ -18,10 +18,10 @@ C
       INTEGER(KIND=IK) I
       REAL   (KIND=RK) THETA, DTHETA
 C
-      WRITE (USR_O, 1001) 
+      WRITE (USR_O, 1001)
       WRITE (USR_O, 1101) 'centre', PAR (1, 1), PAR (2, 1)
       WRITE (USR_O, 1101) 'radii',  PAR (1, 2), PAR (2, 2)
-      WRITE (USR_O, 1201) 'theta', 2.0D0 * PAR (1, 3), 
+      WRITE (USR_O, 1201) 'theta', 2.0D0 * PAR (1, 3),
      &                             2.0D0 * PAR (2, 3)
 C
       DTHETA = 2.0D0 * PI * (PAR (2, 3) - PAR (1, 3)) / DBLE (N - 1)

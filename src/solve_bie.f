@@ -41,15 +41,15 @@ C
       DO WHILE (.NOT. CONVERGED .AND. COUNTER .LT. MAX_IT)
          COUNTER = COUNTER + 1
 C        Solve the BIE's for the individual subdomains
-         CALL SOLVE_SUBDOMAINS 
-     &        (NSD,     NNW_SD,  NGP_SD,   NW_IPAR, 
-     &         SRC_0,   SRC_1,   DIP_0,    DIP_1, 
+         CALL SOLVE_SUBDOMAINS
+     &        (NSD,     NNW_SD,  NGP_SD,   NW_IPAR,
+     &         SRC_0,   SRC_1,   DIP_0,    DIP_1,
      &         CRD,     PHI,     PHN)
 C        Exchange the interface data
-         CALL RELAX 
+         CALL RELAX
      &        (NSD, NNW_SD, NW_IPAR, OMG, RES, PHI, PHN)
-C        Check for convergence         
-         CONVERGED = 
+C        Check for convergence
+         CONVERGED =
      &   RES (1) .LE. TOL (1) .AND. RES (2) .LE. TOL (2)
          IF (NSD .GT. 1) WRITE (6, 1001) RES, COUNTER
       END DO
@@ -64,7 +64,6 @@ C
  1001 FORMAT (1X,'DDC:',2E9.1,' AT ITERATION ', I3)
  1101 FORMAT (1X,'DDC:',2E9.1,' AFTER ', I3, ' ITERATIONS')
       END
-
       SUBROUTINE SOLVE_SUBDOMAINS
      &   (NSD,   NNW_SD, NGP_SD, NW_IPAR,
      &    SRC_0, SRC_1,  DIP_0,  DIP_1,
@@ -100,7 +99,7 @@ C
       TOL (2) = GET_ITR_TOL (2)
       OMG (1) = GET_ITR_OMG (1)
       OMG (2) = GET_ITR_OMG (2)
-C      
+C
       INW = 1
       IGP = 1
       IAE = 1
@@ -130,8 +129,6 @@ C        Increment the index pointers to the next subdomain
 C
       RETURN
       END
-
-
       SUBROUTINE SOLVE_SD
      &   (NNW,   NGP,
      &    NW_IPAR,
@@ -163,16 +160,16 @@ C
       REAL   (KIND=RK) A1 (NGP, NGP)
       REAL   (KIND=RK) B  (NGP)
       REAL   (KIND=RK) X  (NGP, 2)
-C      
-      CALL SETUP_AX_B 
-     &     (NNW,    NGP,    NW_IPAR, 
-     &      PHI,    PHN, 
-     &      SRC_0,  SRC_1,  DIP_0, DIP_1, 
+C
+      CALL SETUP_AX_B
+     &     (NNW,    NGP,    NW_IPAR,
+     &      PHI,    PHN,
+     &      SRC_0,  SRC_1,  DIP_0, DIP_1,
      &      A0,     A1,     B,     X)
 C
       CALL ITERATE
-     &     (NNW,    NGP,    NW_IPAR, 
-     &      CRD,    PHI,    PHN, 
+     &     (NNW,    NGP,    NW_IPAR,
+     &      CRD,    PHI,    PHN,
      &      A0,     A1,     B,
      &      OMG,    MAX_IT, TOL, X)
 C
@@ -182,7 +179,6 @@ C
       RETURN
   101 FORMAT (1X,2E12.4,2E18.10)
       END
-
       SUBROUTINE SETUP_AX_B
      &   (NNW,  NGP,
      &    NW_IPAR,
@@ -236,8 +232,7 @@ C
          END IF
          IGP = IGP + NGP_NW
       END DO
-      
-C     Write Matrices and Vectors to file, so that we can 
+C     Write Matrices and Vectors to file, so that we can
 C     evaluate the following equation: A0 * X0 + A1 * X1 = B
       IF (CHK_EQNS) THEN
          CALL WRITE_MATRIX
@@ -251,10 +246,9 @@ C     evaluate the following equation: A0 * X0 + A1 * X1 = B
          CALL WRITE_VECTOR
      &        ('X1.out', NGP, X (1, 2))
       END IF
-C      
+C
       RETURN
       END
-
       SUBROUTINE COPY_BACK (NNW, NGP, NW_IPAR, X, PHI, PHN)
 C ---------------------------------------------------------------------------
 C
@@ -293,7 +287,6 @@ C
 C
       RETURN
       END
-
       SUBROUTINE COPY_COLOUMNS (NGP, N_GP, V, W, A_0, A_1, B_0, B_1, A0,
      &           A1, B, X, DX)
 C ---------------------------------------------------------------------------
@@ -332,47 +325,46 @@ C
 C
       RETURN
       END
-
 C-OLD -------------------------------------------------------------------------
 C     SUBROUTINE COUPLE_EDGES
 C    &   (NNW,   NGP,   NW_IPAR,
 C    &    CRD,
 C    &    SRC_0, SRC_1,
-C    &    DIP_0, DIP_1, 
+C    &    DIP_0, DIP_1,
 C    &    NEU)
 C ---------------------------------------------------------------------------
 C       Transformation rule for the velocities from local (S,N) to the
 C       global coordinates (X,Z) are:
-C      
+C
 C      1  | X_XI -Z_XI |   | PHI_S |   | PHI_X |
 C      -  |            | * |       | = |       |
 C      J  | Z_XI  X_XI |   | PHI_N |   | PHI_Z |
 C
 C      where J = SQRT (X_XI ** 2 + Z_XI ** 2) is the Jacobian
-C      
+C
 C      This can be used to demand equality of velocities over networks
-C      as follows:      
+C      as follows:
 C                          I                A           A           I
 C      1     | X_XI  Z_XI |   | X_XI -Z_XI |   | PHI_S |   | PHI_S |
 C  --------- |            | * |            | * |       | = |       |
 C  J_I * J_A |-Z_XI  X_XI |   | Z_XI  X_XI |   | PHI_N |   | PHI_N |
 C
 C      Where we have used the fact that the transformation matrix is
-C      orthonormal.       
+C      orthonormal.
 C      Note that PHI_S = 1 / J * PHI_XI, so the two equations for
 C      continuity of velocity are given by
-C      
+C
 C     -1                        -1
 C    J * (PHI_XI)  - (R_11 * J * (PHI_XI) + R_12 * PHI_N) = 0
 C     I          I              A          A              A
-C      
+C
 C                               -1
 C        (PHI_N )  + (R_21 * J * (PHI_XI) - R_11 * PHI_N) = 0
 C                I              A          A              A
 C     where
-C     
+C
 C      R_11 = (X_XI * X_XI + Z_XI * Z_XI) / J / J
-C                  I      A      I      A    I   A  
+C                  I      A      I      A    I   A
 C
 C      R_12 = (Z_XI * X_XI - X_XI * Z_XI) / J / J
 C                  I      A      I      A    I   A
@@ -398,7 +390,7 @@ C     INTEGER(KIND=IK) ANW, AGP, ABC
 C     REAL   (KIND=RK) J_I, J_A
 C     REAL   (KIND=RK) X_XII, Z_XII, X_XIA, Z_XIA
 C     REAL   (KIND=RK) R_11, R_12
-C     
+C
 C     IED = 1
 C     IGP = 1
 C     NEU = 0
@@ -434,10 +426,10 @@ C           DIP_0 (IGP, AGP) = -1.0D0
 C        END IF
 C        IGP = IGP + GET_NGP (NW_IPAR (1, INW))
 C     END DO
-C      
+C
 C     IF (NEU .EQ. NNW) THEN
-C        If all boundary conditions are of Neumann type then 
-C        we'll set PHI (NGP) to some constant 
+C        If all boundary conditions are of Neumann type then
+C        we'll set PHI (NGP) to some constant
 C        WRITE (*, *) 'ALL NEUMANN'
 C        DO IGP = 1, NGP
 C           SRC_0 (NGP, IGP) = 0.0D0
@@ -447,7 +439,7 @@ C           DIP_1 (NGP, IGP) = 0.0D0
 C        END DO
 C        DIP_0 (NGP, NGP) = 1.0D0
 C     END IF
-C      
+C
 C     RETURN
 C     END
 C-OLD -------------------------------------------------------------------------

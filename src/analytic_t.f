@@ -1,21 +1,21 @@
       SUBROUTINE ANALYTIC_T
      &           (N, T, PAR, X, W)
 C ---------------------------------------------------------------------------
-C     Computes an analytic solution to Laplace's equation in the grid 
-C     points given by X and stores it in the workspace W. 
-C     The kind of analytic solution is determined by the parameter 
+C     Computes an analytic solution to Laplace's equation in the grid
+C     points given by X and stores it in the workspace W.
+C     The kind of analytic solution is determined by the parameter
 C     ANL_TYPE, which is a common block variable in the file anl_params.inc
 C     The analytic solution is stored in the workspace W as follows:
-C      
+C
 C     W (1:N, 1) : PHI_T
 C     W (1:N, 3) : PHI_XT
 C     W (1:N, 4) : PHI_ZT
-C     W (1:N, 5) : PHI_XXT 
+C     W (1:N, 5) : PHI_XXT
 C     W (1:N, 6) : PHI_XZT
-C      
+C
 C     Due to Laplace's equation we have PHI_XX + PHI_ZZ = 0, so PHI_ZZ
 C     is given implicitly as -PHI_XX
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -38,7 +38,7 @@ C
      &        (N, T, PAR, X, W)
       ELSE IF (ANL_TYPE .EQ. ANL_NOTAVAIL) THEN
 C        THERE'S NO KNOWN SOLUTION, SO W <- 0
-         CALL NOTAVAIL 
+         CALL NOTAVAIL
      &        (N, W)
       ELSE
          WRITE (MSG,'(A,I3)')
@@ -48,8 +48,7 @@ C        THERE'S NO KNOWN SOLUTION, SO W <- 0
 C
       RETURN
       END
-
-      SUBROUTINE LINWAVE_T 
+      SUBROUTINE LINWAVE_T
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
 C     Analytic solution: Linear wave
@@ -63,7 +62,7 @@ C     K : wave number       [1/m.]
 C     W : Wave frequency    [rad/s.]
 C     H : Water depth       [m.]
 C     X0: Wave crest offset [m.]
-C      
+C
 C     ANL (1:N, 2) : PHI_T
 C     ANL (1:N, 3) : PHI_X
 C     ANL (1:N, 4) : PHI_Z
@@ -112,20 +111,19 @@ C
 C
       RETURN
       END
-
-      SUBROUTINE RFWAVE_T 
+      SUBROUTINE RFWAVE_T
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
 C     Analytic solution: Rienecker & Fenton type of wave
 C
-C            __ N     
+C            __ N
 C            \      COSH (J K (Z + H))
 C    PHI =   /    B ---------------- * SIN (J K (X - X0 - C T))
 C            --    J  COSH (J K H)
-C            J = 1                                         2        
+C            J = 1                                         2
 C                   + (C + B) (X - X0) - (G (R - H) - 1/2 C ) T
 C                           0
-C      
+C
 C     K : wave number            [1/m]
 C     W : Wave frequency         [rad/s]
 C     C : Wave phace velocity    [m/s]
@@ -135,7 +133,7 @@ C     B : J-th Fourier component [-]
 C      J
 C     G : Gravitational accel.   [m/s^2]
 C     R : R&F constant           [m]
-C      
+C
 C     ANL (1:N, 2) : PHI_T
 C     ANL (1:N, 3) : PHI_XT
 C     ANL (1:N, 4) : PHI_ZT

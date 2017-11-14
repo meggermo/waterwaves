@@ -1,7 +1,7 @@
       SUBROUTINE READ_PARAMETERS
      &           (NSD, NNW_SD, NW_IPAR, NW_RPAR)
 C ---------------------------------------------------------------------------
-C     
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -14,22 +14,22 @@ C
 C
       REAL(KIND=RK) PERIOD
       DATA          PERIOD /1.0D0/
-C      
+C
       CALL READ_ANALYTIC_PARAMETERS
      &     (PERIOD)
-C      
-      CALL READ_TIME_PARAMETERS 
+C
+      CALL READ_TIME_PARAMETERS
      &     (PERIOD)
 C
       CALL READ_SOLVE_PARAMETERS
      &     (NSD)
-C      
+C
       CALL READ_CHK_PARAMETERS
-C      
+C
       CALL READ_NETWORK_PARAMETERS
      &     (NSD, NNW_SD, PERIOD, NW_IPAR, NW_RPAR)
-C     
+C
 C     CALL OPEN_CDF_FILES (NSD, NNW_SD, NW_IPAR)
-C      
+C
       RETURN
       END

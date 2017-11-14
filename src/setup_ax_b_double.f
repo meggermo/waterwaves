@@ -2,7 +2,7 @@
      &   (NNW,      NGP,
      &    NW_IPAR,
      &    CRD,      PHI, PHN,
-     &    S0,       S1,  
+     &    S0,       S1,
      &    D0,       D1,
      &    A,        X,   B)
 C ---------------------------------------------------------------------------
@@ -52,14 +52,14 @@ C
             CALL COPY_COLOUMNS_DOUBLE
      &           (NGP, NGP_NW,
      &            PHI (1, IGP), PHN (1, IGP),
-     &            S0  (1, IGP), S1  (1, IGP),  
+     &            S0  (1, IGP), S1  (1, IGP),
      &            D0  (1, IGP), D1  (1, IGP),
      &            A   (1, IGP), A   (1, JGP),  B,  X (IGP), X (JGP))
          ELSE
             CALL COPY_COLOUMNS_DOUBLE
      &           (NGP, NGP_NW,
      &            PHN (1, IGP), PHI (1, IGP),
-     &            D0  (1, IGP),  D1 (1, IGP), 
+     &            D0  (1, IGP),  D1 (1, IGP),
      &            S0  (1, IGP),  S1 (1, IGP),
      &            A   (1, IGP),  A  (1, JGP), B,  X (IGP), X (JGP))
          END IF
@@ -85,14 +85,14 @@ C
             AED = GET_AED (IED,      NW_IPAR (1, INW))
             AGP = GET_AGP (IED, INW, NW_IPAR)
             ACT = GET_BCT (NW_IPAR (1, ANW))
-C           
+C
             J_I2 = 1.0D0 / (CRD (3, JGP) ** 2 + CRD (4, JGP) ** 2)
             J_A2 = 1.0D0 / (CRD (3, AGP) ** 2 + CRD (4, AGP) ** 2)
             J_I  = SQRT (J_I2)
             J_A  = SQRT (J_A2)
-            R1 (1) = (CRD (3, JGP) * CRD (3, AGP) 
+            R1 (1) = (CRD (3, JGP) * CRD (3, AGP)
      &             +  CRD (4, JGP) * CRD (4, AGP)) * J_I * J_A
-            R1 (2) = (CRD (3, JGP) * CRD (4, AGP) 
+            R1 (2) = (CRD (3, JGP) * CRD (4, AGP)
      &             -  CRD (4, JGP) * CRD (3, AGP)) * J_I * J_A
             R2 (1) = (R1 (1) + R1 (2)) * (R1 (1) - R1 (2))
             R2 (2) = 2.0D0 * R1 (1) * R1 (2)
@@ -101,10 +101,10 @@ C
             P_XIXI = EVAL_2 (DBLE (AED-1), 1, PHI (1, AGP + 1 - AED))
             DOT    = CRD (3, AGP) * X_XIXI + CRD (4, AGP) * Z_XIXI
             PHI_SS = (P_XIXI - DOT * J_A2 * PHI (2, AGP)) * J_A2
-C           
+C
             KGP = JGP + NGP
             BGP = AGP + NGP
-C           
+C
             IF (BCT .GT. 0) THEN
                IF (ACT .GT. 0) THEN
 C                 NN -> PHI_S SHOULD BE CONTINUOUS
@@ -171,10 +171,9 @@ C                 END IF
          END DO
          IGP = IGP + NGP_NW
       END DO
-C     
+C
       RETURN
       END
-      
       SUBROUTINE CHECK_EQNS_DOUBLE (NGP, A0, A1, S0, S1, X0, X1, B0, B1)
 C ---------------------------------------------------------------------------
 C
@@ -216,7 +215,6 @@ C
 C
       RETURN
       END
-      
       SUBROUTINE COPY_COLOUMNS_DOUBLE
      &           (NGP, N_GP, V, W, A_0, A_1, B_0, B_1, A0, A1, B, X, DX)
 C ---------------------------------------------------------------------------

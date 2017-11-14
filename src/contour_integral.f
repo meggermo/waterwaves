@@ -37,18 +37,17 @@ C
      &         CRD (1, IGP),  PHN (1, IGP),
      &         TI (ISD),
      &         IWRK,          DWRK)
-C         
+C
          INW = INW + NNW_SD (ISD)
          IGP = IGP + NGP_SD (ISD)
       END DO
       WRITE (PLT_CTR, 1101) TI
       WRITE (PLT_CTR, *)
-C      
+C
       RETURN
  1001 FORMAT (1X, 'CONTOUR_INT OF SUBDOMAIN', I4, ':')
  1101 FORMAT (1X, E14.6,$)
       END
-
       SUBROUTINE CONTOUR_INTEGRAL_SD
      &           (NNW, NW_IPAR, EABS, EREL, CRD, PHN, TI, IWRK, DWRK)
       IMPLICIT NONE
@@ -76,7 +75,7 @@ C
       REAL   (KIND=RK) ERR
       REAL   (KIND=RK) CONTOUR
       EXTERNAL         CONTOUR
-C     
+C
       IGP = 1
       TI  = 0.0D0
       DO INW = 1, NNW
@@ -95,7 +94,7 @@ C
             EL (2, 3) = CRD (2, JGP + 1)
             EL (3, 3) = CRD (4, JGP)
             EL (4, 3) = CRD (4, JGP + 1)
-            CALL DQAG 
+            CALL DQAG
      &           (CONTOUR, XB, XE, EABS, EREL, KEY, ANS, ERR,
      &            NEVAL, IERR, LIM, LENW, LAST, IWRK, DWRK)
             IF (IERR .NE. 0) THEN
@@ -116,12 +115,11 @@ C
  1101 FORMAT (1X,'Contour Integral =',E11.3)
  1201 FORMAT (1X,E14.6,$)
       END
-
       FUNCTION CONTOUR (S)
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'spl_params.inc'
-C      
+C
       REAL   (KIND=RK) CONTOUR
       REAL   (KIND=RK) S
 C
@@ -130,10 +128,10 @@ C
       EXTERNAL         DOT_4
 C
       CALL WEIGHT (S, W)
-C      
+C
       CONTOUR = SQRT (DOT_4 (W (1, 2), EL (1, 2)) ** 2
      &              + DOT_4 (W (1, 2), EL (1, 3)) ** 2)
      &              * DOT_4 (W (1, 1), EL (1, 1))
-C      
+C
       RETURN
       END

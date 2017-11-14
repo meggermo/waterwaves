@@ -1,8 +1,8 @@
       SUBROUTINE BCD (BC, N, KK, LD, F, RHS, D, G, FRST, NEQS)
 C ---------------------------------------------------------------------------
-C     Sets the (sub) diagonal coefficients according to the boundary 
-C     conditions (begin and end) of the spline as requested by the user. 
-C     The kind of bc. is given by BC:    
+C     Sets the (sub) diagonal coefficients according to the boundary
+C     conditions (begin and end) of the spline as requested by the user.
+C     The kind of bc. is given by BC:
 C     if BC (1) or BC (2) is equal to ...
 C
 C     0: No derivative information is given by the user, therefore
@@ -95,7 +95,6 @@ C        First derivative is assumed to be 0
       ELSE
          CALL ERROR ('BCD','Spline type not valid for BC (1)')
       END IF
-
       IF (BC (2) .EQ. SPL_NOT_A_KNOT) THEN
 C        Natural F'' = 0
          D (N) = 2.0D0

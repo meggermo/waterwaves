@@ -8,7 +8,7 @@ C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'spl_params.inc'
-C      
+C
       INTEGER(KIND=IK) BC (2)           ! spline boundary condition
       INTEGER(KIND=IK) N                ! number of nodes
       INTEGER(KIND=IK) KK               ! number of splines
@@ -21,17 +21,16 @@ C
       ELSE
          CALL BACK_SUBS_REG (N, KK, LD, W, G)
       END IF
-C 
+C
       RETURN
       END
-      
       SUBROUTINE BACK_SUBS_REG (N, K, LD, W, G)
 C ---------------------------------------------------------------------------
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) K
       INTEGER(KIND=IK) LD
@@ -48,14 +47,13 @@ C
 C
       RETURN
       END
-
       SUBROUTINE BACK_SUBS_PER (N, K, LD, W, G)
 C ---------------------------------------------------------------------------
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) K
       INTEGER(KIND=IK) LD
@@ -68,7 +66,6 @@ C
         DO I = 1, K + 1
           HTD (I) = 0.25D0 * (W (1, I) + W (N - 2, I))
         END DO
-
         DO J = 1, K
            G (J, N - 1) = (W (N - 1, J) - HTD (J)) / (1.0D0 - HTD (K+1))
            DO I = 1, N - 2

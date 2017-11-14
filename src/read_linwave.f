@@ -20,7 +20,6 @@ C     CHARACTER*72     LINE
 C
 C     CALL GET_TOKENS (USR_I, 4, LINE)
       READ (USR_I, *) (PAR (I), I = 1, 4)
-
       K  = TWO_PI / PAR (2)
       H  = PAR (3)
       PERIOD = TWO_PI / SQRT (Grav * K * TANH (K * H))

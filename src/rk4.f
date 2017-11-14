@@ -43,7 +43,6 @@ C
       IF (DT .NE. 0.0D0) THEN
          WRITE (USR_O, 1001) 'TIME = ', T / TE, ' * T_END'
       END IF
-
 C     STAGE 1
       CALL DIFF_EQNS
      &     (1,          NSD,
@@ -66,7 +65,6 @@ C     Add the RHS's to the time dependent ODE's
       END DO
 C     Compute the spline derivatives for the integrated variables
       CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)
-
 C     Set the physical time
       CALL SET_TIME (T + 0.5 * DT)
 C     STAGE 2
@@ -89,7 +87,6 @@ C     Add the RHS's to the time dependent ODE's
       END DO
 C     Compute the spline derivatives for the integrated variables
       CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)
-
 C     Set the physical time
       CALL SET_TIME (T + 0.5 * DT)
 C     STAGE 3
@@ -116,7 +113,6 @@ C     Add the RHS's to the time dependent ODE's
       END DO
 C     Compute the spline derivatives for the integrated variables
       CALL DERIVS (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)
-
 C     Set the physical time
       CALL SET_TIME (T + DT)
 C     STAGE 4
@@ -154,7 +150,6 @@ C
       RETURN
  1001 FORMAT (1X,A,F7.3,A)
       END
-
       SUBROUTINE DERIVS
      &           (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, PHI, PHN)
 C ---------------------------------------------------------------------------
@@ -190,7 +185,6 @@ C
 C
       RETURN
       END
-
       SUBROUTINE DERIVS_SD
      &           (NNW, NW_IPAR, CRD, PHI, PHN)
 C ---------------------------------------------------------------------------

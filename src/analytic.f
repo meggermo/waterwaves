@@ -1,22 +1,22 @@
-      SUBROUTINE ANALYTIC 
+      SUBROUTINE ANALYTIC
      &           (N, T, PAR, X, W)
 C ---------------------------------------------------------------------------
-C     Computes an analytic solution to Laplace's equation in the grid 
-C     points given by X and stores it in the workspace W. 
-C     The kind of analytic solution is determined by the parameter 
+C     Computes an analytic solution to Laplace's equation in the grid
+C     points given by X and stores it in the workspace W.
+C     The kind of analytic solution is determined by the parameter
 C     ANL_TYPE, which is a common block variable in the file anl_params.inc
 C     The analytic solution is stored in the workspace W as follows:
-C      
+C
 C     W (1:N, 1) : PHI
 C     W (1:N, 2) : PHI_T
 C     W (1:N, 3) : PHI_X
 C     W (1:N, 4) : PHI_Z
-C     W (1:N, 5) : PHI_XX 
+C     W (1:N, 5) : PHI_XX
 C     W (1:N, 6) : PHI_XZ
-C      
+C
 C     Due to Laplace's equation we have PHI_XX + PHI_ZZ = 0, so PHI_ZZ
 C     is given implicitly as -PHI_XX
-C      
+C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -45,7 +45,7 @@ C
      &        (N, T, PAR, X, W)
       ELSE IF (ANL_TYPE .EQ. ANL_NOTAVAIL) THEN
 C        THERE'S NO KNOWN SOLUTION, SO W <- 0
-         CALL NOTAVAIL 
+         CALL NOTAVAIL
      &        (N, W)
       ELSE
          WRITE (MSG,'(A,I3)')
@@ -55,12 +55,11 @@ C        THERE'S NO KNOWN SOLUTION, SO W <- 0
 C
       RETURN
       END
-
-      SUBROUTINE NOTAVAIL 
+      SUBROUTINE NOTAVAIL
      &           (N, ANL)
 C ---------------------------------------------------------------------------
 C     analytic solution : PHI = 0
-C      
+C
 C     ANL (1:N, 1) : PHI
 C     ANL (1:N, 2) : PHI_T
 C     ANL (1:N, 3) : PHI_X
@@ -84,8 +83,7 @@ C
 C
       RETURN
       END
-      
-      SUBROUTINE LINWAVE 
+      SUBROUTINE LINWAVE
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
 C     Analytic solution: Linear wave
@@ -99,7 +97,7 @@ C     K : wave number       [1/m.]
 C     W : Wave frequency    [rad/s.]
 C     H : Water depth       [m.]
 C     X0: Wave crest offset [m.]
-C      
+C
 C     ANL (1:N, 1) : PHI
 C     ANL (1:N, 2) : PHI_T
 C     ANL (1:N, 3) : PHI_X
@@ -113,7 +111,7 @@ C ---------------------------------------------------------------------------
 C
       INTEGER(KIND=IK) N           ! Nr. of grid points (IN)
       REAL   (KIND=RK) T           ! Time (IN)
-      REAL   (KIND=RK) ANL_PAR (*)     
+      REAL   (KIND=RK) ANL_PAR (*)
       REAL   (KIND=RK) CRD (4, *)  ! Grid point coordinates (IN)
       REAL   (KIND=RK) ANL (N, *)  ! Analytic solution (OUT)
 C
@@ -151,20 +149,19 @@ C
 C
       RETURN
       END
-
-      SUBROUTINE RFWAVE 
+      SUBROUTINE RFWAVE
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
 C     Analytic solution: Rienecker & Fenton type of wave
 C
-C            __ N     
+C            __ N
 C            \      COSH (J K (Z + H))
 C    PHI =   /    B ---------------- * SIN (J K (X - X0 - C T))
 C            --    J  COSH (J K H)
-C            J = 1                                         2        
+C            J = 1                                         2
 C                   + (C + B) (X - X0) - (G (R - H) - 1/2 C ) T
 C                           0
-C      
+C
 C     K : wave number            [1/m]
 C     W : Wave frequency         [rad/s]
 C     C : Wave phace velocity    [m/s]
@@ -174,7 +171,7 @@ C     B : J-th Fourier component [-]
 C      J
 C     G : Gravitational accel.   [m/s^2]
 C     R : R&F constant           [m]
-C      
+C
 C     ANL (1:N, 1) : PHI
 C     ANL (1:N, 2) : PHI_T
 C     ANL (1:N, 3) : PHI_X
@@ -245,8 +242,7 @@ C              C + B_0 will be exactly 0
 C
       RETURN
       END
-
-      SUBROUTINE POLYNOMIAL 
+      SUBROUTINE POLYNOMIAL
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
 C     Analytic solution : Polynomial
@@ -257,9 +253,9 @@ C             \                     K
 C     PHI  =  /    Re (A (X + I * Z) )   +   A * T
 C             --         K                    5
 C             K = 1
-C     
-C     where Re means the real part 
-C     
+C
+C     where Re means the real part
+C
 C     ANL (1:N, 1) : PHI
 C     ANL (1:N, 2) : PHI_T
 C     ANL (1:N, 3) : PHI_X
@@ -308,7 +304,6 @@ C
 C
       RETURN
       END
-
       SUBROUTINE WAVEMAKER
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
@@ -342,4 +337,3 @@ C
       RETURN
  101  FORMAT (1X,4F10.4)
       END
- 

@@ -814,4 +814,3 @@ c
   100 abserr = dmax1(abserr,0.5d+01*epmach*dabs(result))
       return
       end
-

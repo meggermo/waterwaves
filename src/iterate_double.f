@@ -1,7 +1,7 @@
       SUBROUTINE ITERATE_DOUBLE
-     &           (NGP,  
-     &            A0,  A1,     
-     &            S0,  S1, 
+     &           (NGP,
+     &            A0,  A1,
+     &            S0,  S1,
      &            B0,  B1,
      &            OMG, MAX_IT, TOL,
      &            X0,  X1)
@@ -44,9 +44,9 @@ C
       REAL   (KIND=RK) Y0 (NGP)
       REAL   (KIND=RK) Y1 (NGP)
       INTEGER(KIND=IK) I, J
-C      
+C
       CALL CHECK_EQNS_DOUBLE (NGP, A0, A1, S0, S1, X0, X1, B0, B1)
-C      
+C
       CONVERGED = .FALSE.
       COUNTER   = 0
       LDA       = NGP * 2
@@ -86,14 +86,13 @@ C
  1001 FORMAT (1X,'ITR:',2E9.1,' USING ', I3,' ITERATIONS')
  1101 FORMAT (1X,'ITR:',2E9.1,' AT ITERATION ', I3)
       END
-
       SUBROUTINE SOLVE_AX_B_DOUBLE (N, LDA, AI, A1, X0, X1, B)
 C ---------------------------------------------------------------------------
 C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-C      
+C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) LDA
       REAL   (KIND=RK) AI (LDA, *)
@@ -110,7 +109,6 @@ C     X0 <-  INVERSE (A0) * X1
 C
       RETURN
       END
-
       SUBROUTINE INVERT_DOUBLE (N, LDA, A)
 C ---------------------------------------------------------------------------
 C
@@ -144,7 +142,6 @@ C
   201 FORMAT (1X,A,': ARGUMENT',I2,' IS INCORRECT')
   211 FORMAT (1X,A,': MATRIX BECAME SINGULAR AT ROW',I4)
       END
-
       SUBROUTINE RESIDUAL_DOUBLE (N, OMG, Y, X, RES)
 C ---------------------------------------------------------------------------
 C

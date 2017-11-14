@@ -13,7 +13,7 @@ C
       INTEGER(KIND=IK) NNW              ! total nr. of netw. (OUT)
 C
       INTEGER(KIND=IK) ISD, NNS
-C      
+C
       NNW = 0
       DO ISD = 1, NSD
          NNS = NNW_SD (ISD)
@@ -21,6 +21,6 @@ C
          NNW = NNW + NNW_SD (ISD)
          CALL I_ASSERT (1, NNW, NNW_MAX, 'NNW', 'COMPUTE_NNW')
       END DO
-C     
+C
       RETURN
       END
