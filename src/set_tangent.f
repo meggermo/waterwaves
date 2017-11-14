@@ -60,7 +60,6 @@ C           Set the value of phi_xi to that of adjacent network
       END DO
 C
       RETURN
-  101 FORMAT (1X,A,I3,':',3E14.6)
       END
       SUBROUTINE SET_TANGENT_2 (NNW, NW_IPAR, CRD, PHI, PHN, F, G)
 C ---------------------------------------------------------------------------
@@ -159,5 +158,4 @@ C           WRITE (*, *) JGP, ':', AGP1, AGP2, '(',AGP,')'
       END DO
 C
       RETURN
-  101 FORMAT (1X,A,I3,':',3E14.6)
       END

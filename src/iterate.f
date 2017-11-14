@@ -71,10 +71,7 @@ C
       WRITE (USR_O, 1001) RES, COUNTER
 C
       RETURN
-  201 FORMAT (1X,I3,':',4E14.6)
-  101 FORMAT (1X,4E14.6)
  1001 FORMAT (1X,'ITR:',2E9.1,' USING ', I4,' ITERATIONS')
- 1101 FORMAT (1X,'ITR:',2E9.1,' AT ITERATION ', I4)
       END
       SUBROUTINE SOLVE_AX_B (N, A0_INV, A1, X, B)
 C ---------------------------------------------------------------------------

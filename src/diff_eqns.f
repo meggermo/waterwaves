@@ -235,7 +235,6 @@ C           WRITE (*, 1001) JGP, PHI_T (1, JGP), U_G
       END DO
 C
       RETURN
- 1001 FORMAT (1X, I2, ':', 3E16.8)
       END
       SUBROUTINE BERNOULLI
      &           (NGP,
@@ -274,7 +273,6 @@ C        phi_t + 1/2 grad (phi) ** 2 + g z = 0
       END DO
 C
       RETURN
-  101 FORMAT (1X,I4,':', 10E14.6)
       END
       SUBROUTINE LINBERNOU
      &           (NGP,
@@ -325,7 +323,6 @@ C        WRITE (*, *) IGP, ':', PHI_T (1, IGP), PHI_T (2, IGP)
       END DO
 C
       RETURN
-  101 FORMAT (1X,10E14.6)
       END
       SUBROUTINE SOMMERFELD
      &           (NGP,

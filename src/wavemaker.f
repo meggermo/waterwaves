@@ -28,7 +28,9 @@ C
          DX = CRD (1, IGP) - CRD_0 (1)
          DZ = CRD (2, IGP) - CRD_0 (2)
          L  = SQRT (DX ** 2 + DZ ** 2)
-         IF (L .EQ. 0.0) L = 1.0
+         IF (L .EQ. 0.0D0) THEN
+           L = 1.0D0
+         END IF
          ANL (IGP, 1) = 0.0D0             ! : PHI
          ANL (IGP, 2) = 0.0D0             ! : PHI_T
          ANL (IGP, 3) = U - OMG * DZ / L  ! : PHI_X
@@ -62,7 +64,7 @@ C
 C     find the interval containing TIME
       DO
          XI = GET_XI (TIME, F)
-         IF (0.0 .LE. XI .AND. XI .LE. 1.0) EXIT
+         IF (0.0D0 .LE. XI .AND. XI .LE. 1.0D0) EXIT
          CALL READ_NEXT_ELEMENTS (N, U_NR, F)
       END DO
 C     and evaluate F at XI
@@ -88,7 +90,7 @@ C     initial guess for XI (is exact if T (XI) is linear)
 C        interpolate T (XI) and T_XI (XI)
          CALL EVAL (1, XI, T, TI)
 C        check if we're close enough
-         IF (ABS (TI (1) - TIME) .LT. 1e-12) EXIT
+         IF (ABS (TI (1) - TIME) .LT. 1.0D-12) EXIT
 C        improve guess by using Newton
          XI = XI - (TI (1) - TIME) / TI (2)
       END DO
