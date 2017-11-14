@@ -1,0 +1,102 @@
+1		# nr. of subdomains
+4		# nr. of  networks
+21 11 11 11	# nr. of grid points
+
+2		# Rienecker & Fenton type of wave
+H0_1D10_L60.dat	# file name
+0.0		# wave crest offset
+
+0.0            # T_Begin
+1.0            # T_End
+0.02           # Delta_T
+  1            # write data after N timesteps
+
+ 1.0E-06  1.0E-06	      # absolute and relative integration errors
+ 1.0E-06  1.0E-06  0.0E+00  0.0E+00  100  # tolerances for iterative scheme, omega's and max iter of iterative scheme
+
+FALSE	# CHK_EQNS
+FALSE	# CHK_COEFS_PRE
+FALSE	# CHK_COEFS_POST
+TRUE  # CHK_CONTOUR
+
+4 2 2 1         # ANW_1, AED_1, ANW_2, AED_2
+0               # ITF
+2               # PLT
+2 D             # 2 -> BERNOULLI, BCK -> DIRICHLET
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+1               # Grid type is LINE
+  30.0  0.0  -30.0  0.0
+   0.0  0.0    0.0  0.0
+   0.0  0.0
+0               # GMT
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+0               # GAT
+1 1 0 0         # SPT
+
+1 2 3 1         # ANW_1, AED_1, ANW_2, AED_2
+0               # ITF
+
+2               # PLT
+
+1 N             # BCT -> ANALYTIC, BCK -> Neumann
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+
+1               # LINE
+ -30.0   0.0
+ -30.0 -10.0
+   0.0   0.0  0.0  0.0  0.0  0.0
+0               # GMT
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+0               # GAT
+
+1 1 1 0         # SPT
+
+2 2 4 1         # ANW_1, AED_1, ANW_2, AED_2
+0               # ITF
+
+2               # PLT
+
+0 N             # 0 -> VAL = 0, BCK -> NEUMANN
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+
+1               # LINE
+ -30.0 -10.0
+  30.0 -10.0
+   0.0   0.0  0.0  0.0  0.0  0.0
+
+0               # GMT
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+0               # GAT
+
+1 1 0 0         # SPT
+
+3 2 1 1         # ANW_1, AED_1, ANW_2, AED_2
+0               # ITF
+
+2               # PLT
+
+1 N             # 1 -> ANALYTIC, BCK
+  1.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+
+1               # LINE
+  30.0 -10.0
+  30.0   0.0
+   0.0   0.0  0.0  0.0  0.0  0.0
+
+0               # GMT
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+0               # GAT
+
+1 1 0 1         # SPT
+
+#------------------------------------------------------------------------------
+# END OF INPUT
+#------------------------------------------------------------------------------
