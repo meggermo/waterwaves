@@ -19,7 +19,7 @@ C
       INTEGER(KIND=IK) ISD, INW, IGP
       INTEGER(KIND=IK) IWRK (LIM)
       REAL   (KIND=RK) TOL  (2)
-      REAL   (KIND=RK) DWRK (LENW
+      REAL   (KIND=RK) DWRK (LENW)
       REAL   (KIND=RK) TI (NSD)
 C
       WRITE (USR_O, *) '=== CONTOUR_INTEGRAL ==='
