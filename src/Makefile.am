@@ -20,20 +20,16 @@ contour_integral.f \
 copy_ngp_to_nw_ipar.f \
 couple_edges.f \
 cubic_grid.f \
-d1mach.f \
 derivatives.f \
 diff_eqns.f \
 dipole_coef.f \
 done.f \
 dot_4.f \
-dqag.f \
-dqags.f \
 error.f \
 eval.f \
 generate_grid.f \
 get_set.f \
 global_to_local.f \
-i1mach.f \
 i_assert.f \
 init.f \
 init_common_blocks.f \
@@ -46,6 +42,7 @@ net_cdf.f \
 open_output_files.f \
 pltout.f \
 prog_arguments.f \
+quadpack.f \
 r_assert.f \
 read_analytic_parameters.f \
 read_chk_parameters.f \
@@ -75,5 +72,4 @@ spline.f \
 stretched_grid.f \
 wavemaker.f \
 weight.f \
-write_coef_sd.f \
-xerror.f
+write_coef_sd.f
