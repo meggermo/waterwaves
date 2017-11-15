@@ -109,13 +109,13 @@ C
          NGP = NGP_SD (ISD)
 C        Replace a BIE by a coupling condition for each network
          CALL COUPLE_EDGES
-     &        (NNW_SD,       NGP_SD,        NW_IPAR (1, INW),
+     &        (NNW,          NGP,           NW_IPAR (1, INW),
      &         CRD (1, IGP),
      &         SRC_0  (IAE), SRC_1   (IAE),
      &         DIP_0  (IAE), DIP_1   (IAE))
 C        Solve the BIE's with the couping conditions
          CALL SOLVE_SD
-     &        (NNW_SD, NGP_SD,
+     &        (NNW, NGP,
      &         NW_IPAR (1, INW),
      &         SRC_0  (IAE), SRC_1  (IAE),
      &         DIP_0  (IAE), DIP_1  (IAE),
@@ -177,7 +177,6 @@ C
      &     (NNW, NGP, NW_IPAR, X, PHI, PHN)
 C
       RETURN
-  101 FORMAT (1X,2E12.4,2E18.10)
       END
       SUBROUTINE SETUP_AX_B
      &   (NNW,  NGP,
