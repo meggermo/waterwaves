@@ -16,9 +16,7 @@ C
 C
       INTEGER(KIND=IK) I
       REAL   (KIND=RK) K, H
-C     CHARACTER*72     LINE
 C
-C     CALL GET_TOKENS (USR_I, 4, LINE)
       READ (USR_I, *) (PAR (I), I = 1, 4)
       K  = TWO_PI / PAR (2)
       H  = PAR (3)

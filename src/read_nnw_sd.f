@@ -11,10 +11,8 @@ C
       INTEGER(KIND=IK) NSD
       INTEGER(KIND=IK) NNW_SD (*)
 C
-C     CHARACTER*72     LINE
       INTEGER(KIND=IK) ISD, N
 C     Read the number of networks for each subdomain
-C     CALL GET_TOKENS (USR_I, NSD, LINE)
       READ (USR_I, *) (NNW_SD (ISD), ISD = 1, NSD)
 C
       RETURN

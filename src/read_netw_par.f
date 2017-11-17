@@ -25,7 +25,6 @@ C
       REAL   (KIND=RK) L, H, W, K, C, R
       CHARACTER*72     LINE
 C     Read the topology information
-C     CALL GET_TOKENS (USR_I, 4, LINE)
       READ (USR_I, *) ANW (1), AED (1), ANW (2), AED (2)
       DO IED = 1, 2
         CALL SET_ANW (IED, ANW (IED), NW_IPAR)
@@ -36,13 +35,11 @@ C     CALL GET_TOKENS (USR_I, 4, LINE)
       END DO
       WRITE (USR_O, 111) 'NR. OF GRID POINTS', GET_NGP (NW_IPAR)
 C     Read the interface ID, if it is 0 then it is not an interface
-C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ (USR_I, *) ITF
       CALL SET_ITF (ITF, NW_IPAR)
       ITF = GET_ITF (NW_IPAR)
       WRITE (USR_O, 111) 'INTERFACE ID', ITF
 C     Read the plot type, if it is 0 then nothing will be written to file
-C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ (USR_I, *) PLT
       CALL SET_PLT (PLT, NW_IPAR)
       PLT = GET_PLT (NW_IPAR)
@@ -51,7 +48,6 @@ C     CALL GET_TOKENS (USR_I, 1, LINE)
          WRITE (STD_T,'(I5,$)')GET_NGP (NW_IPAR)
       END IF
 C     Read the boundary condition type and kind
-C     CALL GET_TOKENS (USR_I, 2, LINE)
       READ (USR_I, *) BCT, BCP
       IF (BCP .EQ. 'D') THEN
          CALL SET_BCT (BCK_DIRICHLET * ABS (BCT), NW_IPAR)
@@ -82,7 +78,6 @@ C        read the filename of the wavemaker data file
 C        read initial data from wavemaker file
          CALL INITIALIZE (4, WVM_IN, PAR)
 C        read if it attached to begin or to end of network
-C        CALL GET_TOKENS (USR_I, 1, LINE)
          LINE = ' '
          READ (USR_I,*)  LINE
 C        b-> begin, e-> end
@@ -97,7 +92,6 @@ C        b-> begin, e-> end
          END IF
       ELSE
 C        read parameters for this boundary condition
-C        CALL GET_TOKENS (USR_I, 10, LINE)
          READ (USR_I, *) (PAR (IRP), IRP = 1, 10)
 C        Scale C to that of the analytic solution
          IF (ABS (BCT) .EQ. BCT_SOMMERFELD) THEN
@@ -127,33 +121,27 @@ C              See page 48 of PdH's thesis
 C     Copy the processed data to the bc parameters
       CALL SET_BCP (PAR, NW_RPAR)
 C     Read how the initial grid must be constructed
-C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ (USR_I, *) GRT
       CALL SET_GRT (GRT, NW_IPAR)
       GRT = GET_GRT (NW_IPAR)
       WRITE (USR_O, 111) 'INITIAL GRID', GRT
 C     And read the grid parameters
-C     CALL GET_TOKENS (USR_I, N_GRP, LINE)
       READ (USR_I, *) (PAR (IRP), IRP = 1, N_GRP)
       CALL SET_GRP (PAR, NW_RPAR)
 C     Read the kind of grid motion
-C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ (USR_I, *) GMT
       CALL SET_GMT (GMT, NW_IPAR)
       GMT = GET_GMT (NW_IPAR)
       WRITE (USR_O, 111) 'GRID MOTION', GMT
 C     And read the grid motion parameters
-C     CALL GET_TOKENS (USR_I, N_GMP, LINE)
       READ (USR_I, *) (PAR (IRP), IRP = 1, N_GMP)
       CALL SET_GMP (PAR, NW_RPAR)
 C     Read the kind of grid adjustment
-C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ (USR_I, *) GAT
       CALL SET_GAT (GAT, NW_IPAR)
       GAT = GET_GAT (NW_IPAR)
       WRITE (USR_O, 111) 'GRID ADJUSTMENT', GAT
 C     Read the kind of bc's for the splines
-C     CALL GET_TOKENS (USR_I, 4, LINE)
       READ (USR_I, *) SPT
       DO ISP = 1, 4
          CALL SET_SPT (ISP, SPT (ISP), NW_IPAR)

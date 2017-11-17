@@ -16,9 +16,8 @@ C
       CHARACTER*32     File_Name
       REAL   (KIND=RK) waterdepth, waveheigth, rho, gravity,
      &                 phasevelocity, Q, R, rdummy, omega, wavelength
-      CHARACTER*72 LINE
+C
       WRITE (USR_O, *)              '    -> R & F wave'
-C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ  (USR_I,  *)     File_Name
       OPEN  (STD_T, FILE = File_Name, STATUS= 'OLD')
       WRITE (USR_O, '(1X,A,A    )') '    Data file:  ', File_Name
@@ -42,7 +41,6 @@ C     CALL GET_TOKENS (USR_I, 1, LINE)
       par (1, 1) = waveheigth
       par (2, 1) = wavelength
       par (3, 1) = waterdepth
-C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ (USR_I, *)
      +par (4, 1)
       WRITE (USR_O, '(1X,A,F10.4)') '    Crest offs.:', par (4,1)

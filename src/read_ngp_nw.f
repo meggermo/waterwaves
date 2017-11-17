@@ -11,9 +11,7 @@ C
       INTEGER(KIND=IK) NGP_NW (*)
 C
       INTEGER(KIND=IK) INW
-C     CHARACTER*72     LINE
 C
-C     CALL GET_TOKENS (USR_I, NNW, LINE)
       READ (USR_I, *) (NGP_NW (INW), INW = 1, NNW)
 C
       RETURN

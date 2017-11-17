@@ -13,12 +13,10 @@ C
 C
       INTEGER(KIND=IK) I
       CHARACTER*40 MSG
-C     CHARACTER*72 LINE
 C     Initialize analytic solution parameters to nil
       DATA ANL_PAR /N_RPAR * 0.0D0/
 C
       WRITE (USR_O, *) '========== ANALYTIC PARAMETERS ===='
-C     CALL GET_TOKENS (USR_I, 1, LINE)
       READ  (USR_I, *) ANL_TYPE
       IF (ANL_TYPE .EQ. ANL_LINWAVE) THEN
 C        Linear wave
@@ -30,7 +28,6 @@ C        Rienecker & Fenton wave
       ELSE IF (ANL_TYPE .EQ. ANL_POLYNOMIAL) THEN
 C        Polynomial of the form (X + I * Z) ** K + C * T
          WRITE (USR_O, *) '    -> Polynomial'
-C        CALL GET_TOKENS (USR_I, 5, LINE)
          READ  (USR_I, *)    (ANL_PAR (I), I = 1, 5)
          WRITE (USR_O, 101) (ANL_PAR (I), I = 1, 5)
          GRID_TIME_DEPENDENT = .FALSE.
