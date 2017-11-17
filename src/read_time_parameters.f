@@ -27,6 +27,8 @@ C
          CALL SET_TIME (0.0D0)
          CALL SET_TBEG (0.0D0)
          CALL SET_TEND (1.0D0)
+         WRITE (USR_O, 101) 'DELTA-T', GET_DELTA_T ()
+         WRITE (USR_O, *) 'TIME INDEPENDENT'
       ELSE
          WRITE (USR_O, 101) 'T-BEGIN', GET_TBEG    ()
          WRITE (USR_O, 101) 'T-END  ', GET_TEND    ()
