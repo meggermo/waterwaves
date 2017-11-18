@@ -32,7 +32,9 @@ C
       WRITE (PLT_CRD, '(''# T = '',F8.4, '' * PERIOD'')') T / PERIOD
       WRITE (PLT_PHI, '(''# T = '',F8.4, '' * PERIOD'')') T / PERIOD
       WRITE (PLT_PHN, '(''# T = '',F8.4, '' * PERIOD'')') T / PERIOD
-      WRITE (PLT_NRM, 101) T
+      WRITE (PLT_NRM, 101) 'T_REL',
+     &                     'PHI_MX', 'PHI_L1', 'PHI_L2',
+     &                     'PHN_MX', 'PHN_L1', 'PHN_L2'
 C
       INW = 1
       IGP = 1
@@ -59,8 +61,8 @@ C
       WRITE (PLT_NRM, *)
 C
       RETURN
-  101 FORMAT (1X, '#TIME =', E14.6)
-  121 FORMAT (1X, E14.6,10E12.4)
+  101 FORMAT (1X, '#', A13, 6A12)
+  121 FORMAT (1X, E14.6, 10E12.4)
       END
       SUBROUTINE PLT_NW
      &           (NGP,   BCT,   PLT,
