@@ -163,9 +163,9 @@ C
 C
       IF (BC (1) .EQ. SPL_NOT_A_KNOT) THEN
 C        Natural F'' = 0
-         D (1) = 2.0
+         D (1) = 0.5
          DO I = 1, KK
-            RHS (1, I) = 3.0 * (F (I, 2) - F (I, 1))
+            RHS (1, I) = 0.75 * (F (I, 2) - F (I, 1))
          END DO
       ELSE IF (BC (1) .EQ. SPL_FIRST_DERIV) THEN
 C        First derivative given at begin
@@ -210,9 +210,9 @@ C        First derivative is assumed to be 0
       END IF
       IF (BC (2) .EQ. SPL_NOT_A_KNOT) THEN
 C        Natural F'' = 0
-         D (N) = 2.0D0
+         D (N) = 0.5
          DO I = 1, KK
-            RHS (N, I) = -3.0 * (F (I, N - 1) - F (I, N))
+            RHS (N, I) = -0.75 * (F (I, N - 1) - F (I, N))
          END DO
       ELSE IF (BC (2) .EQ. SPL_FIRST_DERIV) THEN
 C        First derivative is given at end
@@ -294,12 +294,6 @@ C
       REAL   (KIND=RK) G (LD, N)
 C
       INTEGER(KIND=IK) I, J
-C
-C      DO J = 1, K
-C         DO I = 1, N
-C            G (J, I) = W (I, J)
-C         END DO
-C      END DO
       DO J = 1, K
         CALL DCOPY (N, W (1, J), 1, G (J, 1), LD)
       END DO
