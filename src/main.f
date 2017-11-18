@@ -32,6 +32,7 @@ C
       LOGICAL(KIND=LK) THE_END
       DATA             THE_END /.FALSE./
 C
+      WRITE (USR_O, *) '========== PROBLEM DIMENSIONS ====='
       WRITE (USR_O, *) 'NR. OF SUBDOMAINS: ', NSD
       WRITE (USR_O, *) 'NR. OF NETWORKS:   ', NNW
       WRITE (USR_O, *) 'NR. OF GRID POINTS:', NGP

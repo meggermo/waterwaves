@@ -62,7 +62,7 @@ C         X (:, 1) <- (1 - alpha) * Y (:, 1) + alpha * X (:, 1)
 C         CHECK CONVERGENCE
           CONVERGED = RES (1) .LT. TOL (1) .AND. RES (2) .LT. TOL (2)
           COUNTER   = COUNTER + 1
-C         WRITE (USR_O, 1101) RES, COUNTER
+          WRITE (USR_O, 1101) RES, COUNTER
       END DO
 C
       IF (.NOT. CONVERGED) THEN
@@ -72,6 +72,7 @@ C
 C
       RETURN
  1001 FORMAT (1X,'ITR:',2E9.1,' USING ', I4,' ITERATIONS')
+ 1101 FORMAT (1X,'RES:',2E9.1,' ITERATION ', I4)
       END
       SUBROUTINE SOLVE_AX_B (N, A0_INV, A1, X, B)
 C ---------------------------------------------------------------------------
