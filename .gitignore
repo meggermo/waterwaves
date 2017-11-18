@@ -17,3 +17,5 @@ stamp-h1
 *.log
 *.o
 src/waterwaves
+*.out
+octave-workspace
