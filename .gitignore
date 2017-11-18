@@ -17,5 +17,6 @@ stamp-h1
 *.log
 *.o
 src/waterwaves
+src/splinetest
 *.out
 octave-workspace

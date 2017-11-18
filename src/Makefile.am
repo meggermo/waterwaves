@@ -1,11 +1,12 @@
-bin_PROGRAMS = waterwaves
+bin_PROGRAMS = waterwaves splinetest
 
 waterwaves_FFLAGS = -I/usr/include -I./../include $(AM_FFLAGS)
+splinetest_FFLAGS = -I./../include $(AM_FFLAGS)
+
+splinetest_SOURCES = error.f spline.f splinetest.f
 
 waterwaves_SOURCES =  analytic.f \
 analytic_t.f \
-back_subs.f \
-bcd.f \
 bem.f \
 boundary_conditions.f \
 check_coefs.f \
@@ -58,12 +59,10 @@ read_solve_parameters.f \
 read_time_parameters.f \
 regrid.f \
 relax.f \
-rhs.f \
 rk4.f \
 scale.f \
 set_tangent.f \
 setup_ax_b_double.f \
-setup_diags.f \
 solve_bie.f \
 solve_laplace.f \
 solve_sd_double.f \

@@ -198,10 +198,10 @@ C        Function is periodic
          END DO
          NEQS = N - 2
       ELSE IF (BC (1) .EQ. SPL_NATURAL) THEN
-C        First derivative is assumed to be 0
          NEQS = NEQS - 1
          FRST = FRST + 1
          DO I = 1, KK
+C           First derivative is assumed to be 0
             RHS (1, I) = 0.0D0
             RHS (2, I) = RHS (2, I) - 0.25D0 * RHS (1, I)
          END DO
@@ -241,9 +241,9 @@ C        D (N) =   0.25D0
       ELSE IF (BC (2) .EQ. SPL_PERIODIC) THEN
 C        Function is periodic
       ELSE IF (BC (2) .EQ. SPL_NATURAL) THEN
-C        First derivative is assumed to be 0
          NEQS = NEQS - 1
          DO I = 1, KK
+C           First derivative is assumed to be 0
             RHS (N,     I) = 0.0D0
             RHS (N - 1, I) = RHS (N - 1, I) - 0.25D0 * RHS (N, I)
          END DO
