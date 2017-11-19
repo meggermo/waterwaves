@@ -293,7 +293,7 @@ C
       REAL   (KIND=RK) W (N, K)
       REAL   (KIND=RK) G (LD, N)
 C
-      INTEGER(KIND=IK) I, J
+      INTEGER(KIND=IK) J
       DO J = 1, K
         CALL DCOPY (N, W (1, J), 1, G (J, 1), LD)
       END DO
