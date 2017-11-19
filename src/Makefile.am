@@ -12,7 +12,6 @@ boundary_conditions.f \
 check_coefs.f \
 check_interfaces.f \
 check_network_parameters.f \
-circlesect_grid.f \
 coefficients.f \
 compute_ngp_nae.f \
 compute_ngp_sd.f \
@@ -20,7 +19,6 @@ compute_nnw.f \
 contour_integral.f \
 copy_ngp_to_nw_ipar.f \
 couple_edges.f \
-cubic_grid.f \
 derivatives.f \
 diff_eqns.f \
 dipole_coef.f \
@@ -36,7 +34,6 @@ init.f \
 init_common_blocks.f \
 iterate.f \
 iterate_double.f \
-line_grid.f \
 local_to_global.f \
 main.f \
 net_cdf.f \
@@ -68,7 +65,6 @@ solve_laplace.f \
 solve_sd_double.f \
 source_coef.f \
 spline.f \
-stretched_grid.f \
 wavemaker.f \
 weight.f \
 write_coef_sd.f
