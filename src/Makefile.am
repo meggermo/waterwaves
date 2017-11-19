@@ -34,7 +34,6 @@ init.f \
 init_common_blocks.f \
 iterate.f \
 iterate_double.f \
-local_to_global.f \
 main.f \
 net_cdf.f \
 open_output_files.f \

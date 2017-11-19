@@ -7,22 +7,73 @@ C ---------------------------------------------------------------------------
 C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) LDU
-      REAL   (KIND=RK) CRD (4, *)
+      REAL   (KIND=RK) CRD (2, 2, *)
       REAL   (KIND=RK) U_G (LDU, *)
       REAL   (KIND=RK) U_L (LDU, *)
 C
       INTEGER(KIND=IK) I
-      REAL   (KIND=RK) X_XI, Z_XI, J_INV, U_X, U_Z
 C
       DO I = 1, N
-         X_XI  = CRD (3, I)
-         Z_XI  = CRD (4, I)
-         J_INV = 1.0D0 / SQRT (X_XI ** 2 + Z_XI ** 2)
-         U_X   = U_G (1, I)
-         U_Z   = U_G (2, I)
-         U_L (1, I) = (X_XI * U_X + Z_XI * U_Z) * J_INV
-         U_L (2, I) = (X_XI * U_Z - Z_XI * U_X) * J_INV
+        CALL G2L (CRD (1, 1, I), U_G (1, I), U_L (1, I))
       END DO
 C
-      RETURN
       END
+
+      SUBROUTINE G2L (CRD, U_G, U_L)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE "knd_params.inc"
+C
+      REAL(KIND=RK) CRD (2, *)
+      REAL(KIND=RK) U_G (*)
+      REAL(KIND=RK) U_L (*)
+C
+      REAL(KIND=RK) J_I
+C
+      J_I = 1.0D0 / SQRT (CRD (1, 2) ** 2 + CRD (2, 2) ** 2)
+      U_L (1) = J_I * (CRD (1, 2) * U_G (1) + CRD (2, 2) * U_G (2))
+      U_L (2) = J_I * (CRD (1, 2) * U_G (2) - CRD (2, 2) * U_G (1))
+C
+      END SUBROUTINE
+
+      SUBROUTINE LOCAL_TO_GLOBAL (N, LDU, CRD, U_L, U_G)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+C
+      INTEGER(KIND=IK) N
+      INTEGER(KIND=IK) LDU
+      REAL   (KIND=RK) CRD (2, 2, *)
+      REAL   (KIND=RK) U_L (LDU, *)
+      REAL   (KIND=RK) U_G (LDU, *)
+C
+      INTEGER(KIND=IK) I
+C
+      DO I = 1, N
+        CALL L2G (CRD (1, 1, I), U_L (1, I), U_G (1, I))
+      END DO
+C
+      END
+
+      SUBROUTINE L2G (CRD, U_L, U_G)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE "knd_params.inc"
+C
+      REAL(KIND=RK) CRD (2, *)
+      REAL(KIND=RK) U_L (*)
+      REAL(KIND=RK) U_G (*)
+C
+      REAL(KIND=RK) J_I
+C
+      J_I = 1.0D0 / SQRT (CRD (1, 2) ** 2 + CRD (2, 2) ** 2)
+      U_G (1) = J_I * (CRD (1, 2) * U_L (1) - CRD (2, 2) * U_L (2))
+      U_G (2) = J_I * (CRD (1, 2) * U_L (2) + CRD (2, 2) * U_L (1))
+C
+      END SUBROUTINE
