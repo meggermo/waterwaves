@@ -1,7 +1,7 @@
 bin_PROGRAMS = waterwaves splinetest
 
-waterwaves_FFLAGS = -I/usr/include -I./../include $(AM_FFLAGS)
-splinetest_FFLAGS = -I./../include $(AM_FFLAGS)
+waterwaves_FFLAGS = -I/usr/include $(AM_FFLAGS)
+splinetest_FFLAGS = $(AM_FFLAGS)
 
 splinetest_SOURCES = error.f spline.f splinetest.f
 
