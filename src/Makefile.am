@@ -56,7 +56,6 @@ read_time_parameters.f \
 regrid.f \
 relax.f \
 rk4.f \
-scale.f \
 set_tangent.f \
 setup_ax_b_double.f \
 solve_bie.f \
