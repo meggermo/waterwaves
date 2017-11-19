@@ -15,7 +15,6 @@ check_network_parameters.f \
 coefficients.f \
 contour_integral.f \
 coord_transformations.f \
-couple_edges.f \
 derivatives.f \
 diff_eqns.f \
 dipole_coef.f \
