@@ -38,10 +38,11 @@ C
       T  = GET_TIME    ()
       TE = GET_TEND    ()
       DT = GET_DELTA_T ()
-      WRITE(USR_O,*) T, TE, DT
 C
       IF (DT .NE. 0.0D0) THEN
          WRITE (USR_O, 1001) 'TIME = ', T / TE, ' * T_END'
+      ELSE
+         WRITE (USR_O, *) 'TIME INDEPENDENT PROBLEM'
       END IF
 C     STAGE 1
       CALL DIFF_EQNS
