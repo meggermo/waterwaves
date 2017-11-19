@@ -10,8 +10,6 @@ analytic_t.f \
 bem.f \
 boundary_conditions.f \
 check_coefs.f \
-check_interfaces.f \
-check_network_parameters.f \
 coefficients.f \
 contour_integral.f \
 coord_transformations.f \
