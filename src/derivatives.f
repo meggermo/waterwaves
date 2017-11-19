@@ -6,6 +6,7 @@ C ---------------------------------------------------------------------------
       INCLUDE 'knd_params.inc'
       INCLUDE 'net_params.inc'
       INCLUDE 'net_funcs.inc'
+      INCLUDE 'usr_params.inc'
 C
       INTEGER(KIND=IK) PH_ONE
       INTEGER(KIND=IK) PN_ONE
@@ -27,9 +28,14 @@ C
             SPT (1) = PH_ONE * GET_SPT (1, NW_IPAR (1, INW))
             SPT (2) = PH_ONE * GET_SPT (2, NW_IPAR (1, INW))
          END IF
+C         WRITE (USR_O, *) 'G BEFORE SPLINE'
+C         WRITE (USR_O, 101) G (IGP : IGP + NGP)
          CALL Spline (SPT, NGP, 1, 1, F (IGP), G (IGP))
+C         WRITE (USR_O, *) ' G AFTER SPLINE'
+C         WRITE (USR_O, 101) G (IGP : IGP + NGP)
          IGP = IGP + NGP
       END DO
 C
+C  101 FORMAT (1X, 1E14.6)
       RETURN
       END

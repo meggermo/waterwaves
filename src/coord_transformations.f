@@ -26,9 +26,9 @@ C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE "knd_params.inc"
 C
-      REAL(KIND=RK) CRD (2, *)
-      REAL(KIND=RK) U_G (*)
-      REAL(KIND=RK) U_L (*)
+      REAL(KIND=RK) CRD (2, 2)
+      REAL(KIND=RK) U_G (2)
+      REAL(KIND=RK) U_L (2)
 C
       REAL(KIND=RK) J_I
 C
@@ -66,9 +66,9 @@ C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE "knd_params.inc"
 C
-      REAL(KIND=RK) CRD (2, *)
-      REAL(KIND=RK) U_L (*)
-      REAL(KIND=RK) U_G (*)
+      REAL(KIND=RK) CRD (2, 2)
+      REAL(KIND=RK) U_L (2)
+      REAL(KIND=RK) U_G (2)
 C
       REAL(KIND=RK) J_I
 C

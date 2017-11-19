@@ -58,7 +58,7 @@ C         X (:, 1) <- (1 - alpha) * Y (:, 1) + alpha * X (:, 1)
           CALL RESIDUAL (NGP, 1, ALPHA, Y, X, RES)
           CALL SET_TANGENT (NNW, NW_IPAR, CRD,
      &                      PHI, PHN, X (1, 1), X (1, 2))
-          CALL DERIVATIVES (1, 1, NNW, NW_IPAR, X (1,1), X (1,2))
+          CALL DERIVATIVES (1, 1, NNW, NW_IPAR, X (1, 1), X (1, 2))
 C         CHECK CONVERGENCE
           CONVERGED = RES (1) .LT. TOL (1) .AND. RES (2) .LT. TOL (2)
           COUNTER   = COUNTER + 1
