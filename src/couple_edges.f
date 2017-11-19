@@ -50,7 +50,7 @@ C
       INTEGER(KIND=IK) NNW
       INTEGER(KIND=IK) NGP
       INTEGER(KIND=IK) NW_IPAR (N_IP, *)
-      REAL   (KIND=RK) CRD (4, *)
+      REAL   (KIND=RK) CRD (2, 2, *)
       REAL   (KIND=RK) SRC_0 (NGP, *)
       REAL   (KIND=RK) SRC_1 (NGP, *)
       REAL   (KIND=RK) DIP_0 (NGP, *)
@@ -84,11 +84,11 @@ C TODO: WHY?   SPT = 0
                      DIP_0 (KGP, JGP) = 0.0D0
                      DIP_1 (KGP, JGP) = 0.0D0
                   END DO
-                  X_XII = CRD (3, KGP)
-                  Z_XII = CRD (4, KGP)
+                  X_XII = CRD (1, 2, KGP)
+                  Z_XII = CRD (2, 2, KGP)
                   J_I   = 1.0D0 / SQRT (X_XII ** 2 + Z_XII ** 2)
-                  X_XIA = CRD (3, AGP)
-                  Z_XIA = CRD (4, AGP)
+                  X_XIA = CRD (1, 2, AGP)
+                  Z_XIA = CRD (2, 2, AGP)
                   J_A   = 1.0D0 / SQRT (X_XIA ** 2 + Z_XIA ** 2)
                   R_11  = (X_XII * X_XIA + Z_XII * Z_XIA) * J_I * J_A
                   R_12  = (Z_XII * X_XIA - X_XII * Z_XIA) * J_I * J_A
