@@ -17,6 +17,7 @@ compute_ngp_nae.f \
 compute_ngp_sd.f \
 compute_nnw.f \
 contour_integral.f \
+coord_transformations.f \
 copy_ngp_to_nw_ipar.f \
 couple_edges.f \
 derivatives.f \
@@ -28,7 +29,6 @@ error.f \
 eval.f \
 generate_grid.f \
 get_set.f \
-global_to_local.f \
 i_assert.f \
 init.f \
 init_common_blocks.f \
