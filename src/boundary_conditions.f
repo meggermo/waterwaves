@@ -57,6 +57,7 @@ C
 C
       RETURN
       END
+
       SUBROUTINE BOUND_COND (BCD, NGP, BCT, T, PAR, CRD, PHI, PHN)
 C ---------------------------------------------------------------------------
 C     Computes the analytical solution for PHI if BCT < 0 and for PHI_N
