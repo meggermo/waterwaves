@@ -129,16 +129,12 @@ C
       TOL (2) = GET_INT_REL ()
 C
       IGP_NW = 1
-C
       DO INW = 1, NNW
+         SRC_0 (:, IGP_NW) = 0.0D0
+         SRC_1 (:, IGP_NW) = 0.0D0
+         DIP_0 (:, IGP_NW) = 0.0D0
+         DIP_1 (:, IGP_NW) = 0.0D0
          NGP_NW = GET_NGP (NW_IPAR (1, INW))
-         DO JGP = 1, NGP
-            SRC_0 (JGP, IGP_NW) = 0.0D0
-            SRC_1 (JGP, IGP_NW) = 0.0D0
-            DIP_0 (JGP, IGP_NW) = 0.0D0
-            DIP_1 (JGP, IGP_NW) = 0.0D0
-         END DO
-C        WRITE (*, *) 'NETWORK ' , INW
          CALL COMP_COEF_NW
      &        (NGP,               NGP_NW,
      &         TOL,
@@ -181,6 +177,7 @@ C
 C
       RETURN
       END
+
       SUBROUTINE COMP_COEF_NW
      &   (NGP,   NGP_NW,
      &    TOL,
@@ -194,6 +191,7 @@ C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'spl_params.inc'
+      INCLUDE 'usr_params.inc'
 C
       INTEGER(KIND=IK) NGP
       INTEGER(KIND=IK) NGP_NW
@@ -210,11 +208,6 @@ C
       INTEGER(KIND=IK) I, J
 C
       DO I = 1, NGP_NW - 1
-C        WRITE(*,*) 'ELEMENT ', I
-C        WRITE(*,*) '(X_B,Y_B) =  ', CRD_NW (1, I), CRD_NW (2, I)
-C        WRITE(*,*) '(X_E,Y_E) =  ', CRD_NW (1, I+1), CRD_NW (2, I+1)
-C        WRITE(*,*) '(DXB,DYB) =  ', CRD_NW (3, I), CRD_NW (4, I)
-C        WRITE(*,*) '(DXE,DYE) =  ', CRD_NW (3, I+1), CRD_NW (4, I+1)
          DO J = 0, 1
             EL (1 + J, 1) = CRD_NW (1, I + J)
             EL (1 + J, 2) = CRD_NW (2, I + J)
@@ -231,6 +224,7 @@ C        WRITE(*,*) '(DXE,DYE) =  ', CRD_NW (3, I+1), CRD_NW (4, I+1)
 C
       RETURN
       END
+
       FUNCTION IS_FLAT (EL)
 C ---------------------------------------------------------------------------
 C
@@ -268,6 +262,7 @@ C     WRITE (*, *) DX_END
      &    .AND. ABS (DX_ELM (2) - DX_END (2)) .LT. EPS
       RETURN
       END
+
       FUNCTION IS_SINGULAR (P, EL)
 C ---------------------------------------------------------------------------
 C
@@ -289,6 +284,7 @@ C
      &      + (P (2) - EL (2, 2)) ** 2) .LT. EPS
       RETURN
       END
+
       SUBROUTINE COMP_COEF_EL
      &           (NGP,
      &            TOL,
@@ -377,8 +373,8 @@ C        A flat panel has dipole coefficients 0.0
          DO K = 1, 4
             CALL DQAGS (SOURCE_COEF, XB, XE, EABS, EREL, SRC (K),
      &                  ERR, NEVAL, IERR, LIM, LENW, LAST, IWRK, DWRK)
+            WRITE (*, *) 'K:', K, ' EL:', EL
             IF (IERR .NE. 0) THEN
-               WRITE (*, *) 'K:', K, ' EL:', EL
             END IF
             SRC (K) = 0.5D0 * SRC (K)
             DIP (K) = 0.0D0
@@ -401,6 +397,7 @@ C        A flat panel has dipole coefficients 0.0
 C
       RETURN
       END
+
       SUBROUTINE COEF_REGULAR (FLAT, EABS, EREL, SRC, DIP, DWRK, IWRK)
 C ---------------------------------------------------------------------------
 C
@@ -438,6 +435,61 @@ C
          END IF
          SRC (K) = 0.5D0 * SRC (K)
       END DO
+C
+      RETURN
+      END
+
+      FUNCTION DIPOLE_COEF (S)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'spl_params.inc'
+C
+      REAL(KIND=RK) DIPOLE_COEF
+      REAL(KIND=RK) S
+C
+      REAL(KIND=RK) W (4, 2)
+      REAL(KIND=RK) R (2)
+      REAL(KIND=RK) DOT_4
+      EXTERNAL      DOT_4
+C
+      CALL WEIGHT (S, W)
+      R (1) = P (1) - DOT_4 (W, EL (1, 1))
+      R (2) = P (2) - DOT_4 (W, EL (1, 2))
+      DIPOLE_COEF =
+     &   W (K, 1) * (R (2) * DOT_4 (W (1, 2), EL (1, 1))
+     &             - R (1) * DOT_4 (W (1, 2), EL (1, 2)))
+     &             / (R (1) ** 2 + R (2) ** 2)
+C
+      RETURN
+      END
+
+      FUNCTION SOURCE_COEF (S)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'spl_params.inc'
+C
+      REAL(KIND=RK) SOURCE_COEF
+      REAL(KIND=RK) S
+C
+      REAL(KIND=RK) W (4, 2)
+      REAL(KIND=RK) R (2)
+      REAL(KIND=RK) JAC
+      REAL(KIND=RK) DOT_4
+      EXTERNAL      DOT_4
+C
+      CALL WEIGHT (S, W)
+      R (1) = P (1) - DOT_4 (W, EL (1, 1))
+      R (2) = P (2) - DOT_4 (W, EL (1, 2))
+      JAC = SQRT (DOT_4 (W (1, 2), EL (1, 1)) ** 2
+     &          + DOT_4 (W (1, 2), EL (1, 2)) ** 2)
+      SOURCE_COEF =
+     &   W (K, 1) * JAC * LOG (R (1) ** 2 + R (2) ** 2)
 C
       RETURN
       END

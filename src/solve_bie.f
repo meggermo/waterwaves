@@ -178,6 +178,7 @@ C
 C
       RETURN
       END
+
       SUBROUTINE SETUP_AX_B
      &   (NNW,  NGP,
      &    NW_IPAR,
@@ -209,9 +210,7 @@ C
 C
       INTEGER(KIND=IK) INW, IGP, BCT, NGP_NW
 C
-      DO IGP = 1, NGP
-         B (IGP) = 0.0D0
-      END DO
+      B = 0.0D0
 C
       IGP = 1
       DO INW = 1, NNW
@@ -248,6 +247,7 @@ C     evaluate the following equation: A0 * X0 + A1 * X1 = B
 C
       RETURN
       END
+
       SUBROUTINE COPY_BACK (NNW, NGP, NW_IPAR, X, PHI, PHN)
 C ---------------------------------------------------------------------------
 C
@@ -286,6 +286,7 @@ C
 C
       RETURN
       END
+
       SUBROUTINE COPY_COLOUMNS (NGP, N_GP, V, W, A_0, A_1, B_0, B_1, A0,
      &           A1, B, X, DX)
 C ---------------------------------------------------------------------------

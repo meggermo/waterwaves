@@ -17,7 +17,6 @@ contour_integral.f \
 coord_transformations.f \
 derivatives.f \
 diff_eqns.f \
-dipole_coef.f \
 done.f \
 dot_4.f \
 error.f \
@@ -42,7 +41,6 @@ setup_ax_b_double.f \
 solve_bie.f \
 solve_laplace.f \
 solve_sd_double.f \
-source_coef.f \
 spline.f \
 wavemaker.f \
 weight.f \
