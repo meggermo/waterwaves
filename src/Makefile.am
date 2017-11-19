@@ -15,7 +15,6 @@ check_network_parameters.f \
 coefficients.f \
 contour_integral.f \
 coord_transformations.f \
-copy_ngp_to_nw_ipar.f \
 couple_edges.f \
 derivatives.f \
 diff_eqns.f \
