@@ -1,7 +1,7 @@
       SUBROUTINE COEFFICIENTS
      &           (NSD, NNW_SD, NGP_SD, NW_IPAR, CRD, S0, S1, D0, D1)
 C ---------------------------------------------------------------------------
-C
+C     Computes the Source and Dipole coefficients
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -13,7 +13,7 @@ C
       INTEGER(KIND=IK) NNW_SD (*)         ! nr. of netw. per subd. (IN)
       INTEGER(KIND=IK) NGP_SD (*)         ! nr. of gridp. per subd. (IN)
       INTEGER(KIND=IK) NW_IPAR (N_IP, *)  ! integer netw. par. (IN)
-      REAL   (KIND=RK) CRD (4, *)         ! grid points (IN)
+      REAL   (KIND=RK) CRD (2, 2, *)      ! grid points (IN)
       REAL   (KIND=RK) S0 (*)             ! Source coeffs. (OUT)
       REAL   (KIND=RK) S1 (*)             ! Source coeffs. (OUT)
       REAL   (KIND=RK) D0 (*)             ! Dipole coeffs. (OUT)
@@ -28,7 +28,7 @@ C     Initialize the index pointers
       INW_SD = 1
       IGP_SD = 1
       IAE_SD = 1
-C
+C     Loop over all subdomains
       DO ISD = 1, NSD
 C        Get the number of networks and grid points of the subdomain
          NNW = NNW_SD (ISD)
@@ -37,7 +37,7 @@ C        Compute the source and dipole coefficients of this subdomain
          CALL COMP_COEF_SD
      &        (NNW, NGP,
      &         NW_IPAR (1, INW_SD),
-     &         CRD (1, IGP_SD),
+     &         CRD (1, 1, IGP_SD),
      &         S0 (IAE_SD),  S1 (IAE_SD),
      &         D0 (IAE_SD),  D1 (IAE_SD))
 C        Modify the diagonal elements so that the rowsum is 0
@@ -55,10 +55,11 @@ C        Increment the index pointers
 C
       RETURN
       END
+
       SUBROUTINE COMP_COEF_SD
      &           (NNW, NGP, NW_IPAR, CRD, SRC_0, SRC_1, DIP_0, DIP_1)
 C ---------------------------------------------------------------------------
-C
+C     Computes the Source and Dipole coefficients of a subdomain
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
@@ -70,7 +71,7 @@ C
       INTEGER(KIND=IK) NNW                ! nr. of networks (IN)
       INTEGER(KIND=IK) NGP                ! nr. of grid points (IN)
       INTEGER(KIND=IK) NW_IPAR (N_IP, *)  ! integer netw. par. (IN)
-      REAL   (KIND=RK) CRD (4, *)         ! grid points (IN)
+      REAL   (KIND=RK) CRD (2, 2, *)      ! grid points (IN)
       REAL   (KIND=RK) SRC_0 (NGP, *)     ! Source coeffs
       REAL   (KIND=RK) SRC_1 (NGP, *)     ! Source coeffs
       REAL   (KIND=RK) DIP_0 (NGP, *)     ! Dipole coeffs
@@ -82,48 +83,10 @@ C
       REAL   (KIND=RK) TOL (2)
       REAL   (KIND=RK) DWRK (LENW)
       INTEGER(KIND=IK) IWRK (LIM)
-      INTEGER(KIND=IK) BCT, SPT
-      INTEGER(KIND=IK) JGP, KGP, IED
-      REAL   (KIND=RK) CRD_TMP (4, NGP)
-      REAL   (KIND=RK) W (8)
-      REAL   (KIND=RK) ALPHA, EPS, DELTA (2), JAC, XI
-      PARAMETER       (ALPHA = 5.0D-1)
-      PARAMETER       (EPS   = 1.0D-3)
+      REAL   (KIND=RK) CRD_TMP (2, 2, NGP)
 C
       CALL DCOPY (4 * NGP, CRD, 1, CRD_TMP, 1)
-C
-      IGP_NW = 1
-C
-      DO INW = 1, NNW
-         NGP_NW = GET_NGP (NW_IPAR (1, INW))
-         BCT    = GET_BCT (NW_IPAR (1, INW))
-         IF (BCT .LT. 0) THEN
-            DO IED = 1, 2
-               JGP = IGP_NW + (IED - 1) * (NGP_NW - 2)
-               KGP = IGP_NW + (IED - 1) * (NGP_NW - 1)
-               SPT = GET_SPT (2 + IED, NW_IPAR (1, INW))
-               IF (SPT .NE. 0) THEN
-                  JAC = SQRT (CRD (3, KGP) ** 2 + CRD (4, KGP) ** 2)
-                  DELTA (1) = 0.0D0
-                  DELTA (2) = -JAC * EPS
-                  CALL LOCAL_TO_GLOBAL (1, 2, CRD (1,KGP), DELTA, DELTA)
-                  XI = ALPHA * DBLE (3  - 2 * IED) + DBLE (IED - 1)
-                  CALL WEIGHT (XI, W)
-                  CRD_TMP (1, KGP) =
-     &               W (1) * CRD  (1, JGP) + W (2) * CRD (1, JGP + 1)
-     &             + W (3) * CRD  (3, JGP) + W (4) * CRD (3, JGP + 1)
-     &             + DELTA (1)
-                  CRD_TMP (2, KGP) =
-     &               W (1) * CRD  (2, JGP) + W (2) * CRD (2, JGP + 1)
-     &             + W (3) * CRD  (4, JGP) + W (4) * CRD (4, JGP + 1)
-     &             + DELTA (2)
-                  WRITE (*, *) KGP, ':',
-     &            CRD_TMP (1, KGP), CRD_TMP (2, KGP), XI
-               END IF
-            END DO
-         END IF
-         IGP_NW = IGP_NW + NGP_NW
-      END DO
+      CALL ADJUST_EDGE_COORDS (NNW, NGP, NW_IPAR, CRD, CRD_TMP)
 C
       TOL (1) = GET_INT_ABS ()
       TOL (2) = GET_INT_REL ()
@@ -138,7 +101,7 @@ C
          CALL COMP_COEF_NW
      &        (NGP,               NGP_NW,
      &         TOL,
-     &         CRD_TMP,           CRD   (1, IGP_NW),
+     &         CRD_TMP,           CRD   (1, 1, IGP_NW),
      &         SRC_0 (1, IGP_NW), SRC_1 (1, IGP_NW),
      &         DIP_0 (1, IGP_NW), DIP_1 (1, IGP_NW),
      &         DWRK,              IWRK)
@@ -147,6 +110,70 @@ C
 C
       RETURN
       END
+
+      SUBROUTINE ADJUST_EDGE_COORDS (NNW, NGP, NW_IPAR, CRD, CRD_TMP)
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'net_params.inc'
+      INCLUDE 'cfs_params.inc'
+      INCLUDE 'net_funcs.inc'
+      INCLUDE 'slv_funcs.inc'
+C
+      INTEGER(KIND=IK) NNW                 ! nr. of networks (IN)
+      INTEGER(KIND=IK) NGP                 ! nr. of grid points (IN)
+      INTEGER(KIND=IK) NW_IPAR (N_IP, NNW) ! integer netw. par. (IN)
+      REAL   (KIND=RK) CRD (2, 2, *)       ! grid points (IN)
+      REAL   (KIND=RK) CRD_TMP (2, 2, NGP)
+C
+      INTEGER(KIND=IK) INW
+      INTEGER(KIND=IK) IGP_NW
+      INTEGER(KIND=IK) NGP_NW
+      INTEGER(KIND=IK) BCT, SPT
+      INTEGER(KIND=IK) JGP, KGP, IED
+      REAL   (KIND=RK) W (8)
+      REAL   (KIND=RK) ALPHA, EPS, DELTA (2), JAC, XI
+      PARAMETER       (ALPHA = 5.0D-1)
+      PARAMETER       (EPS   = 1.0D-3)
+C
+      IGP_NW = 1
+      DO INW = 1, NNW
+        NGP_NW = GET_NGP (NW_IPAR (1, INW))
+        BCT    = GET_BCT (NW_IPAR (1, INW))
+        IF (BCT .LT. 0) THEN
+          DO IED = 1, 2
+            JGP = IGP_NW + (IED - 1) * (NGP_NW - 2)
+            KGP = IGP_NW + (IED - 1) * (NGP_NW - 1)
+            SPT = GET_SPT (2 + IED, NW_IPAR (1, INW))
+            IF (SPT .NE. 0) THEN
+              JAC =
+     &        SQRT (CRD (1, 2, KGP) ** 2 + CRD (2, 2, KGP) ** 2)
+              DELTA (1) = 0.0D0
+              DELTA (2) = -JAC * EPS
+              CALL LOCAL_TO_GLOBAL
+     &             (1, 2, CRD (1, 1, KGP), DELTA, DELTA)
+              XI = ALPHA * DBLE (3  - 2 * IED) + DBLE (IED - 1)
+              CALL WEIGHT (XI, W)
+              CRD_TMP (1, 1, KGP) =
+     &               W (1) * CRD (1, 1, JGP)
+     &             + W (2) * CRD (1, 1, JGP + 1)
+     &             + W (3) * CRD (1, 2, JGP)
+     &             + W (4) * CRD (1, 2, JGP + 1)
+     &             + DELTA (1)
+              CRD_TMP (2, 1, KGP) =
+     &               W (1) * CRD (2, 1, JGP)
+     &             + W (2) * CRD (2, 1, JGP + 1)
+     &             + W (3) * CRD (2, 2, JGP)
+     &             + W (4) * CRD (2, 2, JGP + 1)
+     &             + DELTA (2)
+              WRITE (*, *) KGP, ':',
+     &        CRD_TMP (1, 1, KGP), CRD_TMP (2, 1, KGP), XI
+            END IF
+          END DO
+        END IF
+        IGP_NW = IGP_NW + NGP_NW
+      END DO
+      END SUBROUTINE ADJUST_EDGE_COORDS
+
       SUBROUTINE DIAG_COEF_SD (NGP, DIP)
 C ---------------------------------------------------------------------------
 C
@@ -154,6 +181,7 @@ C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'rle_params.inc'
+      INCLUDE 'usr_params.inc'
 C
       INTEGER(KIND=IK) NGP
       REAL   (KIND=RK) DIP (NGP, *)
@@ -161,14 +189,9 @@ C
       INTEGER(KIND=IK) I, J
       REAL   (KIND=RK) ROW_SUM (NGP)
 C
-      DO I = 1, NGP
-         ROW_SUM (I) = 0.0D0
-      END DO
-C
+      ROW_SUM = 0.0D0
       DO J = 1, NGP
-         DO I = 1, NGP
-            ROW_SUM (I) = ROW_SUM (I) + DIP (I, J)
-         END DO
+         ROW_SUM = ROW_SUM + DIP (1:NGP, J)
       END DO
 C
       DO I = 1, NGP
@@ -196,8 +219,8 @@ C
       INTEGER(KIND=IK) NGP
       INTEGER(KIND=IK) NGP_NW
       REAL   (KIND=RK) TOL    (*)
-      REAL   (KIND=RK) CRD    (4,   *)
-      REAL   (KIND=RK) CRD_NW (4,   *)
+      REAL   (KIND=RK) CRD    (2, 2,   *)
+      REAL   (KIND=RK) CRD_NW (2, 2,   *)
       REAL   (KIND=RK) SRC_0  (NGP, *)
       REAL   (KIND=RK) SRC_1  (NGP, *)
       REAL   (KIND=RK) DIP_0  (NGP, *)
@@ -209,10 +232,10 @@ C
 C
       DO I = 1, NGP_NW - 1
          DO J = 0, 1
-            EL (1 + J, 1) = CRD_NW (1, I + J)
-            EL (1 + J, 2) = CRD_NW (2, I + J)
-            EL (3 + J, 1) = CRD_NW (3, I + J)
-            EL (3 + J, 2) = CRD_NW (4, I + J)
+            EL (1 + J, 1) = CRD_NW (1, 1, I + J)
+            EL (1 + J, 2) = CRD_NW (2, 1, I + J)
+            EL (3 + J, 1) = CRD_NW (1, 2, I + J)
+            EL (3 + J, 2) = CRD_NW (2, 2, I + J)
          END DO
          CALL COMP_COEF_EL
      &        (NGP,
@@ -253,9 +276,6 @@ C
       LEN_END    = SQRT (EL (4, 1) ** 2 + EL (4, 2) ** 2)
       DX_END (1) = EL (4, 1) / LEN_END
       DX_END (2) = EL (4, 2) / LEN_END
-C     WRITE (*, *) DX_ELM
-C     WRITE (*, *) DX_BEG
-C     WRITE (*, *) DX_END
       IS_FLAT = ABS (DX_ELM (1) - DX_BEG (1)) .LT. EPS
      &    .AND. ABS (DX_ELM (2) - DX_BEG (2)) .LT. EPS
      &    .AND. ABS (DX_ELM (1) - DX_END (1)) .LT. EPS
@@ -301,7 +321,7 @@ C ---------------------------------------------------------------------------
 C
       INTEGER(KIND=IK) NGP
       REAL   (KIND=RK) TOL   (*)
-      REAL   (KIND=RK) CRD   (4,   *)
+      REAL   (KIND=RK) CRD   (2, 2,   *)
       REAL   (KIND=RK) SRC_0 (NGP, *)
       REAL   (KIND=RK) SRC_1 (NGP, *)
       REAL   (KIND=RK) DIP_0 (NGP, *)
@@ -321,8 +341,7 @@ C
 C
       DO I = 1, NGP
 C        Copy the field point coordinates into P
-         P (1) = CRD (1, I)
-         P (2) = CRD (2, I)
+         P = CRD (:, 1, I)
 C        Compute the coefficients
          IF (IS_SINGULAR (P, EL)) THEN
             CALL COEF_SINGULAR
@@ -343,6 +362,7 @@ C        And store them in the Source and Dipole matrices
       END DO
 C
       RETURN
+
       END
       SUBROUTINE COEF_SINGULAR (FLAT, EABS, EREL, SRC, DIP, DWRK, IWRK)
 C ---------------------------------------------------------------------------
@@ -373,8 +393,8 @@ C        A flat panel has dipole coefficients 0.0
          DO K = 1, 4
             CALL DQAGS (SOURCE_COEF, XB, XE, EABS, EREL, SRC (K),
      &                  ERR, NEVAL, IERR, LIM, LENW, LAST, IWRK, DWRK)
-            WRITE (*, *) 'K:', K, ' EL:', EL
             IF (IERR .NE. 0) THEN
+              WRITE (*, *) 'K:', K, ' EL:', EL
             END IF
             SRC (K) = 0.5D0 * SRC (K)
             DIP (K) = 0.0D0
