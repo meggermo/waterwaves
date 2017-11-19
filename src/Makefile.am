@@ -34,9 +34,7 @@ net_cdf.f \
 pltout.f \
 quadpack.f \
 r_assert.f \
-read_linwave.f \
 read_parameters.f \
-read_rfwave.f \
 regrid.f \
 relax.f \
 rk4.f \
