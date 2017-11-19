@@ -253,3 +253,18 @@ C
 C
       RETURN
       END
+
+      FUNCTION EVAL_2 (T, LDF, F)
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      REAL   (KIND=RK) EVAL_2
+      REAL   (KIND=RK) T
+      INTEGER(KIND=IK) LDF
+      REAL   (KIND=RK) F (LDF, 2, *)
+C
+      EVAL_2 =  6.0D0 * (2.0D0 * T - 1.0D0) * F (1, 1, 1)
+     &       -  6.0D0 * (2.0D0 * T - 1.0D0) * F (1, 1, 2)
+     &       + (6.0D0 *          T - 4.0D0) * F (1, 2, 1)
+     &       + (6.0D0 *          T - 2.0D0) * F (1, 2, 2)
+      RETURN
+      END

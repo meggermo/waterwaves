@@ -18,7 +18,6 @@ diff_eqns.f \
 done.f \
 dot_4.f \
 error.f \
-eval.f \
 generate_grid.f \
 get_set.f \
 i_assert.f \
