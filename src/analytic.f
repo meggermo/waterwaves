@@ -41,8 +41,11 @@ C
          CALL POLYNOMIAL
      &        (N, T, PAR, X, W)
       ELSE IF (ANL_TYPE .EQ. ANL_WAVEMAKER) THEN
-         CALL WAVEMAKER
-     &        (N, T, PAR, X, W)
+        CALL WAVEMAKER
+     &       (N, T, PAR, X, W)
+      ELSE IF (ANL_TYPE .EQ. ANL_PISTON) THEN
+        CALL PISTON_WAVEMAKER
+     &       (N, T, PAR, X, W)
       ELSE IF (ANL_TYPE .EQ. ANL_NOTAVAIL) THEN
 C        THERE'S NO KNOWN SOLUTION, SO W <- 0
          CALL NOTAVAIL
@@ -55,6 +58,7 @@ C        THERE'S NO KNOWN SOLUTION, SO W <- 0
 C
       RETURN
       END
+
       SUBROUTINE NOTAVAIL
      &           (N, ANL)
 C ---------------------------------------------------------------------------
@@ -83,6 +87,7 @@ C
 C
       RETURN
       END
+
       SUBROUTINE LINWAVE
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
@@ -149,6 +154,7 @@ C
 C
       RETURN
       END
+
       SUBROUTINE RFWAVE
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
@@ -242,6 +248,7 @@ C              C + B_0 will be exactly 0
 C
       RETURN
       END
+
       SUBROUTINE POLYNOMIAL
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
@@ -304,6 +311,7 @@ C
 C
       RETURN
       END
+
       SUBROUTINE WAVEMAKER
      &           (N, T, ANL_PAR, CRD, ANL)
 C ---------------------------------------------------------------------------
@@ -336,3 +344,39 @@ C
 C
       RETURN
       END
+
+      SUBROUTINE PISTON_WAVEMAKER
+     &           (N, T, ANL_PAR, CRD, ANL)
+C ---------------------------------------------------------------------------
+C     Analytic solution : WAVEMAKER
+C
+C     ANL (1:N, 1) : PHI
+C     ANL (1:N, 2) : PHI_T
+C     ANL (1:N, 3) : PHI_X
+C     ANL (1:N, 4) : PHI_Z
+C     ANL (1:N, 5) : PHI_XX
+C     ANL (1:N, 6) : PHI_XZ
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'fle_params.inc'
+C
+      INTEGER(KIND=IK) N           ! Nr. of grid points (IN)
+      REAL   (KIND=RK) T           ! Time (IN)
+      REAL   (KIND=RK) ANL_PAR (17)
+      REAL   (KIND=RK) CRD (4, *)  ! Grid point coordinates (IN)
+      REAL   (KIND=RK) ANL (N, 6)  ! Analytic solution (OUT)
+C
+      REAL   (KIND=RK) AMPLITUDE, THETA, FACTOR, S
+C
+      AMPLITUDE = ANL_PAR (1)
+      THETA     = ANL_PAR (2)
+      FACTOR    = ANL_PAR (3)
+      IF (ABS (T - FACTOR * THETA) .LT. 1.0D-12) THEN
+        S = T / THETA
+        AMPLITUDE = AMPLITUDE * S * S * (3.0D0 - 2.0D0 * S)
+      END IF
+      ANL  = 0.0D0
+      ANL (:, 3) = AMPLITUDE * SIN (THETA * T)
+C
+      END SUBROUTINE PISTON_WAVEMAKER

@@ -7,7 +7,7 @@ C     Neumann   : PHN is given PHI is unknown
 C
 C     Boundary condition types:
 C     -------------------------
-C     BCT_UNKNOWN   :
+C     BCT_UNKNOWN   :     BC. is not known
 C     BCT_ANALYTIC  :     BC. is given analytically
 C     BCT_BERNOULLI :     phi_t + 1/2 grad (phi) ** 2 + g z = 0
 C     BCT_SOMMERFELD:     phi_t + c phi_x = 0
@@ -27,8 +27,9 @@ C
       INTEGER(KIND=IK) BCT_BERNOULLI    ! -> 2
       INTEGER(KIND=IK) BCT_SOMMERFELD   ! -> 3
       INTEGER(KIND=IK) BCT_WAVEMAKER    ! -> 4
-      INTEGER(KIND=IK) BCT_LINBERNOU    ! -> 5
-      INTEGER(KIND=IK) BCT_TIME_POLY    ! -> 6
+      INTEGER(KIND=IK) BCT_PISTON       ! -> 5
+      INTEGER(KIND=IK) BCT_LINBERNOU    ! -> 6
+      INTEGER(KIND=IK) BCT_TIME_POLY    ! -> 7
       INTEGER(KIND=IK) BCT_FIRST
       INTEGER(KIND=IK) BCT_LAST
 C
@@ -38,7 +39,8 @@ C
       PARAMETER       (BCT_BERNOULLI  = BCT_ANALYTIC   + 1)
       PARAMETER       (BCT_SOMMERFELD = BCT_BERNOULLI  + 1)
       PARAMETER       (BCT_WAVEMAKER  = BCT_SOMMERFELD + 1)
-      PARAMETER       (BCT_LINBERNOU  = BCT_WAVEMAKER  + 1)
+      PARAMETER       (BCT_PISTON     = BCT_WAVEMAKER  + 1)
+      PARAMETER       (BCT_LINBERNOU  = BCT_PISTON  + 1)
       PARAMETER       (BCT_TIME_POLY  = BCT_LINBERNOU  + 1)
       PARAMETER       (BCT_LAST       = BCT_TIME_POLY)
 C

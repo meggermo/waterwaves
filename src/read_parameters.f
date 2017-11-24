@@ -331,6 +331,7 @@ C     Read the boundary condition type and kind
       DO IRP = 1, N_BCP
          PAR (IRP) = 0.0D0
       END DO
+
       IF (BCT .EQ. BCT_WAVEMAKER) THEN
          IF (BCP .NE. 'N') THEN
             CALL ERROR ('READ_NETW_PAR','wavemaker MUST be Neumann')
@@ -357,6 +358,14 @@ C        b-> begin, e-> end
          ELSE
             CALL ERROR ('READ_NETW_PAR','keyword begin or end expected')
          END IF
+      ELSE IF (BCT .EQ. BCT_PISTON) THEN
+        IF (BCP .NE. 'N') THEN
+           CALL ERROR ('READ_NETW_PAR','piston MUST be Neumann')
+        END IF
+        READ  (USR_I, *) PAR (1:3)
+        WRITE (USR_O, *) 'PISTON AMPLITUDE:', PAR (1)
+        WRITE (USR_O, *) 'PISTON FREQUENCY:', PAR (2)
+        WRITE (USR_O, *) 'PISTON FACTOR:', PAR (3)
       ELSE
 C        read parameters for this boundary condition
          READ (USR_I, *) (PAR (IRP), IRP = 1, 10)

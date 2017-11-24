@@ -4,16 +4,17 @@ C
 C ---------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
+      INCLUDE 'rle_params.inc'
 C
       INTEGER(KIND=IK) NGP
       INTEGER(KIND=IK) U_NR
+      REAL   (KIND=RK) T
       REAL   (KIND=RK) F (4, 4)
       REAL   (KIND=RK) CRD_0 (2)
       REAL   (KIND=RK) CRD   (4, NGP)
       REAL   (KIND=RK) ANL   (NGP, 6)
 C
       INTEGER(KIND=IK) IGP
-      REAL   (KIND=RK) T
       REAL   (KIND=RK) G (2, 4)
       REAL   (KIND=RK) DX, DZ, L
       REAL   (KIND=RK) U, V, OMG
@@ -39,7 +40,8 @@ C
          ANL (IGP, 6) = 0.0D0             ! : PHI_XZ
       END DO
 C
-      END
+      END SUBROUTINE INTERP_WVM
+
       SUBROUTINE INTERPOLATE (N, U_NR, TIME, F, G)
 C ---------------------------------------------------------------------------
 C     Interpolates F_I (T) and DF_I/DT (T)  at T = TIME, where F_I (T)
@@ -71,6 +73,7 @@ C     and evaluate F at XI
       CALL EVAL (N, XI, F, G)
 C
       END
+
       FUNCTION GET_XI (TIME, T)
 C ---------------------------------------------------------------------------
 C     Solves T (XI) - TIME = 0 by means of Newton iteration,
@@ -96,6 +99,7 @@ C        improve guess by using Newton
       END DO
       GET_XI = XI
       END
+
       SUBROUTINE INITIALIZE (N, U_NR, F)
 C ---------------------------------------------------------------------------
 C
@@ -111,6 +115,7 @@ C     read two rows of data to get the first spline element
       CALL READ_NEXT_ELEMENTS (N, U_NR, F)
 C
       END
+
       SUBROUTINE READ_NEXT_ELEMENTS (N, U_NR, F)
 C ---------------------------------------------------------------------------
 C     Reads the next spline elements from a unit and stores them is F.
@@ -138,6 +143,7 @@ C     and read the new end node data
       READ (U_NR, *) (F (2, I), F (4, I), I = 1, N)
 C
       END
+
       SUBROUTINE EVAL (N, XI, F, G)
 C ---------------------------------------------------------------------------
 C

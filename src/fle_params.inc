@@ -12,7 +12,7 @@ C ---------------------------------------------------------------------------
       INTEGER(KIND=IK) PLT_PHN  ! Phn     output file
       INTEGER(KIND=IK) PLT_NRM  ! Norms   output file
       INTEGER(KIND=IK) PLT_CTR  ! Contour output file
-      INTEGER(KIND=IK) WVM_IN   ! Contour output file
+      INTEGER(KIND=IK) WVM_IN   ! Wavemaker input file
 C
       PARAMETER (STD_I = 5)     ! NOTE: This parameter is system dependent
       PARAMETER (STD_O = 6)     ! NOTE: This parameter is system dependent

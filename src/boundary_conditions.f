@@ -38,13 +38,21 @@ C
             ITF = GET_ITF (NW_IPAR (1, JNW))
             GMT = GET_GMT (NW_IPAR (1, JNW))
             IF (BCT .EQ. BCT_WAVEMAKER) THEN
-               ANL_SAVE = ANL_TYPE
-               ANL_TYPE = ANL_WAVEMAKER
-               CALL BOUND_COND
-     &              (BCD, NGP, BCT, T, NW_RPAR (1, JNW),
-     &               CRD (1, IGP), PHI (1, IGP), PHN (1, IGP))
-               CALL Spline (BC, NGP, 1, 2, PHN (1, IGP), PHN (2, IGP))
-               ANL_TYPE = ANL_SAVE
+              ANL_SAVE = ANL_TYPE
+              ANL_TYPE = ANL_WAVEMAKER
+              CALL BOUND_COND
+     &             (BCD, NGP, BCT, T, NW_RPAR (1, JNW),
+     &              CRD (1, IGP), PHI (1, IGP), PHN (1, IGP))
+              CALL Spline (BC, NGP, 1, 2, PHN (1, IGP), PHN (2, IGP))
+              ANL_TYPE = ANL_SAVE
+            ELSE IF (BCT .EQ. BCT_PISTON) THEN
+              ANL_SAVE = ANL_TYPE
+              ANL_TYPE = ANL_PISTON
+              CALL BOUND_COND
+     &             (BCD, NGP, BCT, T, NW_RPAR (1, JNW),
+     &              CRD (1, IGP), PHI (1, IGP), PHN (1, IGP))
+              CALL Spline (BC, NGP, 1, 2, PHN (1, IGP), PHN (2, IGP))
+              ANL_TYPE = ANL_SAVE
             ELSE IF  (ABS (BCT) .EQ. BCT_ANALYTIC .OR. FIRST_TIME)  THEN
                CALL BOUND_COND
      &              (BCD, NGP, BCT, T, ANL_PAR,
