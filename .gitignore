@@ -20,3 +20,5 @@ src/waterwaves
 src/splinetest
 *.out
 octave-workspace
+.tags*
+
