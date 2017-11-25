@@ -13,7 +13,8 @@ C
       GET_NGP = NW_IPAR (I_NGP)
 C
       RETURN
-      END
+      END FUNCTION GET_NGP
+
       SUBROUTINE SET_NGP
      &           (NGP, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -31,7 +32,8 @@ C
       NW_IPAR (I_NGP) = NGP
 C
       RETURN
-      END
+      END SUBROUTINE SET_NGP
+
       FUNCTION GET_BCT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -47,7 +49,8 @@ C
       GET_BCT = NW_IPAR (I_BCT)
 C
       RETURN
-      END
+      END FUNCTION GET_BCT
+
       SUBROUTINE SET_BCT
      &           (BCT, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -65,7 +68,8 @@ C
       NW_IPAR (I_BCT) = BCT
 C
       RETURN
-      END
+      END SUBROUTINE SET_BCT
+
       FUNCTION GET_PLT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -81,7 +85,8 @@ C
       GET_PLT = NW_IPAR (I_PLT)
 C
       RETURN
-      END
+      END FUNCTION GET_PLT
+
       SUBROUTINE SET_PLT
      &           (PLT, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -97,7 +102,8 @@ C
       NW_IPAR (I_PLT) = PLT
 C
       RETURN
-      END
+      END SUBROUTINE SET_PLT
+
       FUNCTION GET_GRT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -113,7 +119,8 @@ C
       GET_GRT = NW_IPAR (I_GRT)
 C
       RETURN
-      END
+      END FUNCTION GET_GRT
+
       SUBROUTINE SET_GRT
      &           (GRT, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -131,7 +138,8 @@ C
       NW_IPAR (I_GRT) = GRT
 C
       RETURN
-      END
+      END SUBROUTINE SET_GRT
+
       FUNCTION GET_GMT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -147,7 +155,8 @@ C
       GET_GMT = NW_IPAR (I_GMT)
 C
       RETURN
-      END
+      END FUNCTION GET_GMT
+
       SUBROUTINE SET_GMT
      &           (GMT, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -163,7 +172,8 @@ C
       NW_IPAR (I_GMT) = GMT
 C
       RETURN
-      END
+      END SUBROUTINE SET_GMT
+
       FUNCTION GET_GAT
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -179,7 +189,8 @@ C
       GET_GAT = NW_IPAR (I_GAT)
 C
       RETURN
-      END
+      END FUNCTION GET_GAT
+
       SUBROUTINE SET_GAT
      &           (GAT, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -195,7 +206,8 @@ C
       NW_IPAR (I_GAT) = GAT
 C
       RETURN
-      END
+      END SUBROUTINE SET_GAT
+
       FUNCTION GET_SPT
      &         (ISP, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -213,7 +225,8 @@ C
       GET_SPT = NW_IPAR (I_SPT + ISP - 1)
 C
       RETURN
-      END
+      END FUNCTION GET_SPT
+
       SUBROUTINE SET_SPT
      &           (ISP, SPT, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -232,7 +245,8 @@ C
       NW_IPAR (I_SPT + ISP - 1) = SPT
 C
       RETURN
-      END
+      END SUBROUTINE SET_SPT
+
       FUNCTION GET_ITF
      &         (NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -248,7 +262,8 @@ C
       GET_ITF = NW_IPAR (I_ITF)
 C
       RETURN
-      END
+      END FUNCTION GET_ITF
+
       SUBROUTINE SET_ITF
      &           (ITF, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -266,7 +281,8 @@ C
       NW_IPAR (I_ITF) = ITF
 C
       RETURN
-      END
+      END SUBROUTINE SET_ITF
+
       FUNCTION GET_AED
      &         (IED, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -285,7 +301,8 @@ C
       GET_AED = NW_IPAR (I_AED + IED - 1)
 C
       RETURN
-      END
+      END FUNCTION GET_AED
+
       SUBROUTINE SET_AED
      &           (IED, AED, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -305,7 +322,8 @@ C
       NW_IPAR (I_AED + IED - 1) = AED
 C
       RETURN
-      END
+      END SUBROUTINE SET_AED
+
       FUNCTION GET_ANW
      &         (IED, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -324,7 +342,8 @@ C
       GET_ANW = NW_IPAR (I_ANW + IED - 1)
 C
       RETURN
-      END
+      END FUNCTION GET_ANW
+
       SUBROUTINE SET_ANW
      &           (IED, ANW, NW_IPAR)
 C ---------------------------------------------------------------------------
@@ -343,8 +362,10 @@ C
       NW_IPAR (I_ANW + IED - 1) = ANW
 C
       RETURN
-      END
-      FUNCTION GET_AGP (IED, INW, NW_IPAR)
+      END SUBROUTINE SET_ANW
+
+      FUNCTION GET_AGP
+     &         (IED, INW, NW_IPAR)
 C ---------------------------------------------------------------------------
 C
 C ---------------------------------------------------------------------------
@@ -369,7 +390,8 @@ C
       END DO
       GET_AGP = AGP + (AED - 1) * (GET_NGP (NW_IPAR (1, ANW)) - 1)
       RETURN
-      END
+      END FUNCTION GET_AGP
+
       SUBROUTINE GET_BCP
      &           (NW_RPAR, PAR)
 C ---------------------------------------------------------------------------
@@ -389,7 +411,8 @@ C
       END DO
 C
       RETURN
-      END
+      END SUBROUTINE GET_BCP
+
       SUBROUTINE SET_BCP
      &           (PAR, NW_RPAR)
 C ---------------------------------------------------------------------------
@@ -409,7 +432,8 @@ C
       END DO
 C
       RETURN
-      END
+      END SUBROUTINE SET_BCP
+
       SUBROUTINE GET_GRP
      &           (NW_RPAR, PAR)
 C ---------------------------------------------------------------------------
@@ -429,7 +453,8 @@ C
       END DO
 C
       RETURN
-      END
+      END SUBROUTINE GET_GRP
+
       SUBROUTINE SET_GRP
      &           (PAR, NW_RPAR)
 C ---------------------------------------------------------------------------
@@ -449,7 +474,8 @@ C
       END DO
 C
       RETURN
-      END
+      END SUBROUTINE SET_GRP
+
       SUBROUTINE GET_GMP
      &           (NW_RPAR, PAR)
 C ---------------------------------------------------------------------------
@@ -469,7 +495,8 @@ C
       END DO
 C
       RETURN
-      END
+      END SUBROUTINE GET_GMP
+
       SUBROUTINE SET_GMP
      &           (PAR, NW_RPAR)
 C ---------------------------------------------------------------------------
@@ -489,7 +516,8 @@ C
       END DO
 C
       RETURN
-      END
+      END SUBROUTINE SET_GMP
+
       SUBROUTINE GET_GAP
      &           (NW_RPAR, PAR)
 C ---------------------------------------------------------------------------
@@ -509,7 +537,8 @@ C
       END DO
 C
       RETURN
-      END
+      END SUBROUTINE GET_GAP
+
       SUBROUTINE SET_GAP
      &           (PAR, NW_RPAR)
 C ---------------------------------------------------------------------------
@@ -529,7 +558,8 @@ C
       END DO
 C
       RETURN
-      END
+      END SUBROUTINE SET_GAP
+
       FUNCTION GET_TIME ()
 C ---------------------------------------------------------------------------
 C
@@ -543,7 +573,8 @@ C
       GET_TIME = TM_RPAR (IT_CUR)
 C
       RETURN
-      END
+      END FUNCTION GET_TIME
+
       SUBROUTINE SET_TIME (T)
 C ---------------------------------------------------------------------------
 C
@@ -557,7 +588,8 @@ C
       TM_RPAR (IT_CUR) = T
 C
       RETURN
-      END
+      END SUBROUTINE SET_TIME
+
       FUNCTION GET_TBEG ()
 C ---------------------------------------------------------------------------
 C
@@ -571,7 +603,8 @@ C
       GET_TBEG = TM_RPAR (IT_BEG)
 C
       RETURN
-      END
+      END FUNCTION GET_TBEG
+
       SUBROUTINE SET_TBEG (T)
 C ---------------------------------------------------------------------------
 C
@@ -585,7 +618,8 @@ C
       TM_RPAR (IT_BEG) = T
 C
       RETURN
-      END
+      END SUBROUTINE SET_TBEG
+
       FUNCTION GET_TEND ()
 C ---------------------------------------------------------------------------
 C
@@ -599,7 +633,8 @@ C
       GET_TEND = TM_RPAR (IT_END)
 C
       RETURN
-      END
+      END FUNCTION GET_TEND
+
       SUBROUTINE SET_TEND (T)
 C ---------------------------------------------------------------------------
 C
@@ -613,7 +648,8 @@ C
       TM_RPAR (IT_END) = T
 C
       RETURN
-      END
+      END SUBROUTINE SET_TEND
+
       FUNCTION GET_DELTA_T ()
 C ---------------------------------------------------------------------------
 C
@@ -627,7 +663,8 @@ C
       GET_DELTA_T = TM_RPAR (IT_STP)
 C
       RETURN
-      END
+      END FUNCTION GET_DELTA_T
+
       SUBROUTINE SET_DELTA_T (DT)
 C ---------------------------------------------------------------------------
 C
@@ -641,7 +678,99 @@ C
       TM_RPAR (IT_STP) = DT
 C
       RETURN
-      END
+      END SUBROUTINE SET_DELTA_T
+
+      FUNCTION GET_DELTA_T_MIN ()
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'tme_params.inc'
+C
+      REAL(KIND=RK) GET_DELTA_T_MIN
+C
+      GET_DELTA_T_MIN = TM_RPAR (IT_STPMIN)
+C
+      RETURN
+      END FUNCTION GET_DELTA_T_MIN
+
+      SUBROUTINE SET_DELTA_T_MIN (DT)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'tme_params.inc'
+C
+      REAL(KIND=RK) DT
+C
+      TM_RPAR (IT_STPMIN) = DT
+C
+      RETURN
+      END SUBROUTINE SET_DELTA_T_MIN
+
+      FUNCTION GET_DELTA_T_MAX ()
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'tme_params.inc'
+C
+      REAL(KIND=RK) GET_DELTA_T_MAX
+C
+      GET_DELTA_T_MAX = TM_RPAR (IT_STPMAX)
+C
+      RETURN
+      END FUNCTION GET_DELTA_T_MAX
+
+      SUBROUTINE SET_DELTA_T_MAX (DT)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'tme_params.inc'
+C
+      REAL(KIND=RK) DT
+C
+      TM_RPAR (IT_STPMAX) = DT
+C
+      RETURN
+      END SUBROUTINE SET_DELTA_T_MAX
+
+      FUNCTION GET_SUBD_MAX ()
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'tme_params.inc'
+C
+      INTEGER(KIND=IK) GET_SUBD_MAX
+C
+      GET_SUBD_MAX = I_SUBD_MAX
+C
+      RETURN
+      END FUNCTION GET_SUBD_MAX
+
+      SUBROUTINE SET_SUBD_MAX (SUBD_MAX)
+C ---------------------------------------------------------------------------
+C
+C ---------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'tme_params.inc'
+C
+      INTEGER(KIND=IK) SUBD_MAX
+C
+      I_SUBD_MAX = SUBD_MAX
+C
+      RETURN
+      END SUBROUTINE SET_SUBD_MAX
+
+
       FUNCTION GET_PERIOD ()
 C ---------------------------------------------------------------------------
 C
@@ -669,7 +798,8 @@ C        ANY OTHER TYPE
       END IF
 C
       RETURN
-      END
+      END FUNCTION GET_PERIOD
+
       FUNCTION GET_INT_ABS ()
 C ---------------------------------------------------------------------------
 C
@@ -683,7 +813,8 @@ C
       GET_INT_ABS = SO_RPAR (IS_INT_ABS)
 C
       RETURN
-      END
+      END FUNCTION GET_INT_ABS
+
       SUBROUTINE SET_INT_ABS (INT_ABS)
 C ---------------------------------------------------------------------------
 C
@@ -698,7 +829,8 @@ C
       SO_RPAR (IS_INT_ABS) = INT_ABS
 C
       RETURN
-      END
+      END SUBROUTINE SET_INT_ABS
+
       FUNCTION GET_INT_REL ()
 C ---------------------------------------------------------------------------
 C
@@ -712,7 +844,8 @@ C
       GET_INT_REL = SO_RPAR (IS_INT_REL)
 C
       RETURN
-      END
+      END FUNCTION GET_INT_REL
+
       SUBROUTINE SET_INT_REL (INT_REL)
 C ---------------------------------------------------------------------------
 C
@@ -727,7 +860,8 @@ C
       SO_RPAR (IS_INT_REL) = INT_REL
 C
       RETURN
-      END
+      END SUBROUTINE SET_INT_REL
+
       FUNCTION GET_ITR_TOL (I)
 C ---------------------------------------------------------------------------
 C
@@ -743,7 +877,8 @@ C
       GET_ITR_TOL = SO_RPAR (IS_ITR_TOL + I - 1)
 C
       RETURN
-      END
+      END FUNCTION GET_ITR_TOL
+
       SUBROUTINE SET_ITR_TOL (I, TOL)
 C ---------------------------------------------------------------------------
 C
@@ -761,7 +896,8 @@ C
       SO_RPAR (IS_ITR_TOL + I - 1) = TOL
 C
       RETURN
-      END
+      END SUBROUTINE SET_ITR_TOL
+
       FUNCTION GET_ITR_OMG (I)
 C ---------------------------------------------------------------------------
 C
@@ -777,7 +913,8 @@ C
       GET_ITR_OMG = SO_RPAR (IS_ITR_OMG + I - 1)
 C
       RETURN
-      END
+      END FUNCTION GET_ITR_OMG
+
       SUBROUTINE SET_ITR_OMG (I, OMG)
 C ---------------------------------------------------------------------------
 C
@@ -795,7 +932,8 @@ C
       SO_RPAR (IS_ITR_OMG + I - 1) = OMG
 C
       RETURN
-      END
+      END SUBROUTINE SET_ITR_OMG
+
       FUNCTION GET_ITR_MAXIT ()
 C ---------------------------------------------------------------------------
 C
@@ -809,7 +947,8 @@ C
       GET_ITR_MAXIT = SO_IPAR (IS_ITR_MAXIT)
 C
       RETURN
-      END
+      END FUNCTION GET_ITR_MAXIT
+
       SUBROUTINE SET_ITR_MAXIT (MAXIT)
 C ---------------------------------------------------------------------------
 C
@@ -825,7 +964,8 @@ C
       SO_IPAR (IS_ITR_MAXIT) = MAXIT
 C
       RETURN
-      END
+      END SUBROUTINE SET_ITR_MAXIT
+
       FUNCTION GET_DOD_TOL (I)
 C ---------------------------------------------------------------------------
 C
@@ -841,7 +981,8 @@ C
       GET_DOD_TOL = SO_RPAR (IS_DOD_TOL + I - 1)
 C
       RETURN
-      END
+      END FUNCTION GET_DOD_TOL
+
       SUBROUTINE SET_DOD_TOL (I, TOL)
 C ---------------------------------------------------------------------------
 C
@@ -859,7 +1000,8 @@ C
       SO_RPAR (IS_DOD_TOL + I - 1) = TOL
 C
       RETURN
-      END
+      END SUBROUTINE SET_DOD_TOL
+
       FUNCTION GET_DOD_OMG (I)
 C ---------------------------------------------------------------------------
 C
@@ -875,7 +1017,8 @@ C
       GET_DOD_OMG = SO_RPAR (IS_DOD_OMG + I - 1)
 C
       RETURN
-      END
+      END FUNCTION GET_DOD_OMG
+
       SUBROUTINE SET_DOD_OMG (I, OMG)
 C ---------------------------------------------------------------------------
 C
@@ -893,7 +1036,8 @@ C
       SO_RPAR (IS_DOD_OMG + I - 1) = OMG
 C
       RETURN
-      END
+      END SUBROUTINE SET_DOD_OMG
+
       FUNCTION GET_DOD_MAXIT ()
 C ---------------------------------------------------------------------------
 C
@@ -907,7 +1051,8 @@ C
       GET_DOD_MAXIT = SO_IPAR (IS_DOD_MAXIT)
 C
       RETURN
-      END
+      END FUNCTION GET_DOD_MAXIT
+
       SUBROUTINE SET_DOD_MAXIT (MAXIT)
 C ---------------------------------------------------------------------------
 C
@@ -922,4 +1067,4 @@ C
       SO_IPAR (IS_DOD_MAXIT) = MAXIT
 C
       RETURN
-      END
+      END SUBROUTINE SET_DOD_MAXIT

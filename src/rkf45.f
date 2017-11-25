@@ -15,10 +15,14 @@ C
       YK (2) = 1.0D0
       YK (3) = 0.0D0
 C
-      CALL SET_DELTA_T (0.2D0)
       CALL SET_TBEG    (0.0D0)
       CALL SET_TEND    (1.4D0)
       CALL SET_TIME    (GET_TBEG())
+
+      CALL SET_DELTA_T (0.2D0)
+      CALL SET_DELTA_T_MIN (1.0E-2)
+      CALL SET_DELTA_T_MAX (2.0E-1)
+      CALL SET_SUBD_MAX (4)
 
       WRITE (*, *) GET_TIME(), YK
       DO WHILE (GET_TIME() .LT. GET_TEND())
@@ -61,19 +65,19 @@ C
       REAL   (KIND=RK) T, DT, S
       REAL   (KIND=RK) DT_MIN, DT_MAX
       REAL   (KIND=RK) COMPUTE_S
-      INTEGER(KIND=IK) MAX_DECREMENTS
+      INTEGER(KIND=IK) SUBD_MAX
       LOGICAL(KIND=LK) ACCEPTABLE
       INTEGER(KIND=IK) I
 C
-      MAX_DECREMENTS = 2
-      DT_MIN = 1.0E-2
-      DT_MAX = 2.0E-1
+      SUBD_MAX = GET_SUBD_MAX ()
+      DT_MIN = GET_DELTA_T_MIN ()
+      DT_MAX = GET_DELTA_T_MAX ()
       T  = GET_TIME ()
       DT = GET_DELTA_T ()
 C
       I = 0
       ACCEPTABLE = .FALSE.
-      DO WHILE (.NOT. ACCEPTABLE .AND. I .LE. MAX_DECREMENTS)
+      DO WHILE (.NOT. ACCEPTABLE .AND. I .LE. SUBD_MAX)
 C       Take one step T + DT
         CALL RK_STEP (N, A, B, C, T, DT, LDB, Y, YN, ZN)
 C       Now see if the approximation is acceptable
@@ -86,12 +90,12 @@ C       Now see if the approximation is acceptable
           END IF
         ELSE
           IF (S * DT .LT. DT_MAX) THEN
-C            DT = 2.0 * DT
+            DT = 2.0 * DT
           END IF
           ACCEPTABLE = .TRUE.
         END IF
       END DO
-      IF (I .EQ. MAX_DECREMENTS) THEN
+      IF (I .EQ. SUBD_MAX) THEN
         WRITE (USR_O, *) 'DT decreased below minimum'
       END IF
 C
