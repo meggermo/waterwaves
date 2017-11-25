@@ -1,25 +1,195 @@
-      SUBROUTINE RKF45
+
+      SUBROUTINE RKF45_STEP (N, A, B, C, LDB, YK, YN)
+C -----------------------------------------------------------------------------
+C     OUT: YN
+C -----------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE 'knd_params.inc'
+      INCLUDE 'tme_funcs.inc'
+      INCLUDE 'usr_params.inc'
+C
+      INTEGER(KIND=IK) N
+      INTEGER(KIND=IK) LDB
+      REAL   (KIND=RK) A (LDB)
+      REAL   (KIND=RK) B (LDB, LDB)
+      REAL   (KIND=RK) C (LDB + 1, 2)
+      REAL   (KIND=RK) YK (N)
+      REAL   (KIND=RK) YN (N)
+C
+      REAL   (KIND=RK) ZN (N)
+      REAL   (KIND=RK) DTK, DTN
+      REAL   (KIND=RK) DT_MIN, DT_MAX
+      REAL   (KIND=RK) COMPUTE_S
+      INTEGER(KIND=IK) MAX_DECREMENTS
+      LOGICAL(KIND=LK) ACCEPTABLE
+      INTEGER(KIND=IK) DECREMENT_COUNTER
+C
+      MAX_DECREMENTS = 10
+      DECREMENT_COUNTER = 0
+      DT_MIN = 1.0E-4
+      DT_MAX = 1.0E-1
+      ACCEPTABLE = .FALSE.
+      DO WHILE (ACCEPTABLE .AND. DECREMENT_COUNTER .LE. MAX_DECREMENTS)
+C       Try to advance by DT
+        CALL STEP (N, A, B, C, LDB, YK, YN, ZN)
+C       Now see if the approximation is acceptable
+        DTK = GET_DELTA_T()
+        DTN = DTK * COMPUTE_S (N, LDB - 2, YN, ZN)
+        IF (DTN .GE. DTK) THEN
+          ACCEPTABLE = .TRUE.
+          IF (DTN .LE. DT_MAX) THEN
+            CALL SET_DELTA_T (DTN)
+          ELSE
+            WRITE (USR_O, *) 'DT already at maximum'
+          END IF
+          EXIT
+        END IF
+        IF (DTN .GE. DT_MIN) THEN
+          CALL SET_DELTA_T (DTN)
+        END IF
+        DECREMENT_COUNTER = DECREMENT_COUNTER + 1
+      END DO
+
+      IF (DECREMENT_COUNTER .EQ. MAX_DECREMENTS) THEN
+C       TODO: exit
+        WRITE (USR_O, *) 'DT decreased below minimum'
+      END IF
+C
+      END SUBROUTINE RKF45_STEP
+
+
+      SUBROUTINE STEP (N, A, B, C, LDB, YK, YN, ZN)
+C -----------------------------------------------------------------------------
+C     Advances the variable YK from T = TK to T = TK + DTK
+C
+C     OUT: YN, ZN approximations of YK(T = TK + DTK)
+C -----------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE "knd_params.inc"
+      INTEGER(KIND=IK) N
+      INTEGER(KIND=IK) LDB
+      REAL   (KIND=RK) A (LDB)
+      REAL   (KIND=RK) B (LDB, LDB)
+      REAL   (KIND=RK) C (LDB + 1, 2)
+      REAL   (KIND=RK) YK (N)
+      REAL   (KIND=RK) YN (N)
+      REAL   (KIND=RK) ZN (N)
+C
+      REAL   (KIND=RK) K  (N, LDB)
+C     Compute all the stages
+      CALL STAGES (N, A, B, LDB, YK, K)
+C     Compute next approximation
+      CALL APPROXIMATE (N, C, LDB, YK, K, YN, ZN)
+C
+      END SUBROUTINE STEP
+
+      SUBROUTINE STAGES (N, A, B, LDB, YK, K)
+C -----------------------------------------------------------------------------
+C     OUT: K the Runge Kutta stage values
+C -----------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE "knd_params.inc"
+      INCLUDE 'tme_funcs.inc'
+C
+      INTEGER(KIND=IK) N
+      INTEGER(KIND=IK) LDB
+      REAL   (KIND=RK) A (LDB)
+      REAL   (KIND=RK) B (LDB, LDB)
+      REAL   (KIND=RK) YK (N)
+C
+      INTEGER(KIND=IK) I, J
+      REAL   (KIND=RK) YI (N)
+      REAL   (KIND=RK) TK, DT
+      REAL   (KIND=RK) K  (N, LDB)
+C
+      TK = GET_TIME ()
+      DT = GET_DELTA_T ()
+      DO I = 1, LDB
+        CALL DCOPY (N, YK, 1, YI, 1)
+        DO J = 1, I - 1
+          IF (ABS (B (J, I)) .LT. 1.0E-16) THEN
+            CALL DAXPY (N, B (J, I), K (1, J), 1, YI, 1)
+          END IF
+          CALL SET_TIME (TK + DT * A (I - 1))
+        END DO
+        CALL SOLVE (N, YI, K (1, I))
+      END DO
+C     Set time back to start
+      CALL SET_TIME (TK)
+      END SUBROUTINE STAGES
+
+      SUBROUTINE APPROXIMATE (N, C, LDB, YK, K, YN, ZN)
+C -----------------------------------------------------------------------------
+C     OUT: YN, ZN
+C -----------------------------------------------------------------------------
+      IMPLICIT NONE
+      INCLUDE "knd_params.inc"
+      INTEGER(KIND=IK) N
+      INTEGER(KIND=IK) LDB
+      REAL   (KIND=RK) C (LDB + 1, 2)
+      REAL   (KIND=RK) YK (N)
+      REAL   (KIND=RK) YN (N)
+      REAL   (KIND=RK) ZN (N)
+      REAL   (KIND=RK) K  (N, LDB)
+C
+      INTEGER(KIND=IK) I
+C     Compute next step
+      CALL DCOPY (N, YK, 1, YN, 1)
+      CALL DCOPY (N, YK, 1, ZN, 1)
+      DO I = 1, LDB + 1
+        IF (ABS (C (I, 1)) .LT. 1.0E-16) THEN
+          CALL DAXPY (N, C (I, 1), K (1, I), 1, YN, 1)
+        END IF
+        IF (ABS (C (I, 2)) .LT. 1.0E-16) THEN
+          CALL DAXPY (N, C (I, 2), K (1, I), 1, ZN, 1)
+        END IF
+      END DO
+      END SUBROUTINE APPROXIMATE
+
+      FUNCTION COMPUTE_S (N, ORDER, Y, Z)
+C
+      IMPLICIT NONE
       INCLUDE "knd_params.inc"
 C
+      INTEGER(KIND=IK) N
+      INTEGER(KIND=IK) ORDER
+      REAL   (KIND=RK) Y (N)
+      REAL   (KIND=RK) Z (N)
+      REAL   (KIND=RK) COMPUTE_S
+C
+      INTEGER(KIND=IK) I
+      REAL   (KIND=RK) EPS
+      REAL   (KIND=RK) DY
+C
+      EPS = 1.0E-6
+      DY  = EPS
+      DO I = 1, N
+        DY = MAX (DY, ABS (Y (I) - Z (I)))
+      END DO
+      COMPUTE_S = (EPS / DY) ** (1.0 / DBLE (ORDER))
+      END
+
+      SUBROUTINE RKF45_CONSTANTS
+      IMPLICIT NONE
+      INCLUDE "knd_params.inc"
+C     Fehlberg
       REAL   (KIND=RK) A_FEHLBERG (5)
       REAL   (KIND=RK) B_FEHLBERG (5, 5)
       REAL   (KIND=RK) C_FEHLBERG (6, 2)
-C
+C     Cash Karp
       REAL   (KIND=RK) A_CASHKARP (5)
       REAL   (KIND=RK) B_CASHKARP (5, 5)
       REAL   (KIND=RK) C_CASHKARP (6, 2)
-C
+C     Dormand and Prince
       REAL   (KIND=RK) A_DORMANDPRINCE (6)
       REAL   (KIND=RK) B_DORMANDPRINCE (6, 6)
       REAL   (KIND=RK) C_DORMANDPRINCE (7, 2)
-
 C     Fehlberg:
       A_FEHLBERG (1) =  1.0 /  4.0
       A_FEHLBERG (2) =  3.0 /  8.0
       A_FEHLBERG (3) = 12.0 / 13.0
       A_FEHLBERG (4) =  1.0
       A_FEHLBERG (5) =  1.0 /  2.0
-
       B_FEHLBERG = 0.0
       B_FEHLBERG (1, 1) =       1.0 /    4.0
       B_FEHLBERG (1, 2) =       3.0 /   32.0
@@ -36,7 +206,6 @@ C     Fehlberg:
       B_FEHLBERG (3, 5) =   -3544.0 / 2565.0
       B_FEHLBERG (4, 5) =    1859.0 / 4104.0
       B_FEHLBERG (5, 5) =     -11.0 / 40.0
-
       C_FEHLBERG (1, 1) =    25.0 /   216.0
       C_FEHLBERG (2, 1) =     0.0
       C_FEHLBERG (3, 1) =  1408.0 /  2565.0
@@ -76,7 +245,6 @@ C switches to a stiff solver when stiffness is encountered?).
       A_CASHKARP (3) = 3.0 /  5.0
       A_CASHKARP (4) = 1.0
       A_CASHKARP (5) = 7.0 /  8.0
-
       B_CASHKARP = 0.0
       B_CASHKARP (1, 1) =     1.0 /      5.0
       B_CASHKARP (1, 2) =     3.0 /     40.0
@@ -93,14 +261,12 @@ C switches to a stiff solver when stiffness is encountered?).
       B_CASHKARP (3, 5) =   575.0 /  13828.0
       B_CASHKARP (4, 5) = 44275.0 / 110592.0
       B_CASHKARP (5, 5) =   253.0 /   4096.0
-
       C_CASHKARP (1, 1) =  37.0 /  378.0
       C_CASHKARP (2, 1) =   0.0
       C_CASHKARP (3, 1) = 250.0 /  621.0
       C_CASHKARP (4, 1) = 125.0 /  594.0
       C_CASHKARP (5, 1) =   0.0
       C_CASHKARP (6, 1) = 512.0 / 1771.0
-
       C_CASHKARP (1, 2) =  2825.0 / 27648.0
       C_CASHKARP (2, 2) =     0.0
       C_CASHKARP (3, 2) = 18575.0 / 48384.0
@@ -115,14 +281,12 @@ C it was designed to be close to optimal (i.e. minimal) principle truncation
 C error coefficient (under the restraint of also having the minimal number of
 C steps to achieve order 5). It has an order 4 interpolation which is free,
 C but needs extra steps for an order 5 interpolation.
-
       A_DORMANDPRINCE (1) = 1.0 /  5.0
       A_DORMANDPRINCE (2) = 3.0 / 10.0
       A_DORMANDPRINCE (3) = 4.0 /  5.0
       A_DORMANDPRINCE (4) = 8.0 /  9.0
       A_DORMANDPRINCE (5) = 1.0
       A_DORMANDPRINCE (6) = 1.0
-
       B_DORMANDPRINCE (1, 1) =      1.0 /     5.0
       B_DORMANDPRINCE (1, 2) =      3.0 /    40.0
       B_DORMANDPRINCE (2, 2) =      9.0 /    40.0
@@ -144,7 +308,6 @@ C but needs extra steps for an order 5 interpolation.
       B_DORMANDPRINCE (4, 6) =     125.0 /  192.0
       B_DORMANDPRINCE (5, 6) =   -2187.0 / 6784.0
       B_DORMANDPRINCE (6, 6) =      11.0 /   84.0
-
       C_DORMANDPRINCE (1, 1) =     35.0 /    384.0
       C_DORMANDPRINCE (2, 1) =      0.0
       C_DORMANDPRINCE (3, 1) =    500.0 /   1113.0
@@ -159,5 +322,5 @@ C but needs extra steps for an order 5 interpolation.
       C_DORMANDPRINCE (5, 2) = -92097.0 / 339200.0
       C_DORMANDPRINCE (6, 2) =    187.0 /   2100.0
       C_DORMANDPRINCE (7, 2) =      1.0 /      40.0
-
-      END SUBROUTINE RKF45
+C
+      END SUBROUTINE RKF45_CONSTANTS
