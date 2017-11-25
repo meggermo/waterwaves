@@ -16,27 +16,29 @@ C
       CALL SET_TIME    (0.0D0)
       CALL SET_DELTA_T (0.2D0)
       CALL SET_TBEG    (0.0D0)
-      CALL SET_TEND    (1.4D0)
+      CALL SET_TEND    (1.5D0)
 
       WRITE (*, *) GET_TIME(), GET_DELTA_T(), YK (1)
       DO WHILE (GET_TIME() .LT. GET_TEND())
-        CALL RKF45 (N, RK45_FEHLBERG, YK, YN)
-        YK (1) = YN (1)
-        WRITE (*, *) GET_TIME(), GET_DELTA_T(), YK (1)
+        CALL RKF45 (N, RK45_DORMANDPRICE, YK, YN)
+        YK = YN
+        WRITE (*, *) GET_TIME(), YK (1), TAN(GET_TIME()) - YK (1)
       END DO
       END PROGRAM TEST
 
-      SUBROUTINE SOLVE (N, X, F)
+      SUBROUTINE SOLVE (N, T, DT, X, F)
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
       INCLUDE 'tme_funcs.inc'
       INTEGER(KIND=IK) N
+      REAL   (KIND=RK) T
+      REAL   (KIND=RK) DT
       REAL   (KIND=RK) X (N)
       REAL   (KIND=RK) F (N)
-      F (1) = GET_DELTA_T () * (1.0D0 + X (1) ** 2)
+      F (1) = DT * (1.0D0 + X (1) ** 2)
       END SUBROUTINE SOLVE
 
-      SUBROUTINE RKF45_STEP (N, A, B, C, LDB, YK, YN)
+      SUBROUTINE RKF45_STEP (N, A, B, C, LDB, Y, YN)
 C -----------------------------------------------------------------------------
 C     OUT: YN
 C -----------------------------------------------------------------------------
@@ -50,57 +52,59 @@ C
       REAL   (KIND=RK) A (LDB)
       REAL   (KIND=RK) B (LDB, LDB)
       REAL   (KIND=RK) C (LDB + 1, 2)
-      REAL   (KIND=RK) YK (N)
+      REAL   (KIND=RK) Y (N)
       REAL   (KIND=RK) YN (N)
 C
       REAL   (KIND=RK) ZN (N)
-      REAL   (KIND=RK) DTK, DTN
+      REAL   (KIND=RK) T, DT, S
       REAL   (KIND=RK) DT_MIN, DT_MAX
       REAL   (KIND=RK) COMPUTE_S
       INTEGER(KIND=IK) MAX_DECREMENTS
       LOGICAL(KIND=LK) ACCEPTABLE
-      INTEGER(KIND=IK) DECREMENT_COUNTER
+      INTEGER(KIND=IK) I
 C
-      MAX_DECREMENTS = 10
-      DECREMENT_COUNTER = 0
-      DT_MIN = 1.0E-6
+      MAX_DECREMENTS = 2
+      DT_MIN = 1.0E-2
       DT_MAX = 2.0E-1
-      ACCEPTABLE = .TRUE.
-      DO WHILE (ACCEPTABLE .AND. DECREMENT_COUNTER .LE. MAX_DECREMENTS)
-C       Try to advance by DT
-        CALL STEP (N, A, B, C, LDB, YK, YN, ZN)
+      T  = GET_TIME ()
+      DT = GET_DELTA_T ()
+C
+      I = 0
+      ACCEPTABLE = .FALSE.
+      DO WHILE (.NOT. ACCEPTABLE .AND. I .LE. MAX_DECREMENTS)
+C       Take one step T + DT
+        CALL RK_STEP (N, A, B, C, T, DT, LDB, Y, YN, ZN)
 C       Now see if the approximation is acceptable
-        DTK = GET_DELTA_T()
-        DTN = DTK * COMPUTE_S (N, LDB - 2, YN, ZN)
-        IF (DTN .GE. DTK) THEN
-          IF (DTN .LE. DT_MAX) THEN
-            CALL SET_DELTA_T (DTN)
-          ELSE
-            WRITE (USR_O, *) 'DT already at maximum'
+        S = COMPUTE_S (N, LDB, DT, YN, ZN)
+        IF (S .LT. 1.0D0) THEN
+C          WRITE (*, *) 'S = ', S
+          I = I + 1
+          IF (S * DT .GT. DT_MIN) THEN
+            DT = 0.5 * DT
           END IF
-          EXIT
+        ELSE
+          IF (S * DT .LT. DT_MAX) THEN
+C            DT = 2.0 * DT
+          END IF
+          ACCEPTABLE = .TRUE.
         END IF
-        IF (DTN .GE. DT_MIN) THEN
-          ACCEPTABLE = .FALSE.
-          CALL SET_DELTA_T (DTN)
-        END IF
-        DECREMENT_COUNTER = DECREMENT_COUNTER + 1
       END DO
-      CALL SET_TIME (GET_TIME() + GET_DELTA_T())
-
-      IF (DECREMENT_COUNTER .EQ. MAX_DECREMENTS) THEN
-C       TODO: exit
+      IF (I .EQ. MAX_DECREMENTS) THEN
         WRITE (USR_O, *) 'DT decreased below minimum'
       END IF
+C
+      CALL SET_DELTA_T (DT)
+      CALL SET_TIME (T + DT)
 C
       END SUBROUTINE RKF45_STEP
 
 
-      SUBROUTINE STEP (N, A, B, C, LDB, YK, YN, ZN)
+      SUBROUTINE RK_STEP (N, A, B, C, T, DT, LDB, Y, YN, ZN)
 C -----------------------------------------------------------------------------
 C     Advances the variable YK from T = TK to T = TK + DTK
 C
-C     OUT: YN, ZN approximations of YK(T = TK + DTK)
+C     OUT: YN = Y (T = TK + DTK) + O^(LDB - 1)
+C     OUT: ZN = Y (T = TK + DTK) + O^(LDB)
 C -----------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE "knd_params.inc"
@@ -109,56 +113,57 @@ C -----------------------------------------------------------------------------
       REAL   (KIND=RK) A (LDB)
       REAL   (KIND=RK) B (LDB, LDB)
       REAL   (KIND=RK) C (LDB + 1, 2)
-      REAL   (KIND=RK) YK (N)
+      REAL   (KIND=RK) T
+      REAL   (KIND=RK) DT
+      REAL   (KIND=RK) Y (N)
       REAL   (KIND=RK) YN (N)
       REAL   (KIND=RK) ZN (N)
 C
       REAL   (KIND=RK) K  (N, LDB + 1)
 C     Compute all the stages
-      CALL STAGES (N, A, B, LDB, YK, K)
+      CALL RK_STAGES (N, A, B, T, DT, LDB, Y, K)
 C     Compute next approximation
-      CALL APPROXIMATE (N, C, LDB, YK, K, YN, ZN)
+      CALL DCOPY (N, Y, 1, YN, 1)
+      CALL DCOPY (N, Y, 1, ZN, 1)
+      CALL RK_APPROXIMATE (N, C, LDB, K, YN, ZN)
 C
-      END SUBROUTINE STEP
+      END SUBROUTINE RK_STEP
 
-      SUBROUTINE STAGES (N, A, B, LDB, YK, K)
+      SUBROUTINE RK_STAGES (N, A, B, T, DT, LDB, Y, K)
 C -----------------------------------------------------------------------------
 C     OUT: K the Runge Kutta stage values
 C -----------------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE "knd_params.inc"
-      INCLUDE 'tme_funcs.inc'
 C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) LDB
       REAL   (KIND=RK) A (LDB)
       REAL   (KIND=RK) B (LDB, LDB)
-      REAL   (KIND=RK) YK (N)
+      REAL   (KIND=RK) T
+      REAL   (KIND=RK) DT
+      REAL   (KIND=RK) Y (N)
 C
       INTEGER(KIND=IK) I, J
       REAL   (KIND=RK) YI (N)
-      REAL   (KIND=RK) TK, DT, ALPHA, BETA
+      REAL   (KIND=RK) ALPHA, BETA
       REAL   (KIND=RK) K  (N, LDB + 1)
 C
-      TK = GET_TIME ()
-      DT = GET_DELTA_T ()
+      ALPHA = 1.0D0
       DO I = 1, LDB + 1
-        CALL DCOPY (N, YK, 1, YI, 1)
+        CALL DCOPY (N, Y, 1, YI, 1)
         DO J = 1, I - 1
           BETA = B (J, I - 1)
           IF (ABS (BETA) .GT. 1.0D-16) THEN
             CALL DAXPY (N, BETA, K (1, J), 1, YI, 1)
           END IF
           ALPHA = A (I - 1)
-          CALL SET_TIME (TK + DT * ALPHA)
         END DO
-        CALL SOLVE (N, YI, K (1, I))
+        CALL SOLVE (N, T + ALPHA * DT, DT, YI, K (1, I))
       END DO
-C     Set time back to start
-      CALL SET_TIME (TK)
-      END SUBROUTINE STAGES
+      END SUBROUTINE RK_STAGES
 
-      SUBROUTINE APPROXIMATE (N, C, LDB, YK, K, YN, ZN)
+      SUBROUTINE RK_APPROXIMATE (N, C, LDB, K, YN, ZN)
 C -----------------------------------------------------------------------------
 C     OUT: YN, ZN
 C -----------------------------------------------------------------------------
@@ -167,15 +172,12 @@ C -----------------------------------------------------------------------------
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) LDB
       REAL   (KIND=RK) C (LDB + 1, 2)
-      REAL   (KIND=RK) YK (N)
       REAL   (KIND=RK) YN (N)
       REAL   (KIND=RK) ZN (N)
-      REAL   (KIND=RK) K  (N, LDB)
+      REAL   (KIND=RK) K  (N, LDB + 1)
 C
       INTEGER(KIND=IK) I
 C     Compute next step
-      CALL DCOPY (N, YK, 1, YN, 1)
-      CALL DCOPY (N, YK, 1, ZN, 1)
       DO I = 1, LDB + 1
         IF (ABS (C (I, 1)) .GT. 1.0E-16) THEN
           CALL DAXPY (N, C (I, 1), K (1, I), 1, YN, 1)
@@ -184,16 +186,16 @@ C     Compute next step
           CALL DAXPY (N, C (I, 2), K (1, I), 1, ZN, 1)
         END IF
       END DO
-      END SUBROUTINE APPROXIMATE
+      END SUBROUTINE RK_APPROXIMATE
 
-      FUNCTION COMPUTE_S (N, ORDER, Y, Z)
+      FUNCTION COMPUTE_S (N, ORDER, DT, Y, Z)
 C
       IMPLICIT NONE
       INCLUDE "knd_params.inc"
-      INCLUDE 'tme_funcs.inc'
 C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) ORDER
+      REAL   (KIND=RK) DT
       REAL   (KIND=RK) Y (N)
       REAL   (KIND=RK) Z (N)
       REAL   (KIND=RK) COMPUTE_S
@@ -203,12 +205,16 @@ C
       REAL   (KIND=RK) DY
 C
       EPS = 2.0E-5
-      DY  = EPS
+      DY  = 1.0D-16
       DO I = 1, N
         DY = MAX (DY, ABS (Y (I) - Z (I)))
       END DO
-C      COMPUTE_S = 0.8 * (EPS * GET_DELTA_T () / DY) ** 0.25
-      COMPUTE_S = 1.0D0
+      IF (DY .LT. EPS) THEN
+        COMPUTE_S = 1.0D0
+      ELSE
+        COMPUTE_S =
+     &  (DT * EPS / DY) ** (1.0D0 / DBLE (ORDER))
+      END IF
       END
 
       SUBROUTINE RKF45 (N, IRKT, YK, YN)
@@ -341,7 +347,7 @@ C but needs extra steps for an order 5 interpolation.
       B_DORMANDPRINCE (2, 2) =      9.0 /    40.0
       B_DORMANDPRINCE (1, 3) =     44.0 /    45.0
       B_DORMANDPRINCE (2, 3) =    -56.0 /    15.0
-      B_DORMANDPRINCE (3, 4) =     32.0 /     9.0
+      B_DORMANDPRINCE (3, 3) =     32.0 /     9.0
       B_DORMANDPRINCE (1, 4) =  19372.0 /  6561.0
       B_DORMANDPRINCE (2, 4) = -25360.0 /  2187.0
       B_DORMANDPRINCE (3, 4) =  64448.0 /  6561.0
@@ -370,7 +376,7 @@ C but needs extra steps for an order 5 interpolation.
       C_DORMANDPRINCE (4, 2) =    393.0 /    640.0
       C_DORMANDPRINCE (5, 2) = -92097.0 / 339200.0
       C_DORMANDPRINCE (6, 2) =    187.0 /   2100.0
-      C_DORMANDPRINCE (7, 2) =      1.0 /      40.0
+      C_DORMANDPRINCE (7, 2) =      1.0 /     40.0
 C
       IF (IRKT .EQ. RK45_FEHLBERG) THEN
         CALL RKF45_STEP
