@@ -7,38 +7,40 @@ C
       INCLUDE 'usr_params.inc'
 C
       INTEGER(KIND=IK) N
-      REAL   (KIND=RK) YK (1)
-      REAL   (KIND=RK) YN (1)
+      REAL   (KIND=RK) YK (3)
+      REAL   (KIND=RK) YN (3)
 C
-      N = 1
+      N = 3
       YK (1) = 0.0D0
+      YK (2) = 1.0D0
+      YK (3) = 0.0D0
 C
-      CALL SET_TIME    (0.0D0)
       CALL SET_DELTA_T (0.2D0)
       CALL SET_TBEG    (0.0D0)
-      CALL SET_TEND    (1.5D0)
+      CALL SET_TEND    (1.4D0)
+      CALL SET_TIME    (GET_TBEG())
 
-      WRITE (*, *) GET_TIME(), GET_DELTA_T(), YK (1)
+      WRITE (*, *) GET_TIME(), YK
       DO WHILE (GET_TIME() .LT. GET_TEND())
-        CALL RKF45 (N, RK45_DORMANDPRICE, YK, YN)
+        CALL ADAPTIVE_RK (N, RK45_DORMANDPRICE, YK, YN)
         YK = YN
-        WRITE (*, *) GET_TIME(), YK (1), TAN(GET_TIME()) - YK (1)
+        WRITE (*, *) GET_TIME(), YK
       END DO
       END PROGRAM TEST
 
-      SUBROUTINE SOLVE (N, T, DT, X, F)
+      SUBROUTINE SOLVE (N, T, X, F)
       IMPLICIT NONE
       INCLUDE 'knd_params.inc'
-      INCLUDE 'tme_funcs.inc'
       INTEGER(KIND=IK) N
       REAL   (KIND=RK) T
-      REAL   (KIND=RK) DT
       REAL   (KIND=RK) X (N)
       REAL   (KIND=RK) F (N)
-      F (1) = DT * (1.0D0 + X (1) ** 2)
+      F (1) =  X (2)
+      F (2) = -X (1)
+      F (3) = 1.0D0 + X (3) ** 2
       END SUBROUTINE SOLVE
 
-      SUBROUTINE RKF45_STEP (N, A, B, C, LDB, Y, YN)
+      SUBROUTINE ADAPTIVE_RK_STEP (N, A, B, C, LDB, Y, YN)
 C -----------------------------------------------------------------------------
 C     OUT: YN
 C -----------------------------------------------------------------------------
@@ -77,7 +79,7 @@ C       Take one step T + DT
 C       Now see if the approximation is acceptable
         S = COMPUTE_S (N, LDB, DT, YN, ZN)
         IF (S .LT. 1.0D0) THEN
-C          WRITE (*, *) 'S = ', S
+          WRITE (*, *) 'S = ', S
           I = I + 1
           IF (S * DT .GT. DT_MIN) THEN
             DT = 0.5 * DT
@@ -96,7 +98,7 @@ C
       CALL SET_DELTA_T (DT)
       CALL SET_TIME (T + DT)
 C
-      END SUBROUTINE RKF45_STEP
+      END SUBROUTINE ADAPTIVE_RK_STEP
 
 
       SUBROUTINE RK_STEP (N, A, B, C, T, DT, LDB, Y, YN, ZN)
@@ -125,7 +127,7 @@ C     Compute all the stages
 C     Compute next approximation
       CALL DCOPY (N, Y, 1, YN, 1)
       CALL DCOPY (N, Y, 1, ZN, 1)
-      CALL RK_APPROXIMATE (N, C, LDB, K, YN, ZN)
+      CALL RK_APPROXIMATION (N, C, LDB, K, YN, ZN)
 C
       END SUBROUTINE RK_STEP
 
@@ -159,11 +161,12 @@ C
           END IF
           ALPHA = A (I - 1)
         END DO
-        CALL SOLVE (N, T + ALPHA * DT, DT, YI, K (1, I))
+        CALL SOLVE (N, T + ALPHA * DT, YI, K (1, I))
+        CALL DSCAL (N, DT, K (1, I), 1)
       END DO
       END SUBROUTINE RK_STAGES
 
-      SUBROUTINE RK_APPROXIMATE (N, C, LDB, K, YN, ZN)
+      SUBROUTINE RK_APPROXIMATION (N, C, LDB, K, YN, ZN)
 C -----------------------------------------------------------------------------
 C     OUT: YN, ZN
 C -----------------------------------------------------------------------------
@@ -186,7 +189,7 @@ C     Compute next step
           CALL DAXPY (N, C (I, 2), K (1, I), 1, ZN, 1)
         END IF
       END DO
-      END SUBROUTINE RK_APPROXIMATE
+      END SUBROUTINE RK_APPROXIMATION
 
       FUNCTION COMPUTE_S (N, ORDER, DT, Y, Z)
 C
@@ -217,7 +220,7 @@ C
       END IF
       END
 
-      SUBROUTINE RKF45 (N, IRKT, YK, YN)
+      SUBROUTINE ADAPTIVE_RK (N, IRKT, YK, YN)
 C
       IMPLICIT NONE
       INCLUDE "knd_params.inc"
@@ -379,16 +382,16 @@ C but needs extra steps for an order 5 interpolation.
       C_DORMANDPRINCE (7, 2) =      1.0 /     40.0
 C
       IF (IRKT .EQ. RK45_FEHLBERG) THEN
-        CALL RKF45_STEP
+        CALL ADAPTIVE_RK_STEP
      &       (N, A_FEHLBERG, B_FEHLBERG, C_FEHLBERG, 5
      &       , YK, YN)
       ELSE IF (IRKT .EQ. RK45_CASHKARP) THEN
-        CALL RKF45_STEP
+        CALL ADAPTIVE_RK_STEP
      &       (N, A_CASHKARP, B_CASHKARP, C_CASHKARP, 5
      &       , YK, YN)
       ELSE IF (IRKT .EQ. RK45_DORMANDPRICE) THEN
-        CALL RKF45_STEP
+        CALL ADAPTIVE_RK_STEP
      &       (N, A_DORMANDPRINCE, B_DORMANDPRINCE, C_DORMANDPRINCE, 6
      &       , YK, YN)
       END IF
-      END SUBROUTINE RKF45
+      END SUBROUTINE ADAPTIVE_RK
