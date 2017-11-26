@@ -26,7 +26,7 @@ C
 
       WRITE (*, *) GET_TIME(), YK
       DO WHILE (GET_TIME() .LT. GET_TEND())
-        CALL ADAPTIVE_RK (N, RK45_DORMANDPRICE, YK, YN)
+        CALL ADAPTIVE_RK (N, RK45_CASHKARP, YK, YN)
         YK = YN
         WRITE (*, *) GET_TIME(), YK
       END DO
@@ -230,6 +230,7 @@ C
       INCLUDE "knd_params.inc"
       INCLUDE "rk45_params.inc"
 C
+C
       INTEGER(KIND=IK) N
       INTEGER(KIND=IK) IRKT
       REAL   (KIND=RK) YK (N)
@@ -302,39 +303,51 @@ C that case you may want to use a different method like a W-Rosenbrock method).
 C This is one reason why this pair hasn't become standard over the DP5 pair,
 C but it still can be useful (maybe it would be good for a hybrid method which
 C switches to a stiff solver when stiffness is encountered?).
+
+
+
+
       A_CASHKARP (1) = 1.0 /  5.0
       A_CASHKARP (2) = 3.0 / 10.0
       A_CASHKARP (3) = 3.0 /  5.0
       A_CASHKARP (4) = 1.0
       A_CASHKARP (5) = 7.0 /  8.0
+
       B_CASHKARP = 0.0
+
       B_CASHKARP (1, 1) =     1.0 /      5.0
+
       B_CASHKARP (1, 2) =     3.0 /     40.0
       B_CASHKARP (2, 2) =     9.0 /     40.0
+
       B_CASHKARP (1, 3) =     3.0 /     10.0
       B_CASHKARP (2, 3) =    -9.0 /     10.0
       B_CASHKARP (3, 3) =     6.0 /      5.0
+
       B_CASHKARP (1, 4) =   -11.0 /     54.0
       B_CASHKARP (2, 4) =     5.0 /      2.0
       B_CASHKARP (3, 4) =   -70.0 /     27.0
       B_CASHKARP (4, 4) =    35.0 /     27.0
+
       B_CASHKARP (1, 5) =  1631.0 /  55296.0
       B_CASHKARP (2, 5) =   175.0 /    512.0
-      B_CASHKARP (3, 5) =   575.0 /  13828.0
+      B_CASHKARP (3, 5) =   575.0 /  13824.0
       B_CASHKARP (4, 5) = 44275.0 / 110592.0
       B_CASHKARP (5, 5) =   253.0 /   4096.0
+
       C_CASHKARP (1, 1) =  37.0 /  378.0
       C_CASHKARP (2, 1) =   0.0
       C_CASHKARP (3, 1) = 250.0 /  621.0
       C_CASHKARP (4, 1) = 125.0 /  594.0
       C_CASHKARP (5, 1) =   0.0
       C_CASHKARP (6, 1) = 512.0 / 1771.0
+
       C_CASHKARP (1, 2) =  2825.0 / 27648.0
       C_CASHKARP (2, 2) =     0.0
       C_CASHKARP (3, 2) = 18575.0 / 48384.0
       C_CASHKARP (4, 2) = 13525.0 / 55296.0
       C_CASHKARP (5, 2) =   277.0 / 14336.0
-      C_CASHKARP (6, 2) =     1.0 /    40.0
+      C_CASHKARP (6, 2) =     1.0 /     4.0
 
 C Dormand-Prince 4/5
 C The Dormand-Prince method was developed to be accurate as a 4/5 pair with
