@@ -95,6 +95,7 @@ C
       INTEGER(KIND=IK) I, J
       REAL   (KIND=RK) X_XI, Z_XI, J_I, PROD, DIFF
       REAL   (KIND=RK) W (NGP, 8)
+      REAL   (KIND=RK) U_L (2), U_G (2)
 C
       INTEGER(KIND=IK) IDAMAX
       EXTERNAL         IDAMAX
@@ -127,7 +128,11 @@ C
          W (I, 5) = CRD (2, I) -  W (I,7)
          W (I, 6) = ABS (W (I, 1))
          W (I, 7) = ABS (W (I, 3))
-         WRITE (PLT_CRD, 1001) (CRD (J,I), J = 1, 4), W (I,5)
+         U_L (1) = PHI (2, I) * J_I
+         U_L (2) = PHN (1, I)
+         U_G (1) = J_I * (CRD (3, I) * U_L (1) - CRD (4, I) * U_L (2))
+         U_G (2) = J_I * (CRD (3, I) * U_L (2) + CRD (4, I) * U_L (1))
+         WRITE (PLT_CRD, 1001) (CRD (J,I), J = 1, 4), U_G
          WRITE (PLT_PHI, 1001)  PHI (1,I), PHI (2,I), W (I,1), W (I,2)
          WRITE (PLT_PHN, 1001)  PHN (1,I), PHN (2,I), W (I,3), W (I,4)
       END DO
