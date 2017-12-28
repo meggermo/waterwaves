@@ -1,0 +1,88 @@
+1	# nr. of subdomains
+4 # nr. of networls
+9 9 17 5 # nr of nodes per network
+3 # polynomial
+  0.0  0.0  1.0  0.0  0.0 # coefficients
+
+0.0 # begin time
+0.0 # end time
+0.0 # delta time
+  1 # plot modulo
+
+    1.0E-012  1.0E-012 # absolute and relative integration errors
+    1.0E-012  1.0E-012 0.0E+00  0.0E+00  500 # tolerances for iterative scheme, omega's and max iter of iterative scheme
+
+TRUE	# CHK_EQNS
+TRUE	# CHK_COEFS_PRE
+TRUE	# CHK_COEFS_POST
+TRUE  # CHK_CONTOUR
+
+4 2 2 1 # network connectivity
+0 # interface index (for domain decomposition)
+4 # plot type
+
+1 D # analytic D = Dirichlet, N = Neumann
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+1 # Grid type
+   1.0  0.0
+   0.0  1.0
+   0.0  0.0  0.0  0.0  0.0  0.0
+0 # Grid motion type
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+0
+1 1 1 1 # spline type
+
+1 2 3 1
+0
+4
+1 N
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+1
+   0.0   1.0
+  -1.0   0.0
+   0.0   2.0  0.0  0.0  0.0  0.0
+0               # GMT
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+0
+1 1 1 1
+
+2 2 4 1
+0
+4
+1 N
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+1
+  -1.0  0.0
+   0.0 -1.0
+   0.0 0.0  0.0  0.0  0.0  0.0
+0
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+0
+1 1 1 1
+
+3 2 1 1
+0
+4
+1 N
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+1
+   0.0  -1.0
+   1.0   0.0
+   0.0   0.0  0.0  0.0  0.0  0.0
+0
+  0.0  0.0  0.0  0.0  0.0
+  0.0  0.0  0.0  0.0  0.0
+0
+1 1 1 1
+
+
+#------------------------------------------------------------------------------
+# END OF INPUT
+#------------------------------------------------------------------------------
