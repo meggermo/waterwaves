@@ -1,0 +1,30 @@
+author = "Michiel Eggermont"
+copyright = "Copyright 2024, Michiel Eggermont"
+description = "Boundary Elements for Water Waves"
+license = "MIT"
+maintainer = "michiel.eggermont@gmail.com"
+name = "f2018"
+version = "0.1.0"
+
+[build]
+auto-examples = true
+auto-executables = true
+auto-tests = true
+link = ["blas", "lapack"]
+module-naming = false
+
+[install]
+library = false
+
+[fortran]
+implicit-external = false
+implicit-typing = false
+source-form = "free"
+
+[dependencies]
+quadrature-fortran = {git = "https://github.com/jacobwilliams/quadrature-fortran.git"}
+stdlib = "*"
+toml-f = {git = "https://github.com/toml-f/toml-f"}
+
+[dev-dependencies]
+test-drive = {git = "https://github.com/fortran-lang/test-drive", tag = "v0.4.0"}

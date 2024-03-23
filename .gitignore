@@ -21,4 +21,4 @@ src/splinetest
 *.out
 octave-workspace
 .tags*
-
+*.mod
