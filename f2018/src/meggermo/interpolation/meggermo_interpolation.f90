@@ -8,17 +8,40 @@ module meggermo_interpolation
    public :: &
       spline_weights, &
       overhauser_weights, &
-      overhauser_n1, &
-      overhauser_n2, &
-      overhauser_n3, &
-      overhauser_n4
+      overhauser, &
+      overhauser_n1, d_overhauser_n1, &
+      overhauser_n2, d_overhauser_n2, &
+      overhauser_n3, d_overhauser_n3, &
+      overhauser_n4, d_overhauser_n4
 
 contains
+
+   function overhauser(i, t) result(n)
+      integer, intent(in) :: i
+      real(kind=real64), intent(in) :: t
+      real(kind=real64) :: n
+      select case (i)
+      case (1)
+         n = overhauser_n1(t)
+      case (2)
+         n = overhauser_n2(t)
+      case (3)
+         n = overhauser_n3(t)
+      case (4)
+         n = overhauser_n4(t)
+      end select
+
+   end function
 
    elemental function overhauser_n1(t) result(n)
       real(kind=real64), intent(in) :: t
       real(kind=real64) :: n
       n = -0.5*t*(t - 1.0)**2
+   end function
+   elemental function d_overhauser_n1(t) result(n)
+      real(kind=real64), intent(in) :: t
+      real(kind=real64) :: n
+      n = -1.5*t*t + 2.0*t - 0.5
    end function
 
    elemental function overhauser_n2(t) result(n)
@@ -26,11 +49,21 @@ contains
       real(kind=real64) :: n
       n = 0.5*(t - 1.0)*(3.0*t**2 - 2.0*t - 2.0)
    end function
+   elemental function d_overhauser_n2(t) result(n)
+      real(kind=real64), intent(in) :: t
+      real(kind=real64) :: n
+      n = 4.5*t*t - 5.0*t
+   end function
 
    elemental function overhauser_n3(t) result(n)
       real(kind=real64), intent(in) :: t
       real(kind=real64) :: n
       n = -0.5*t*(3.0*t**2 - 4.0*t - 1.0)
+   end function
+   elemental function d_overhauser_n3(t) result(n)
+      real(kind=real64), intent(in) :: t
+      real(kind=real64) :: n
+      n = -4.5*t*t + 4.0*t + 0.5
    end function
 
    elemental function overhauser_n4(t) result(n)
@@ -38,10 +71,15 @@ contains
       real(kind=real64) :: n
       n = 0.5*t*t*(t - 1.0)
    end function
+   elemental function d_overhauser_n4(t) result(n)
+      real(kind=real64), intent(in) :: t
+      real(kind=real64) :: n
+      n = 1.5*t*t - t
+   end function
 
    subroutine overhauser_weights(t, w)
       real(kind=real64), intent(in) :: t
-      real(kind=real64), intent(inout) :: w(4)
+      real(kind=real64), intent(out) :: w(4)
       w(1) = overhauser_n1(t)
       w(2) = overhauser_n2(t)
       w(3) = overhauser_n3(t)
@@ -73,19 +111,6 @@ contains
       w(2, 2) = -6.0*s*(s - 1.0)
       w(3, 2) = (3.0*s - 1.0)*(s - 1.0)
       w(4, 2) = (3.0*s - 2.0)*s
-   end subroutine
-
-   subroutine spline(f, g)
-      real(kind=real64), intent(in), dimension(:, :) :: f
-      real(kind=real64), intent(out), dimension(:, :) :: g
-      real(kind=real64), dimension(size(f, 2), size(f, 1) + 1) :: w
-      call setup_diags(w)
-   end subroutine
-
-   subroutine setup_diags(d)
-      real(kind=real64), intent(out), dimension(:, :) :: d
-      d(:, 1) = 1.0
-      d(:, 2) = 0.25
    end subroutine
 
 end module

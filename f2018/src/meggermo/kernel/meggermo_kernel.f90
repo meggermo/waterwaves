@@ -2,10 +2,17 @@ module meggermo_kernel
 
    use, intrinsic :: iso_fortran_env, only: real64
 
+   use :: quadrature_module, only: &
+      integration_class_1d, &
+      quadrature_method, set_of_quadrature_methods
+
+   use :: meggermo_interpolation, only: &
+      overhauser
+
    implicit none
    private
 
-   public ElemParams, KernelParams, kernel_params, G_ij, H_ij
+   public ElemParams, KernelParams, Kernel, G_Kernel, H_Kernel, kernel_params, G_ij, H_ij, kernel_function, integrate_kernels
 
    type KernelParams
       real(kind=real64) :: Jac
@@ -21,7 +28,57 @@ module meggermo_kernel
       procedure :: to_kernel_params => kernel_params
    end type
 
+   type, abstract, extends(integration_class_1d) :: Kernel
+      type(ElemParams) :: ep
+      integer :: i
+   end type
+   type, extends(Kernel) :: G_Kernel
+   end type
+   type, extends(Kernel) :: H_Kernel
+   end type
+
 contains
+
+   subroutine integrate_kernels(tol, npoints, gk, hk, g_int, h_int)
+      real(kind=real64), intent(in) :: tol
+      integer, intent(in) :: npoints
+      class(G_Kernel), intent(inout) :: gk
+      class(H_Kernel), intent(inout) :: hk
+      real(kind=real64), intent(out) :: g_int(4)
+      real(kind=real64), intent(out) :: h_int(4)
+
+      integer :: i, ierr
+      real(kind=real64) :: err
+      real(kind=real64), parameter :: a = 0.0
+      real(kind=real64), parameter :: b = 1.0
+      do i = 1, 4
+         gk%i = i
+         hk%i = i
+         call gk%initialize(kernel_function, a, b, tol, npoints)
+         call gk%integrate(g_int(i), ierr, err)
+         call hk%initialize(kernel_function, a, b, tol, npoints)
+         call hk%integrate(h_int(i), ierr, err)
+      end do
+   end subroutine
+
+   real(kind=real64) function kernel_function(ker, t) result(I)
+
+      class(integration_class_1d), intent(inout)  :: ker
+      real(kind=real64), intent(in) :: t
+
+      type(KernelParams) :: kp
+
+      select type (ker)
+      class is (Kernel)
+         call ker%ep%to_kernel_params(t, kp)
+         select type (ker)
+         class is (G_Kernel)
+            I = overhauser(ker%i, t)*G_IJ(kp)
+         class is (H_Kernel)
+            I = overhauser(ker%i, t)*H_IJ(kp)
+         end select
+      end select
+   end function
 
    subroutine kernel_params(ep, t, kp)
 
