@@ -4,7 +4,7 @@ module meggermo_kernel
 
    use :: quadrature_module, only: &
       integration_class_1d, &
-      quadrature_method, set_of_quadrature_methods
+      quadrature_method
 
    use :: meggermo_interpolation, only: &
       overhauser
@@ -70,7 +70,7 @@ contains
 
       select type (ker)
       class is (Kernel)
-         call ker%ep%to_kernel_params(t, kp)
+         call kernel_params(ker%ep, t, kp)
          select type (ker)
          class is (G_Kernel)
             I = overhauser(ker%i, t)*G_IJ(kp)

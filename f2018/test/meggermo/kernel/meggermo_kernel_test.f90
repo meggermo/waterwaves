@@ -44,37 +44,33 @@ contains
       type(G_Kernel) :: gk
       type(H_Kernel) :: hk
 
-      integer :: i, npoints
+      integer :: npoints
 
       data ep%x_e(1, :)/-1.0, 0.0/
       data ep%x_e(2, :)/0.0, 0.0/
       data ep%x_e(3, :)/1.0, 0.0/
       data ep%x_e(4, :)/2.0, 0.0/
 
-      data ep%q/-0.0, 0.0/
+      data ep%q/0.0, 0.0/
 
-      tol = 1.0E-6
+      tol = 1.0E-12
       npoints = 6
 
       gk%ep = ep
       hk%ep = ep
       call integrate_kernels(tol, npoints, gk, hk, g_int, h_int)
-      write (output_unit, '(1X,4E18.10)') g_int, h_int
+      !write (output_unit, '(1X,4E18.10)') g_int, h_int
+      !write (output_unit, '(1X,2E18.10)') SUM(g_int), SUM(h_int)
 
    end subroutine
 
    subroutine test_kernel_params(error)
       type(error_type), allocatable, intent(out) :: error
-      integer :: ierr
-      real(dp) :: t, g, h, g_ans, h_ans, err, a, b, tol
-      real(dp) :: g_int(4)
-      real(dp) :: h_int(4)
+      real(dp) :: t, g, h
       type(ElemParams) :: ep
       type(KernelParams) :: kp
-      type(G_Kernel) :: gk
-      type(H_Kernel) :: hk
 
-      integer :: i, npoints
+      integer :: i
 
       data ep%x_e(1, :)/-1.5, 1.5/
       data ep%x_e(2, :)/-0.5, 0.5/
@@ -83,14 +79,6 @@ contains
 
       data ep%q/-0.0, 0.0/
 
-      tol = 1.0E-6
-      npoints = 6
-
-      gk%ep = ep
-      hk%ep = ep
-      call integrate_kernels(tol, npoints, gk, hk, g_int, h_int)
-      write (output_unit, '(1X,4E18.10)') g_int, h_int
-
       do i = 0, 50
          t = 0.02*i
          call ep%to_kernel_params(t, kp)
@@ -98,9 +86,9 @@ contains
          call check(error, dot_product(kp%n, kp%n), 1.0_dp)
          g = G_ij(kp)
          h = H_ij(kp)
-         write (output_unit, '(1X,10(";",E18.8))') t, &
-            n1(t)*g, n2(t)*g, n3(t)*g, n4(t)*g, &
-            n1(t)*h, n2(t)*h, n3(t)*h, n4(t)*h
+         !write (output_unit, '(1X,10(";",E18.8))') t, &
+         !   n1(t)*g, n2(t)*g, n3(t)*g, n4(t)*g, &
+         !   n1(t)*h, n2(t)*h, n3(t)*h, n4(t)*h
       end do
 
    end subroutine
