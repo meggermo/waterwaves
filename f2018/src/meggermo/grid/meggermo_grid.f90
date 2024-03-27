@@ -33,13 +33,14 @@ contains
       J = sqrt(dot_product(dx, dx))
       n(1) = dx(2)/J
       n(2) = -dx(1)/J
+      
       do i = -1, ne + 1
          grid%x(1:2, i + 1) = x_b + i*dx
          grid%J(i + 1) = J
-         grid%n(1, i + 1) = dx(2)/J
-         grid%n(2, i + 1) = -dx(1)/J
+         grid%n(1, i + 1) = n(1)
+         grid%n(2, i + 1) = n(2)
       end do
-      !call grid%compute_geom()
+      
    end subroutine
 
    ! ---------------------------------
