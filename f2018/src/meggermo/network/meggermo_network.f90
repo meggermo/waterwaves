@@ -1,9 +1,7 @@
 module meggermo_network
 
-   use, intrinsic :: iso_fortran_env, only: real64
-   use :: meggermo_grid, only:T_Grid
-   use :: meggermo_vars, only:T_Vars
-   use :: meggermo_kernel, only :: ElemParams
+   use meggermo_grid, only: T_Grid
+   use meggermo_vars, only: T_Vars
 
    implicit none
    private
@@ -16,6 +14,7 @@ module meggermo_network
    contains
       procedure :: element_view => network_element_view
    end type
+
    type T_ElementView
       integer :: element_index
       type(T_Grid) :: grid

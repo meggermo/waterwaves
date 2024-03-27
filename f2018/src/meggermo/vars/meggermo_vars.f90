@@ -19,15 +19,15 @@ contains
    ! ---------------------------------
    ! Allocation functions
    ! ---------------------------------
-   type(T_Vars) function allocate_vars(nr_of_nodes)
+   type(T_Vars) function allocate_vars(nr_of_elemtents)
       !
-      integer, intent(in):: nr_of_nodes
+      integer, intent(in):: nr_of_elemtents
       !
       real(kind=real64), allocatable :: phi(:, :)
       real(kind=real64), allocatable :: phn(:, :)
       !
-      allocate (phi(2, 0:nr_of_nodes + 1))
-      allocate (phn(2, 0:nr_of_nodes + 1))
+      allocate (phi(2, 0:nr_of_elemtents + 2))
+      allocate (phn(2, 0:nr_of_elemtents + 2))
       !
       allocate_vars = T_Vars(phi, phn)
    end function

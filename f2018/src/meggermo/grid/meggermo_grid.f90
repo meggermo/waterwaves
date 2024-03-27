@@ -5,7 +5,7 @@ module meggermo_grid
    implicit none
    private
 
-   public :: T_Grid, allocate_grid
+   public :: T_Grid, allocate_grid, create_linear_grid
 
    type T_Grid
       real(rk), allocatable :: x(:, :)
@@ -18,6 +18,29 @@ module meggermo_grid
    end type
 
 contains
+
+   subroutine create_linear_grid(x_b, x_e, grid)
+      !
+      real(rk), intent(in) :: x_b(2)
+      real(rk), intent(in) :: x_e(2)
+      class(T_Grid), intent(inout) :: grid
+      !
+      real(rk) :: dx(2), n(2), J
+      integer :: i, ne
+      !
+      ne = grid%nr_of_elements()
+      dx = (x_e - x_b)/ne
+      J = sqrt(dot_product(dx, dx))
+      n(1) = dx(2)/J
+      n(2) = -dx(1)/J
+      do i = -1, ne + 1
+         grid%x(1:2, i + 1) = x_b + i*dx
+         grid%J(i + 1) = J
+         grid%n(1, i + 1) = dx(2)/J
+         grid%n(2, i + 1) = -dx(1)/J
+      end do
+      !call grid%compute_geom()
+   end subroutine
 
    ! ---------------------------------
    ! Allocation functions
@@ -62,18 +85,26 @@ contains
       integer :: i, n
       real(rk) :: x_t(2)
       !
+
       n = grid%nr_of_elements()
-      do i = 1, n
+
+      do i = 1, n + 1
          x_t = 0.5*(grid%x(:, i + 1) - grid%x(:, i - 1))
          grid%J(i) = sqrt(dot_product(x_t, x_t))
          grid%n(1, i) = x_t(2)/grid%J(i)
          grid%n(2, i) = -x_t(1)/grid%J(i)
       end do
-      i = n + 1
-      x_t = 0.5*(grid%x(:, i) - grid%x(:, i - 1))
-      grid%J(i) = sqrt(dot_product(x_t, x_t))
-      grid%n(1, i) = x_t(2)/grid%J(i)
-      grid%n(2, i) = -x_t(1)/grid%J(i)
+
+      i = 0
+      grid%x(:, i) = 2.0*(grid%x(:, i + 1) - grid%x(:, i + 3)) + grid%x(:, i + 4)
+      grid%n(:, i) = 2.0*(grid%n(:, i + 1) - grid%n(:, i + 3)) + grid%n(:, i + 4)
+      grid%J(i) = 2.0*(grid%J(i + 1) - grid%J(i + 3)) + grid%J(i + 4)
+
+      i = n + 2
+      grid%x(:, i) = 2.0*(grid%x(:, i - 1) - grid%x(:, i - 3)) + grid%x(:, i - 4)
+      grid%n(:, i) = 2.0*(grid%n(:, i - 1) - grid%n(:, i - 3)) + grid%n(:, i - 4)
+      grid%J(i) = 2.0*(grid%J(i - 1) - grid%J(i - 3)) + grid%J(i - 4)
+
    end subroutine
 
 end module
