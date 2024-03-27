@@ -131,7 +131,7 @@ C
       INTEGER(KIND=IK) BCT, SPT
       INTEGER(KIND=IK) JGP, KGP, IED
       REAL   (KIND=RK) W (8)
-      REAL   (KIND=RK) ALPHA, EPS, DELTA (2), JAC, XI
+      REAL   (KIND=RK) ALPHA, EPS, D1 (2), D2(2), JAC, XI
       PARAMETER       (ALPHA = 5.0D-1)
       PARAMETER       (EPS   = 1.0D-3)
 C
@@ -147,10 +147,9 @@ C
             IF (SPT .NE. 0) THEN
               JAC =
      &        SQRT (CRD (1, 2, KGP) ** 2 + CRD (2, 2, KGP) ** 2)
-              DELTA (1) = 0.0D0
-              DELTA (2) = -JAC * EPS
-              CALL LOCAL_TO_GLOBAL
-     &             (1, 2, CRD (1, 1, KGP), DELTA, DELTA)
+              D1 (1) = 0.0D0
+              D1 (2) = -JAC * EPS
+              CALL L2G(CRD (1, 1, KGP), D1, D2)
               XI = ALPHA * DBLE (3  - 2 * IED) + DBLE (IED - 1)
               CALL WEIGHT (XI, W)
               CRD_TMP (1, 1, KGP) =
@@ -158,13 +157,13 @@ C
      &             + W (2) * CRD (1, 1, JGP + 1)
      &             + W (3) * CRD (1, 2, JGP)
      &             + W (4) * CRD (1, 2, JGP + 1)
-     &             + DELTA (1)
+     &             + D2 (1)
               CRD_TMP (2, 1, KGP) =
      &               W (1) * CRD (2, 1, JGP)
      &             + W (2) * CRD (2, 1, JGP + 1)
      &             + W (3) * CRD (2, 2, JGP)
      &             + W (4) * CRD (2, 2, JGP + 1)
-     &             + DELTA (2)
+     &             + D2 (2)
               WRITE (*, *) KGP, ':',
      &        CRD_TMP (1, 1, KGP), CRD_TMP (2, 1, KGP), XI
             END IF
