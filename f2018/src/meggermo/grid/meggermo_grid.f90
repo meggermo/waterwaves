@@ -5,16 +5,19 @@ module meggermo_grid
    implicit none
    private
 
-   public :: T_Grid, allocate_grid, create_linear_grid
+   public :: T_Grid, allocate_grid, create_linear_grid, create_cubic_grid
 
    type T_Grid
       real(rk), allocatable :: x(:, :)
       real(rk), allocatable :: n(:, :)
       real(rk), allocatable :: J(:)
+      real(rk), allocatable :: K(:)
    contains
       procedure :: nr_of_elements => grid_nr_of_elements
       procedure :: element_view => grid_element_view
       procedure :: compute_geom => grid_compute_geom
+      procedure :: glo_2_loc => grid_g2l
+      procedure :: loc_2_glo => grid_l2g
    end type
 
 contains
@@ -33,14 +36,42 @@ contains
       J = sqrt(dot_product(dx, dx))
       n(1) = dx(2)/J
       n(2) = -dx(1)/J
-      
+
       do i = -1, ne + 1
          grid%x(1:2, i + 1) = x_b + i*dx
          grid%J(i + 1) = J
+         grid%K(i + 1) = 0.0
          grid%n(1, i + 1) = n(1)
          grid%n(2, i + 1) = n(2)
       end do
-      
+
+   end subroutine
+
+   subroutine create_cubic_grid(x_b, x_e, d_x, grid)
+      !
+      real(rk), intent(in) :: x_b(2)
+      real(rk), intent(in) :: x_e(2)
+      real(rk), intent(in) :: d_x(2)
+      class(T_Grid), intent(inout) :: grid
+      !
+      real(rk) :: t, dt, dx(2)
+      integer :: i, ne
+      !
+      ne = grid%nr_of_elements()
+      dx = x_e - x_b
+      dt = 1.0/ne
+
+      do i = -1, ne + 1
+         t = dt*i
+         grid%x(1:2, i + 1) = x_b + dx*cubic(t)
+      end do
+   contains
+      function cubic(x) result(f)
+         real(rk), intent(in) :: x
+         real(rk) :: f
+         f = d_x(1)*x + (3.0 - 2.0*d_x(1) - d_x(2))*x*x + (d_x(1) + d_x(2) - 2.0)*x*x*x
+      end function
+
    end subroutine
 
    ! ---------------------------------
@@ -51,14 +82,16 @@ contains
       integer, intent(in):: nr_of_elements
       !
       real(rk), allocatable :: x(:, :)
-      real(rk), allocatable :: J(:)
       real(rk), allocatable :: n(:, :)
+      real(rk), allocatable :: J(:)
+      real(rk), allocatable :: K(:)
       !
       allocate (x(2, 0:nr_of_elements + 2))
       allocate (n(2, 0:nr_of_elements + 2))
       allocate (J(0:nr_of_elements + 2))
+      allocate (K(0:nr_of_elements + 2))
       !
-      allocate_grid = T_Grid(x, n, J)
+      allocate_grid = T_Grid(x, n, J, K)
    end function
 
    ! ---------------------------------
@@ -69,7 +102,7 @@ contains
       class(T_Grid), intent(in) :: grid
       integer, intent(in) :: i
       !
-      grid_element_view = T_Grid(grid%x(:, i - 1:i + 2), grid%n(:, i - 1:i + 2), grid%J(i - 1:i + 2))
+      grid_element_view = T_Grid(grid%x(:, i - 1:i + 2), grid%n(:, i - 1:i + 2), grid%J(i - 1:i + 2), grid%K(i - 1:i + 2))
    end function
 
    integer function grid_nr_of_elements(grid)
@@ -84,7 +117,7 @@ contains
       class(T_Grid), intent(inout) :: grid
       !
       integer :: i, n
-      real(rk) :: x_t(2)
+      real(rk) :: x_t(2), dp(2)
       !
 
       n = grid%nr_of_elements()
@@ -94,18 +127,42 @@ contains
          grid%J(i) = sqrt(dot_product(x_t, x_t))
          grid%n(1, i) = x_t(2)/grid%J(i)
          grid%n(2, i) = -x_t(1)/grid%J(i)
+         dp = 0.5*(grid%x(:, i) - grid%x(:, i - 1))
+         grid%K(i) = 2.0*sqrt(dot_product(dp, dp)/dot_product(x_t, x_t)) - 1.0
       end do
 
       i = 0
       grid%x(:, i) = 2.0*(grid%x(:, i + 1) - grid%x(:, i + 3)) + grid%x(:, i + 4)
       grid%n(:, i) = 2.0*(grid%n(:, i + 1) - grid%n(:, i + 3)) + grid%n(:, i + 4)
       grid%J(i) = 2.0*(grid%J(i + 1) - grid%J(i + 3)) + grid%J(i + 4)
+      grid%K(i) = 2.0*(grid%K(i + 1) - grid%K(i + 3)) + grid%K(i + 4)
 
       i = n + 2
       grid%x(:, i) = 2.0*(grid%x(:, i - 1) - grid%x(:, i - 3)) + grid%x(:, i - 4)
       grid%n(:, i) = 2.0*(grid%n(:, i - 1) - grid%n(:, i - 3)) + grid%n(:, i - 4)
       grid%J(i) = 2.0*(grid%J(i - 1) - grid%J(i - 3)) + grid%J(i - 4)
+      grid%K(i) = 2.0*(grid%K(i - 1) - grid%K(i - 3)) + grid%K(i - 4)
 
+   end subroutine
+
+   subroutine grid_g2l(grid, f_g, f_l)
+      !
+      class(T_Grid), intent(in) :: grid
+      real(rk), intent(in), allocatable :: f_g(:, :)
+      real(rk), intent(inout), allocatable :: f_l(:, :)
+      !
+      f_l(1, :) = grid%n(2, :)*f_g(1, :) + grid%n(1, :)*f_g(2, :)
+      f_l(2, :) = grid%n(2, :)*f_g(2, :) - grid%n(1, :)*f_g(1, :)
+   end subroutine
+
+   subroutine grid_l2g(grid, f_l, f_g)
+      !
+      class(T_Grid), intent(in) :: grid
+      real(rk), intent(in), allocatable :: f_l(:, :)
+      real(rk), intent(inout), allocatable :: f_g(:, :)
+      !
+      f_g(1, :) = grid%n(2, :)*f_l(1, :) - grid%n(1, :)*f_l(2, :)
+      f_g(2, :) = grid%n(2, :)*f_l(2, :) + grid%n(1, :)*f_l(1, :)
    end subroutine
 
 end module
