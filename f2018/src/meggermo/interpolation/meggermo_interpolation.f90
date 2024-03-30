@@ -12,10 +12,46 @@ module meggermo_interpolation
       overhauser_n1, d_overhauser_n1, &
       overhauser_n2, d_overhauser_n2, &
       overhauser_n3, d_overhauser_n3, &
-      overhauser_n4, d_overhauser_n4
+      overhauser_n4, d_overhauser_n4, &
+      n_1, n_2, n_3, n_4
 
 contains
 
+   elemental real(real64) function n_1(x, k1)
+      real(real64), intent(in) :: x
+      real(real64), intent(in) :: k1
+      n_1 = -(1.0 - k1)**2/(1 + k1)*(x**3 - x**2 - x + 1)/16.0
+   end function
+
+   elemental real(real64) function n_2(x, k1, k2)
+      real(real64), intent(in) :: x
+      real(real64), intent(in) :: k1, k2
+      !
+      real(real64) :: a3, a2, a1, a0
+      a3 = 3.0 - k1 + k2 + k1*k2
+      a2 = -1.0 + 3.0*k1 + k2 + k1*k2
+      a1 = -11.0 - 7.0*k1 - k2 - k1*k2
+      a0 = 9.0 + 5.0*k1 - k2 - k1*k2
+      n_2 = 1.0/(1 + k1)*(a3*x**3 + a2*x**2 + a1*x + a0)/16.0
+   end function
+
+   elemental real(real64) function n_3(x, k1, k2)
+      real(real64), intent(in) :: x
+      real(real64), intent(in) :: k1, k2
+      !
+      real(real64) :: a3, a2, a1, a0
+      a3 = 3.0 - k1 + k2 + k1*k2
+      a2 = 1.0 + k1 + 3.0*k2 - k1*k2
+      a1 = -11.0 + k1 + 7.0*k2 - k1*k2
+      a0 = -9.0 - k1 + 5.0*k2 + k1*k2
+      n_3 = -1.0/(1 - k2)*(a3*x**3 + a2*x**2 + a1*x + a0)/16.0
+   end function
+
+   elemental real(real64) function n_4(x, k2)
+      real(real64), intent(in) :: x
+      real(real64), intent(in) :: k2
+      n_4 = (1.0 + k2)**2/(1 - k2)*(x**3 + x**2 - x - 1)/16.0
+   end function
 
    function overhauser(i, t) result(n)
       integer, intent(in) :: i

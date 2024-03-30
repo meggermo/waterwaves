@@ -21,7 +21,47 @@ module meggermo_grid
    end type
 
 contains
+   ! ---------------------------------
+   ! Allocation functions
+   ! ---------------------------------
+   type(T_Grid) function allocate_grid(nr_of_elements)
+      !
+      integer, intent(in):: nr_of_elements
+      !
+      real(rk), allocatable :: x(:, :)
+      real(rk), allocatable :: n(:, :)
+      real(rk), allocatable :: J(:)
+      real(rk), allocatable :: K(:)
+      !
+      allocate (x(2, 0:nr_of_elements + 2))
+      allocate (n(2, 0:nr_of_elements + 2))
+      allocate (J(0:nr_of_elements + 2))
+      allocate (K(0:nr_of_elements + 2))
+      !
+      allocate_grid = T_Grid(x, n, J, K)
+   end function
 
+   ! ---------------------------------
+   ! Element view functions
+   ! ---------------------------------
+   type(T_Grid) function grid_element_view(grid, i)
+      !
+      class(T_Grid), intent(in) :: grid
+      integer, intent(in) :: i
+      !
+      grid_element_view = T_Grid(grid%x(:, i - 1:i + 2), grid%n(:, i - 1:i + 2), grid%J(i - 1:i + 2), grid%K(i - 1:i + 2))
+   end function
+
+   integer function grid_nr_of_elements(grid)
+      !
+      class(T_Grid), intent(inout) :: grid
+      !
+      grid_nr_of_elements = size(grid%x, 2) - 3
+   end function
+
+   ! ---------------------------------
+   ! Grid generation routines
+   ! ---------------------------------
    subroutine create_linear_grid(x_b, x_e, grid)
       !
       real(rk), intent(in) :: x_b(2)
@@ -65,6 +105,7 @@ contains
          t = dt*i
          grid%x(1:2, i + 1) = x_b + dx*cubic(t)
       end do
+
    contains
       function cubic(x) result(f)
          real(rk), intent(in) :: x
@@ -74,61 +115,28 @@ contains
 
    end subroutine
 
-   ! ---------------------------------
-   ! Allocation functions
-   ! ---------------------------------
-   type(T_Grid) function allocate_grid(nr_of_elements)
-      !
-      integer, intent(in):: nr_of_elements
-      !
-      real(rk), allocatable :: x(:, :)
-      real(rk), allocatable :: n(:, :)
-      real(rk), allocatable :: J(:)
-      real(rk), allocatable :: K(:)
-      !
-      allocate (x(2, 0:nr_of_elements + 2))
-      allocate (n(2, 0:nr_of_elements + 2))
-      allocate (J(0:nr_of_elements + 2))
-      allocate (K(0:nr_of_elements + 2))
-      !
-      allocate_grid = T_Grid(x, n, J, K)
-   end function
-
-   ! ---------------------------------
-   ! Element view functions
-   ! ---------------------------------
-   type(T_Grid) function grid_element_view(grid, i)
-      !
-      class(T_Grid), intent(in) :: grid
-      integer, intent(in) :: i
-      !
-      grid_element_view = T_Grid(grid%x(:, i - 1:i + 2), grid%n(:, i - 1:i + 2), grid%J(i - 1:i + 2), grid%K(i - 1:i + 2))
-   end function
-
-   integer function grid_nr_of_elements(grid)
-      !
-      class(T_Grid), intent(inout) :: grid
-      !
-      grid_nr_of_elements = size(grid%x, 2) - 3
-   end function
-
    subroutine grid_compute_geom(grid)
       !
       class(T_Grid), intent(inout) :: grid
       !
       integer :: i, n
-      real(rk) :: x_t(2), dp(2)
+      real(rk) :: x_t(2), dx1(2), dx2(2), arc_len(2)
       !
 
       n = grid%nr_of_elements()
 
+      dx1 = grid%x(:, 1) - grid%x(:, 0)
+      arc_len(1) = sqrt(dot_product(dx1, dx1))
       do i = 1, n + 1
          x_t = 0.5*(grid%x(:, i + 1) - grid%x(:, i - 1))
          grid%J(i) = sqrt(dot_product(x_t, x_t))
          grid%n(1, i) = x_t(2)/grid%J(i)
          grid%n(2, i) = -x_t(1)/grid%J(i)
-         dp = 0.5*(grid%x(:, i) - grid%x(:, i - 1))
-         grid%K(i) = 2.0*sqrt(dot_product(dp, dp)/dot_product(x_t, x_t)) - 1.0
+         dx2 = grid%x(:, i + 1) - grid%x(:, i)
+         arc_len(2) = sqrt(dot_product(dx2, dx2))
+         grid%K(i) = 2.0*arc_len(1)/sum(arc_len) - 1.0
+         dx1 = dx2
+         arc_len(1) = arc_len(2)
       end do
 
       i = 0
@@ -145,6 +153,9 @@ contains
 
    end subroutine
 
+   ! ---------------------------------
+   ! Coordinate transformations
+   ! ---------------------------------
    subroutine grid_g2l(grid, f_g, f_l)
       !
       class(T_Grid), intent(in) :: grid
