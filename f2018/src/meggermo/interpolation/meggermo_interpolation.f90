@@ -13,20 +13,54 @@ module meggermo_interpolation
       overhauser_n2, d_overhauser_n2, &
       overhauser_n3, d_overhauser_n3, &
       overhauser_n4, d_overhauser_n4, &
-      n_1, n_2, n_3, n_4
+      eval, n_1, n_2, n_3, n_4, &
+      n_weights, dn_weights
 
 contains
+
+   real(real64) function eval(x, k1, k2, f)
+      real(real64), intent(in) :: x, k1, k2, f(4)
+      ! Local variables
+      real(real64) :: w(4)
+      call n_weights(x, k1, k2, w)
+      eval = dot_product(w, f)
+   end function
+
+   subroutine n_weights(x, k1, k2, w)
+      real(real64), intent(in) :: x, k1, k2
+      real(real64), intent(out) :: w(4)
+      ! Local variables
+      w(1) = n_1(x, k1)
+      w(2) = n_2(x, k1, k2)
+      w(3) = n_3(x, k1, k2)
+      w(4) = n_4(x, k2)
+   end subroutine
+
+   subroutine dn_weights(x, k1, k2, w)
+      real(real64), intent(in) :: x, k1, k2
+      real(real64), intent(out) :: w(4)
+      ! Local variables
+      w(1) = dn_1(x, k1)
+      w(2) = dn_2(x, k1, k2)
+      w(3) = dn_3(x, k1, k2)
+      w(4) = dn_4(x, k2)
+   end subroutine
 
    elemental real(real64) function n_1(x, k1)
       real(real64), intent(in) :: x
       real(real64), intent(in) :: k1
-      n_1 = -(1.0 - k1)**2/(1 + k1)*(x**3 - x**2 - x + 1)/16.0
+      n_1 = -(1.0 - k1)**2/(1 + k1)*(x**3 - x**2 - x + 1.0)/16.0
+   end function
+   elemental real(real64) function dn_1(x, k1)
+      real(real64), intent(in) :: x
+      real(real64), intent(in) :: k1
+      dn_1 = -(1.0 - k1)**2/(1 + k1)*(3.0*x**2 - 2.0*x - 1.0)/8.0
    end function
 
    elemental real(real64) function n_2(x, k1, k2)
       real(real64), intent(in) :: x
       real(real64), intent(in) :: k1, k2
-      !
+      ! local variables
       real(real64) :: a3, a2, a1, a0
       a3 = 3.0 - k1 + k2 + k1*k2
       a2 = -1.0 + 3.0*k1 + k2 + k1*k2
@@ -34,11 +68,21 @@ contains
       a0 = 9.0 + 5.0*k1 - k2 - k1*k2
       n_2 = 1.0/(1 + k1)*(a3*x**3 + a2*x**2 + a1*x + a0)/16.0
    end function
+   elemental real(real64) function dn_2(x, k1, k2)
+      real(real64), intent(in) :: x
+      real(real64), intent(in) :: k1, k2
+      ! local variables
+      real(real64) :: a3, a2, a1
+      a3 = 3.0 - k1 + k2 + k1*k2
+      a2 = -1.0 + 3.0*k1 + k2 + k1*k2
+      a1 = -11.0 - 7.0*k1 - k2 - k1*k2
+      dn_2 = 1.0/(1 + k1)*(3.0*a3*x**2 + 2.0*a2*x + a1)/8.0
+   end function
 
    elemental real(real64) function n_3(x, k1, k2)
       real(real64), intent(in) :: x
       real(real64), intent(in) :: k1, k2
-      !
+      ! local variables
       real(real64) :: a3, a2, a1, a0
       a3 = 3.0 - k1 + k2 + k1*k2
       a2 = 1.0 + k1 + 3.0*k2 - k1*k2
@@ -46,11 +90,26 @@ contains
       a0 = -9.0 - k1 + 5.0*k2 + k1*k2
       n_3 = -1.0/(1 - k2)*(a3*x**3 + a2*x**2 + a1*x + a0)/16.0
    end function
+   elemental real(real64) function dn_3(x, k1, k2)
+      real(real64), intent(in) :: x
+      real(real64), intent(in) :: k1, k2
+      ! local variables
+      real(real64) :: a3, a2, a1
+      a3 = 3.0 - k1 + k2 + k1*k2
+      a2 = 1.0 + k1 + 3.0*k2 - k1*k2
+      a1 = -11.0 + k1 + 7.0*k2 - k1*k2
+      dn_3 = -1.0/(1 - k2)*(3.0*a3*x**2 + 2.0*a2*x + a1)/8.0
+   end function
 
    elemental real(real64) function n_4(x, k2)
       real(real64), intent(in) :: x
       real(real64), intent(in) :: k2
-      n_4 = (1.0 + k2)**2/(1 - k2)*(x**3 + x**2 - x - 1)/16.0
+      n_4 = (1.0 + k2)**2/(1 - k2)*(x**3 + x**2 - x - 1.0)/16.0
+   end function
+   elemental real(real64) function dn_4(x, k2)
+      real(real64), intent(in) :: x
+      real(real64), intent(in) :: k2
+      dn_4 = (1.0 + k2)**2/(1 - k2)*(3.0*x**2 + 2.0*x - 1.0)/8.0
    end function
 
    function overhauser(i, t) result(n)

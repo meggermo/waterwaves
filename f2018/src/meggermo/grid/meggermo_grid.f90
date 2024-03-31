@@ -1,6 +1,7 @@
 module meggermo_grid
 
-   use, intrinsic :: iso_fortran_env, only: rk => real64
+   use, intrinsic :: iso_fortran_env, only: rk => real64, output_unit
+   use :: meggermo_interpolation, only:n_weights, dn_weights
 
    implicit none
    private
@@ -18,9 +19,11 @@ module meggermo_grid
       procedure :: compute_geom => grid_compute_geom
       procedure :: glo_2_loc => grid_g2l
       procedure :: loc_2_glo => grid_l2g
+      procedure :: print => grid_print
    end type
 
 contains
+
    ! ---------------------------------
    ! Allocation functions
    ! ---------------------------------
@@ -77,12 +80,12 @@ contains
       n(1) = dx(2)/J
       n(2) = -dx(1)/J
 
-      do i = -1, ne + 1
-         grid%x(1:2, i + 1) = x_b + i*dx
-         grid%J(i + 1) = J
-         grid%K(i + 1) = 0.0
-         grid%n(1, i + 1) = n(1)
-         grid%n(2, i + 1) = n(2)
+      do i = 0, ne + 2
+         grid%x(1:2, i) = x_b + (i - 1)*dx
+         grid%J(i) = J
+         grid%K(i) = 0.0
+         grid%n(1, i) = n(1)
+         grid%n(2, i) = n(2)
       end do
 
    end subroutine
@@ -101,9 +104,9 @@ contains
       dx = x_e - x_b
       dt = 1.0/ne
 
-      do i = -1, ne + 1
-         t = dt*i
-         grid%x(1:2, i + 1) = x_b + dx*cubic(t)
+      do i = 0, ne + 2
+         t = dt*(i - 1)
+         grid%x(1:2, i) = x_b + dx*cubic(t)
       end do
 
    contains
@@ -116,40 +119,79 @@ contains
    end subroutine
 
    subroutine grid_compute_geom(grid)
-      !
       class(T_Grid), intent(inout) :: grid
+      ! Local variables
+      integer :: n
       !
-      integer :: i, n
-      real(rk) :: x_t(2), dx1(2), dx2(2), arc_len(2)
-      !
-
       n = grid%nr_of_elements()
+      call compute_kappa(grid%x, grid%K)
+      call compute_jac_and_normal(grid%x, grid%K, grid%J, grid%n)
 
-      dx1 = grid%x(:, 1) - grid%x(:, 0)
-      arc_len(1) = sqrt(dot_product(dx1, dx1))
-      do i = 1, n + 1
-         x_t = 0.5*(grid%x(:, i + 1) - grid%x(:, i - 1))
-         grid%J(i) = sqrt(dot_product(x_t, x_t))
-         grid%n(1, i) = x_t(2)/grid%J(i)
-         grid%n(2, i) = -x_t(1)/grid%J(i)
-         dx2 = grid%x(:, i + 1) - grid%x(:, i)
-         arc_len(2) = sqrt(dot_product(dx2, dx2))
-         grid%K(i) = 2.0*arc_len(1)/sum(arc_len) - 1.0
-         dx1 = dx2
-         arc_len(1) = arc_len(2)
-      end do
+   contains
 
-      i = 0
-      grid%x(:, i) = 2.0*(grid%x(:, i + 1) - grid%x(:, i + 3)) + grid%x(:, i + 4)
-      grid%n(:, i) = 2.0*(grid%n(:, i + 1) - grid%n(:, i + 3)) + grid%n(:, i + 4)
-      grid%J(i) = 2.0*(grid%J(i + 1) - grid%J(i + 3)) + grid%J(i + 4)
-      grid%K(i) = 2.0*(grid%K(i + 1) - grid%K(i + 3)) + grid%K(i + 4)
+      subroutine compute_kappa(x, kappa)
+         real(rk), allocatable, intent(in) :: x(:, :)
+         real(rk), allocatable, intent(inout) :: kappa(:)
+         ! Local variables
+         integer :: i
+         real(rk) :: dx1(2), dx2(2), arc_len(2)
+         ! Assume arc lenght of virtual points are equal to adjacent
+         ! element results in a normalization parameter (kappa) of zero.
+         kappa(0) = 0.0
+         kappa(n + 2) = 0.0
+         ! Compute acr-length approximations and derive  kappa from it
+         dx1 = x(:, 1) - x(:, 0)
+         arc_len(1) = sqrt(dot_product(dx1, dx1))
+         do i = 1, n + 1
+            dx2 = x(:, i + 1) - x(:, i)
+            arc_len(2) = sqrt(dot_product(dx2, dx2))
+            kappa(i) = 2.0*arc_len(1)/sum(arc_len) - 1.0
+            dx1 = dx2
+            arc_len(1) = arc_len(2)
+         end do
+      end subroutine
 
-      i = n + 2
-      grid%x(:, i) = 2.0*(grid%x(:, i - 1) - grid%x(:, i - 3)) + grid%x(:, i - 4)
-      grid%n(:, i) = 2.0*(grid%n(:, i - 1) - grid%n(:, i - 3)) + grid%n(:, i - 4)
-      grid%J(i) = 2.0*(grid%J(i - 1) - grid%J(i - 3)) + grid%J(i - 4)
-      grid%K(i) = 2.0*(grid%K(i - 1) - grid%K(i - 3)) + grid%K(i - 4)
+      subroutine compute_jac_and_normal(x, kappa, jac, normal)
+         real(rk), allocatable, intent(in) :: x(:, :)
+         real(rk), allocatable, intent(in) :: kappa(:)
+         real(rk), allocatable, intent(inout) :: jac(:)
+         real(rk), allocatable, intent(inout) :: normal(:, :)
+         ! Local variables
+         integer :: i
+         real(rk) :: dw(4), dx(2)
+
+         i = 0
+         call dn_weights(-2.0_rk, kappa(i), kappa(i + 1), dw)
+         dx(1) = dot_product(dw, x(1, i:i + 3))
+         dx(2) = dot_product(dw, x(2, i:i + 3))
+         jac(i) = sqrt(dot_product(dx, dx))
+         normal(1, i) = dx(2)/jac(i)
+         normal(2, i) = -dx(1)/jac(i)
+
+         do i = 1, n
+            call dn_weights(-1.0_rk, kappa(i), kappa(i + 1), dw)
+            dx(1) = dot_product(dw, x(1, i - 1:i + 2))
+            dx(2) = dot_product(dw, x(2, i - 1:i + 2))
+            jac(i) = sqrt(dot_product(dx, dx))
+            normal(1, i) = dx(2)/jac(i)
+            normal(2, i) = -dx(1)/jac(i)
+         end do
+         i = n + 1
+         call dn_weights(1.0_rk, kappa(i), kappa(i + 1), dw)
+         dx(1) = dot_product(dw, x(1, i - 2:i + 1))
+         dx(2) = dot_product(dw, x(2, i - 2:i + 1))
+         jac(i) = sqrt(dot_product(dx, dx))
+         normal(1, i) = dx(2)/jac(i)
+         normal(2, i) = -dx(1)/jac(i)
+
+         i = n + 2
+         call dn_weights(2.0_rk, kappa(i - 1), kappa(i), dw)
+         dx(1) = dot_product(dw, x(1, i - 3:i))
+         dx(2) = dot_product(dw, x(2, i - 3:i))
+         jac(i) = sqrt(dot_product(dx, dx))
+         normal(1, i) = dx(2)/jac(i)
+         normal(2, i) = -dx(1)/jac(i)
+      end subroutine
 
    end subroutine
 
@@ -174,6 +216,21 @@ contains
       !
       f_g(1, :) = grid%n(2, :)*f_l(1, :) - grid%n(1, :)*f_l(2, :)
       f_g(2, :) = grid%n(2, :)*f_l(2, :) + grid%n(1, :)*f_l(1, :)
+   end subroutine
+
+   ! ---------------------------------
+   ! Printing
+   ! ---------------------------------
+   subroutine grid_print(grid)
+      class(T_Grid), intent(in) :: grid
+      write (output_unit, '(2A18)') "X", "Y"
+      write (output_unit, '(2E18.8)') grid%x
+      write (output_unit, '(2A18)') "Nx", "Ny"
+      write (output_unit, '(2E18.8)') grid%n
+      write (output_unit, '(A18)') "Jac"
+      write (output_unit, '(E18.8)') grid%J
+      write (output_unit, '(A18)') "Kappa"
+      write (output_unit, '(E18.8)') grid%K
    end subroutine
 
 end module

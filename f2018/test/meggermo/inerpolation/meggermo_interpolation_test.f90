@@ -9,7 +9,7 @@ module meggermo_interpolation_test
       overhauser_n2, &
       overhauser_n3, &
       overhauser_n4, &
-      n_1, n_2, n_3, n_4
+      eval, n_1, n_2, n_3, n_4, dn_weights
 
    implicit none
    private
@@ -24,7 +24,32 @@ contains
       testsuite = [ &
                   new_unittest("test_spine_weights", test_spline_weights), &
                   new_unittest("test_overhauser_weights", test_overhauser_weights), &
-                  new_unittest("test_wighted_overhauser", test_weighted_overhauser)]
+                  new_unittest("test_wighted_overhauser", test_weighted_overhauser), &
+                  new_unittest("test_wighted_overhauser_derivs", test_weighted_overhauser_derivs)]
+   end subroutine
+
+   subroutine test_weighted_overhauser_derivs(error)
+      type(error_type), allocatable, intent(out) :: error
+      !
+      real(dp) :: dw(4), x, k1, k2
+
+      x = -1.0
+      k1 = 0.0
+      k2 = 0.0
+      call dn_weights(x, k1, k2, dw)
+      write (*, *) dw
+      call check(error, dw(1), -0.5_dp)
+      call check(error, dw(2), 0.0_dp)
+      call check(error, dw(3), 0.5_dp)
+      call check(error, dw(4), 0.0_dp)
+      x = 1.0
+      call dn_weights(x, k1, k2, dw)
+      write (*, *) dw
+      call check(error, dw(1), 0.0_dp)
+      call check(error, dw(2), -0.5_dp)
+      call check(error, dw(3), 0.0_dp)
+      call check(error, dw(4), 0.5_dp)
+
    end subroutine
 
    subroutine test_weighted_overhauser(error)
