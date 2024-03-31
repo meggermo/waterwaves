@@ -136,7 +136,7 @@ contains
          integer :: i
          real(rk) :: dx1(2), dx2(2), arc_len(2)
          ! Assume arc lenght of virtual points are equal to adjacent
-         ! element results in a normalization parameter (kappa) of zero.
+         ! element so that normalization parameter (kappa) is zero.
          kappa(0) = 0.0
          kappa(n + 2) = 0.0
          ! Compute acr-length approximations and derive  kappa from it
@@ -145,6 +145,8 @@ contains
          do i = 1, n + 1
             dx2 = x(:, i + 1) - x(:, i)
             arc_len(2) = sqrt(dot_product(dx2, dx2))
+            ! Because the ratio of arc lenghts is what we need
+            ! it is not so important that we use a crude approximation
             kappa(i) = 2.0*arc_len(1)/sum(arc_len) - 1.0
             dx1 = dx2
             arc_len(1) = arc_len(2)
@@ -161,6 +163,7 @@ contains
          real(rk) :: dw(4), dx(2)
 
          i = 0
+         ! Use extralopation to compute values in virtual point
          call dn_weights(-2.0_rk, kappa(i), kappa(i + 1), dw)
          dx(1) = dot_product(dw, x(1, i:i + 3))
          dx(2) = dot_product(dw, x(2, i:i + 3))
@@ -169,6 +172,7 @@ contains
          normal(2, i) = -dx(1)/jac(i)
 
          do i = 1, n
+            ! Use left side interpolation to approximate internal points
             call dn_weights(-1.0_rk, kappa(i), kappa(i + 1), dw)
             dx(1) = dot_product(dw, x(1, i - 1:i + 2))
             dx(2) = dot_product(dw, x(2, i - 1:i + 2))
@@ -177,6 +181,7 @@ contains
             normal(2, i) = -dx(1)/jac(i)
          end do
          i = n + 1
+         ! Use right side interpolation to approximate internal point of last element
          call dn_weights(1.0_rk, kappa(i), kappa(i + 1), dw)
          dx(1) = dot_product(dw, x(1, i - 2:i + 1))
          dx(2) = dot_product(dw, x(2, i - 2:i + 1))
@@ -185,6 +190,7 @@ contains
          normal(2, i) = -dx(1)/jac(i)
 
          i = n + 2
+         ! Use extralopation to compute values in virtual point
          call dn_weights(2.0_rk, kappa(i - 1), kappa(i), dw)
          dx(1) = dot_product(dw, x(1, i - 3:i))
          dx(2) = dot_product(dw, x(2, i - 3:i))
