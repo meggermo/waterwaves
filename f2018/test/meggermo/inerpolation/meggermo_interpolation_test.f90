@@ -49,14 +49,12 @@ contains
       g(1) = dot_product(w, f(1:4))
       call dn_weights(1.0_dp, k1, k2, w)
       g(2) = dot_product(w, f(1:4))
-      write (*, *) 'g = ', g
       call check(error, abs(g(1) - g(2)) .LT. 1.0E-6)
 
       call dn_weights(-1.0_dp, k1, k2, w)
       g(1) = dot_product(w, f(2:5))
       call dn_weights(1.0_dp, k1, k2, w)
       g(2) = dot_product(w, f(2:5))
-      write (*, *) 'g = ', g
       call check(error, abs(g(1) - g(2)) .LT. 1.0E-6)
 
    end subroutine
