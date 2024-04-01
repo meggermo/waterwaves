@@ -90,16 +90,17 @@ contains
       real(dp) :: x_e(2)
       real(dp) :: d_x(2, 2)
 
-      data x_b/-2.0, 0.0/
-      data x_e/2.0, 0.0/
+      data x_b/-0.0, 0.0/
+      data x_e/4.0, 0.0/
       data d_x/ &
-         0.9, 1.0, &
-         0.9, 1.0/
+         0.75, 0.0, &
+         0.75, 0.0/
 
-      ne = 4
+      ne = 2
       grid = allocate_grid(ne)
       call create_cubic_grid(x_b, x_e, d_x, grid)
       call grid%compute_geom()
+      call grid%print()
 
    end subroutine
 
@@ -113,16 +114,17 @@ contains
       real(dp) :: d_x(2, 2)
 
       data x_b/0.0, 0.0/
-      data x_e/3.0, 3.0/
+      data x_e/2.0, 2.0/
       data d_x/ &
          1.0, 1.0, &
          1.0, 1.0/
 
-      ne = 3
+      ne = 2
       J = sqrt(2.0_dp)
       grid = allocate_grid(ne)
       call create_cubic_grid(x_b, x_e, d_x, grid)
       call grid%compute_geom()
+      call grid%print()
 
       do i = 1, ne
          d_x(:, 1) = abs(grid%x(:, i) + 1.0_dp - i)

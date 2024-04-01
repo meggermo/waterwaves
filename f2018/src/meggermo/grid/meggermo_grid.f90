@@ -132,10 +132,6 @@ contains
 
    subroutine grid_compute_geom(grid)
       class(T_Grid), intent(inout) :: grid
-      ! Local variables
-      integer :: ne
-      !
-      ne = grid%nr_of_elements()
       call compute_kappa(grid%x, grid%K)
       call compute_jac_and_normal(grid%x, grid%K, grid%J, grid%n)
 
@@ -145,20 +141,21 @@ contains
          real(rk), allocatable, intent(in) :: x(:, :)
          real(rk), allocatable, intent(inout) :: kappa(:, :)
          ! Local variables
-         integer :: i
+         integer :: ie, ne
          real(rk) :: dx1(2), dx2(2), dx3(2), arc_len(3)
          ! Compute acr-length approximations and derive  kappa from it
-         do i = 1, ne
-            dx1 = x(:, i) - x(:, i - 1)
+         ne = grid%nr_of_elements()
+         do ie = 1, ne
+            dx1 = x(:, ie) - x(:, ie - 1)
             arc_len(1) = sqrt(dot_product(dx1, dx1))
-            dx2 = x(:, i + 1) - x(:, i)
+            dx2 = x(:, ie + 1) - x(:, ie)
             arc_len(2) = sqrt(dot_product(dx2, dx2))
-            dx3 = x(:, i + 2) - x(:, i + 1)
+            dx3 = x(:, ie + 2) - x(:, ie + 1)
             arc_len(3) = sqrt(dot_product(dx3, dx3))
             ! Because the ratio of arc lenghts is what we need
             ! it is not so important that we use a crude approximation
-            kappa(1, i) = 2.0*arc_len(1)/sum(arc_len(1:2)) - 1.0
-            kappa(2, i) = 2.0*arc_len(3)/sum(arc_len(2:3)) - 1.0
+            kappa(1, ie) = 2.0*arc_len(1)/sum(arc_len(1:2)) - 1.0
+            kappa(2, ie) = 2.0*arc_len(3)/sum(arc_len(2:3)) - 1.0
          end do
       end subroutine
 
@@ -168,28 +165,27 @@ contains
          real(rk), allocatable, intent(inout) :: jac(:)
          real(rk), allocatable, intent(inout) :: normal(:, :)
          ! Local variables
-         integer :: i
+         integer :: ie, ne
          real(rk) :: dw(4), dx(2)
 
-         ! Use right side interpolation to approximate internal point of last element
-         call dn_weights(-1.0_rk, kappa(1, 1), kappa(2, 1), dw)
-         dx(1) = dot_product(dw, x(1, 0:3))
-         dx(2) = dot_product(dw, x(2, 0:3))
-         ! write (*, *) i, ':', dx, dw
-         jac(1) = sqrt(dot_product(dx, dx))
-         normal(1, 1) = dx(2)/jac(1)
-         normal(2, 1) = -dx(1)/jac(1)
-
-         do i = 1, ne
-            ! Use left side interpolation to approximate internal points
-            call dn_weights(1.0_rk, kappa(1, i), kappa(2, i), dw)
-            dx(1) = dot_product(dw, x(1, i - 1:i + 2))
-            dx(2) = dot_product(dw, x(2, i - 1:i + 2))
-            ! write (*, *) i, ':', dx, dw
-            jac(i + 1) = sqrt(dot_product(dx, dx))
-            normal(1, i + 1) = dx(2)/jac(i + 1)
-            normal(2, i + 1) = -dx(1)/jac(i + 1)
+         ne = grid%nr_of_elements()
+         do ie = 1, ne
+            call dn_weights(-1.0_rk, kappa(1, ie), kappa(2, ie), dw)
+            write (*, '(I2,2E14.4,4E14.2)') ie, dx, dw
+            dx(1) = dot_product(dw, x(1, ie - 1:ie + 2))
+            dx(2) = dot_product(dw, x(2, ie - 1:ie + 2))
+            jac(ie) = sqrt(dot_product(dx, dx))
+            normal(1, ie) = dx(2)/jac(ie)
+            normal(2, ie) = -dx(1)/jac(ie)
          end do
+         ie = ne
+         ! Use right side interpolation to approximate internal point of last element
+         call dn_weights(1.0_rk, kappa(1, ie), kappa(2, ie), dw)
+         dx(1) = dot_product(dw, x(1, ie - 1:ie + 2))
+         dx(2) = dot_product(dw, x(2, ie - 1:ie + 2))
+         jac(ne + 1) = sqrt(dot_product(dx, dx))
+         normal(1, ne + 1) = dx(2)/jac(ne + 1)
+         normal(2, ne + 1) = -dx(1)/jac(ne + 1)
 
       end subroutine
 
