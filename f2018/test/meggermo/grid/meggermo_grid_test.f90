@@ -23,7 +23,8 @@ contains
                   new_unittest("test_grid_allocation", test_grid_allocation), &
                   new_unittest('test_linear_grid_creation', test_linear_grid_creation), &
                   new_unittest('test_cubic_grid_creation', test_cubic_grid_creation), &
-                  new_unittest('test_glo_2_loc', test_glo_2_loc)]
+                  new_unittest('test_glo_2_loc', test_glo_2_loc), &
+                  new_unittest('test_cubic_compressed_grid', test_cubic_compressed_grid)]
    end subroutine
 
    subroutine test_grid_allocation(error)
@@ -56,25 +57,49 @@ contains
       call create_linear_grid(x_b, x_e, grid)
 
       J = sqrt(2.0_dp)
-      do i = 0, ne + 2
+      do i = 1, ne
          call check(error, grid%x(1, i), -1.0_dp + i)
          call check(error, grid%x(2, i), -1.0_dp + i)
          call check(error, grid%J(i), J)
-         call check(error, grid%K(i), 0.0_dp)
+         call check(error, grid%K(1, i), 0.0_dp)
+         call check(error, grid%K(2, i), 0.0_dp)
          call check(error, grid%n(1, i), 1.0_dp/J)
          call check(error, grid%n(2, i), -1.0_dp/J)
       end do
 
       call grid%compute_geom()
 
-      do i = 0, ne + 2
+      do i = 1, ne
          call check(error, grid%x(1, i), -1.0_dp + i)
          call check(error, grid%x(2, i), -1.0_dp + i)
          call check(error, grid%J(i), J)
-         call check(error, grid%K(i), 0.0_dp)
+         call check(error, grid%K(1, i), 0.0_dp)
+         call check(error, grid%K(2, i), 0.0_dp)
          call check(error, grid%n(1, i), 1.0_dp/J)
          call check(error, grid%n(2, i), -1.0_dp/J)
       end do
+
+   end subroutine
+
+   subroutine test_cubic_compressed_grid(error)
+      type(error_type), allocatable, intent(out) :: error
+      type(T_Grid) :: grid
+      integer :: i, ne
+      real(dp) :: J
+      real(dp) :: x_b(2)
+      real(dp) :: x_e(2)
+      real(dp) :: d_x(2, 2)
+
+      data x_b/-2.0, 0.0/
+      data x_e/2.0, 0.0/
+      data d_x/ &
+         0.9, 1.0, &
+         0.9, 1.0/
+
+      ne = 4
+      grid = allocate_grid(ne)
+      call create_cubic_grid(x_b, x_e, d_x, grid)
+      call grid%compute_geom()
 
    end subroutine
 
@@ -85,11 +110,13 @@ contains
       real(dp) :: J
       real(dp) :: x_b(2)
       real(dp) :: x_e(2)
-      real(dp) :: d_x(2)
+      real(dp) :: d_x(2, 2)
 
       data x_b/0.0, 0.0/
       data x_e/3.0, 3.0/
-      data d_x/1.0, 1.0/
+      data d_x/ &
+         1.0, 1.0, &
+         1.0, 1.0/
 
       ne = 3
       J = sqrt(2.0_dp)
@@ -97,12 +124,11 @@ contains
       call create_cubic_grid(x_b, x_e, d_x, grid)
       call grid%compute_geom()
 
-      do i = 0, ne + 2
-         d_x = abs(grid%x(:, i) + 1.0_dp - i)
-         call check(error, d_x(1) .LT. 1.0E-6, .TRUE.)
-         call check(error, d_x(2) .LT. 1.0E-6, .TRUE.)
+      do i = 1, ne
+         d_x(:, 1) = abs(grid%x(:, i) + 1.0_dp - i)
+         call check(error, d_x(1, 1) .LT. 1.0E-6, .TRUE.)
+         call check(error, d_x(2, 1) .LT. 1.0E-6, .TRUE.)
          call check(error, abs(grid%J(i) - J) .LT. 1.0E-6)
-         call check(error, grid%K(i), 0.0_dp)
          call check(error, grid%n(1, i), 1.0_dp/J)
          call check(error, grid%n(2, i), -1.0_dp/J)
       end do
@@ -125,8 +151,8 @@ contains
       grid = allocate_grid(ne)
       call create_linear_grid(x_b, x_e, grid)
 
-      allocate (f_g(2, ne + 3))
-      allocate (f_l(2, ne + 3))
+      allocate (f_g(2, ne + 1))
+      allocate (f_l(2, ne + 1))
       f_g(1, :) = 1.0
       f_g(2, :) = -1.0
 

@@ -9,7 +9,7 @@ module meggermo_interpolation_test
       overhauser_n2, &
       overhauser_n3, &
       overhauser_n4, &
-      eval, n_1, n_2, n_3, n_4, dn_weights
+      eval, n_1, n_2, n_3, n_4, n_weights, dn_weights
 
    implicit none
    private
@@ -31,24 +31,33 @@ contains
    subroutine test_weighted_overhauser_derivs(error)
       type(error_type), allocatable, intent(out) :: error
       !
-      real(dp) :: dw(4), x, k1, k2
+      real(dp) :: f(5), g(2), w(4), x, k1, k2
 
-      x = -1.0
-      k1 = 0.0
-      k2 = 0.0
-      call dn_weights(x, k1, k2, dw)
-      write (*, *) dw
-      call check(error, dw(1), -0.5_dp)
-      call check(error, dw(2), 0.0_dp)
-      call check(error, dw(3), 0.5_dp)
-      call check(error, dw(4), 0.0_dp)
-      x = 1.0
-      call dn_weights(x, k1, k2, dw)
-      write (*, *) dw
-      call check(error, dw(1), 0.0_dp)
-      call check(error, dw(2), -0.5_dp)
-      call check(error, dw(3), 0.0_dp)
-      call check(error, dw(4), 0.5_dp)
+      data f/1.0, 2.0, 4.0, 8.0, 16.0/
+
+      ! L_i+1 = 2 L_i => k_i = 2 / (1 + 2) - 1
+      k1 = -1.0/3.0
+      k2 = -1.0/3.0
+
+      call n_weights(1.0_dp, k1, k2, w)
+      g(2) = dot_product(w, f(1:4))
+      call n_weights(-1.0_dp, k1, k2, w)
+      g(1) = dot_product(w, f(2:5))
+      call check(error, abs(g(1) - g(2)) .LT. 1.0E-6)
+
+      call dn_weights(-1.0_dp, k1, k2, w)
+      g(1) = dot_product(w, f(1:4))
+      call dn_weights(1.0_dp, k1, k2, w)
+      g(2) = dot_product(w, f(1:4))
+      write (*, *) 'g = ', g
+      call check(error, abs(g(1) - g(2)) .LT. 1.0E-6)
+
+      call dn_weights(-1.0_dp, k1, k2, w)
+      g(1) = dot_product(w, f(2:5))
+      call dn_weights(1.0_dp, k1, k2, w)
+      g(2) = dot_product(w, f(2:5))
+      write (*, *) 'g = ', g
+      call check(error, abs(g(1) - g(2)) .LT. 1.0E-6)
 
    end subroutine
 
