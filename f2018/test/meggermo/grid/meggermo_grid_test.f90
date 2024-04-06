@@ -89,18 +89,25 @@ contains
       real(dp) :: x_b(2)
       real(dp) :: x_e(2)
       real(dp) :: d_x(2, 2)
+      real(dp), parameter :: pi = 3.1415926535897932384626433, two_pi = 2.0*pi
 
       data x_b/-0.0, 0.0/
-      data x_e/4.0, 0.0/
+      data x_e/two_pi, 0.0/
       data d_x/ &
          0.75, 0.0, &
          0.75, 0.0/
 
-      ne = 2
+      ne = 64
       grid = allocate_grid(ne)
       call create_cubic_grid(x_b, x_e, d_x, grid)
+      call grid%apply_y_function(f)
       call grid%compute_geom()
       call grid%print()
+   contains
+      real(dp) function f(x)
+         real(dp), intent(in) :: x
+         f = sin(x)
+      end function
 
    end subroutine
 

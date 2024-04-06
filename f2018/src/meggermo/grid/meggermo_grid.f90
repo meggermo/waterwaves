@@ -17,6 +17,7 @@ module meggermo_grid
       procedure :: nr_of_elements => grid_nr_of_elements
       procedure :: element_view => grid_element_view
       procedure :: compute_geom => grid_compute_geom
+      procedure :: apply_y_function => grid_apply_y_function
       procedure :: glo_2_loc => grid_g2l
       procedure :: loc_2_glo => grid_l2g
       procedure :: print => grid_print
@@ -128,6 +129,23 @@ contains
          f = alpha(1)*x + alpha(2)*x*x + alpha(3)*x*x*x
       end function
 
+   end subroutine
+
+   subroutine grid_apply_y_function(grid, f)
+      interface
+         function f(x)
+            use, intrinsic :: iso_fortran_env
+            real(real64), intent(in) :: x
+            real(real64) :: f
+         end function
+      end interface
+      class(T_Grid), intent(inout) :: grid
+      !
+      integer :: i, ne
+      ne = grid%nr_of_elements()
+      do i = 0, ne + 2
+         grid%x(2, i) = f(grid%x(1, i))
+      end do
    end subroutine
 
    subroutine grid_compute_geom(grid)
