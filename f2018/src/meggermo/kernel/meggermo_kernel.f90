@@ -1,13 +1,10 @@
 module meggermo_kernel
 
-   use, intrinsic :: iso_fortran_env, only: real64
 
-   use :: quadrature_module, only: &
-      integration_class_1d, &
-      quadrature_method
+   use :: quadrature_module, only:integration_class_1d, quadrature_method
 
-   use :: meggermo_interpolation, only: &
-      overhauser
+   use :: meggermo, only: rk
+   use :: meggermo_interpolation_overhauser, only: overhauser
 
    implicit none
    private
@@ -15,15 +12,19 @@ module meggermo_kernel
    public ElemParams, KernelParams, Kernel, G_Kernel, H_Kernel, kernel_params, G_ij, H_ij, kernel_function, integrate_kernels
 
    type KernelParams
-      real(kind=real64) :: Jac
-      real(kind=real64) :: X
-      real(kind=real64) :: p(2)
-      real(kind=real64) :: n(2)
+      real(kind=rk) :: Jac
+      !! Jacobian at t
+      real(kind=rk) :: X
+      !! Distance from p to q at t
+      real(kind=rk) :: p(2)
+      !! Point on curve at t
+      real(kind=rk) :: n(2)
+      !! Normal at t
    end type
 
    type ElemParams
-      real(kind=real64) :: x_e(4, 2)
-      real(kind=real64) :: q(2)
+      real(kind=rk) :: x_e(4, 2)
+      real(kind=rk) :: q(2)
    contains
       procedure :: to_kernel_params => kernel_params
    end type
@@ -40,17 +41,17 @@ module meggermo_kernel
 contains
 
    subroutine integrate_kernels(tol, npoints, gk, hk, g_int, h_int)
-      real(kind=real64), intent(in) :: tol
+      real(kind=rk), intent(in) :: tol
       integer, intent(in) :: npoints
       class(G_Kernel), intent(inout) :: gk
       class(H_Kernel), intent(inout) :: hk
-      real(kind=real64), intent(out) :: g_int(4)
-      real(kind=real64), intent(out) :: h_int(4)
+      real(kind=rk), intent(out) :: g_int(4)
+      real(kind=rk), intent(out) :: h_int(4)
 
       integer :: i, ierr
-      real(kind=real64) :: err
-      real(kind=real64), parameter :: a = 0.0
-      real(kind=real64), parameter :: b = 1.0
+      real(kind=rk) :: err
+      real(kind=rk), parameter :: a = 0.0
+      real(kind=rk), parameter :: b = 1.0
       do i = 1, 4
          gk%i = i
          hk%i = i
@@ -61,20 +62,20 @@ contains
       end do
    end subroutine
 
-   real(kind=real64) function kernel_function(ker, t) result(I)
+   real(kind=rk) function kernel_function(ker, t) result(I)
 
       class(integration_class_1d), intent(inout)  :: ker
-      real(kind=real64), intent(in) :: t
+      real(kind=rk), intent(in) :: t
 
       type(KernelParams) :: kp
 
       select type (ker)
-      class is (Kernel)
+       class is (Kernel)
          call kernel_params(ker%ep, t, kp)
          select type (ker)
-         class is (G_Kernel)
+          class is (G_Kernel)
             I = overhauser(ker%i, t)*G_IJ(kp)
-         class is (H_Kernel)
+          class is (H_Kernel)
             I = overhauser(ker%i, t)*H_IJ(kp)
          end select
       end select
@@ -83,14 +84,14 @@ contains
    subroutine kernel_params(ep, t, kp)
 
       class(ElemParams), intent(in) :: ep
-      real(kind=real64), intent(in) :: t
+      real(kind=rk), intent(in) :: t
       type(KernelParams), intent(out) :: kp
 
-      real(kind=real64) :: x_e(4), y_e(4)
-      real(kind=real64) :: Axy(2), A, Ab, Ac, Ad
-      real(kind=real64) :: Bxy(2), B, Bc, Bd
-      real(kind=real64) :: Cxy(2), C, Cd
-      real(kind=real64) :: Dxy(2), D
+      real(kind=rk) :: x_e(4), y_e(4)
+      real(kind=rk) :: Axy(2), A, Ab, Ac, Ad
+      real(kind=rk) :: Bxy(2), B, Bc, Bd
+      real(kind=rk) :: Cxy(2), C, Cd
+      real(kind=rk) :: Dxy(2), D
 
       x_e = ep%x_e(:, 1)
       y_e = ep%x_e(:, 2)
@@ -131,12 +132,12 @@ contains
 
    end subroutine
 
-   real(kind=real64) function H_ij(kp)
+   real(kind=rk) function H_ij(kp)
       type(KernelParams), intent(in) :: kp
       H_ij = kp%Jac*dot_product(kp%p, kp%n)/kp%X
    end function
 
-   real(kind=real64) function G_ij(kp)
+   real(kind=rk) function G_ij(kp)
       type(KernelParams), intent(in) :: kp
       G_ij = kp%Jac*log(kp%X)
    end function

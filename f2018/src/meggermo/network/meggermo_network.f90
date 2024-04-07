@@ -1,7 +1,7 @@
 module meggermo_network
 
-   use meggermo_grid, only: T_Grid
-   use meggermo_vars, only: T_Vars
+   use :: meggermo_grid, only: T_Grid
+   use :: meggermo_vars, only: T_Vars
 
    implicit none
    private

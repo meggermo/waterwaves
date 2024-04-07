@@ -1,6 +1,6 @@
 module meggermo_vars
 
-   use, intrinsic :: iso_fortran_env, only: real64
+   use :: meggermo, only: rk
 
    implicit none
    private
@@ -8,8 +8,8 @@ module meggermo_vars
    public T_Vars
 
    type T_Vars
-      real(kind=real64), allocatable :: phi(:, :)
-      real(kind=real64), allocatable :: phn(:, :)
+      real(kind=rk), allocatable :: phi(:, :)
+      real(kind=rk), allocatable :: phn(:, :)
    contains
       procedure :: element_view => vars_element_view
    end type
@@ -23,14 +23,15 @@ contains
       !
       integer, intent(in):: nr_of_elemtents
       !
-      real(kind=real64), allocatable :: phi(:, :)
-      real(kind=real64), allocatable :: phn(:, :)
+      real(kind=rk), allocatable :: phi(:, :)
+      real(kind=rk), allocatable :: phn(:, :)
       !
       allocate (phi(2, 0:nr_of_elemtents + 2))
       allocate (phn(2, 0:nr_of_elemtents + 2))
       !
       allocate_vars = T_Vars(phi, phn)
    end function
+
    ! ---------------------------------
    ! Element view functions
    ! ---------------------------------
@@ -41,4 +42,5 @@ contains
       !
       vars_element_view = T_Vars(vars%phi(:, i - 1:i + 2), vars%phn(:, i - 1:i + 2))
    end function
+
 end module

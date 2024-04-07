@@ -1,11 +1,12 @@
 module meggermo_kernel_test
 
-   use, intrinsic :: iso_fortran_env, only: real64, output_unit
    use testdrive, only: &
       error_type, &
       unittest_type, &
       new_unittest, &
       check
+
+   use :: meggermo_params
 
    use meggermo_kernel, only: &
       Kernel, G_Kernel, H_Kernel, KernelParams, ElemParams, &
@@ -14,15 +15,10 @@ module meggermo_kernel_test
       H_ij, &
       integrate_kernels
 
-   use meggermo_interpolation, only: &
-      n1 => overhauser_n1, n2 => overhauser_n2, &
-      n3 => overhauser_n3, n4 => overhauser_n4
-
    implicit none
    private
 
    public :: test_meggermo_kernel
-   integer, parameter :: dp = selected_real_kind(15)
 
 contains
 
@@ -36,9 +32,9 @@ contains
    subroutine test_integration(error)
       type(error_type), allocatable, intent(out) :: error
       integer :: ierr
-      real(dp) :: t, g, h, g_ans, h_ans, err, a, b, tol
-      real(dp) :: g_int(4)
-      real(dp) :: h_int(4)
+      real(rk) :: t, g, h, g_ans, h_ans, err, a, b, tol
+      real(rk) :: g_int(4)
+      real(rk) :: h_int(4)
       type(ElemParams) :: ep
       type(KernelParams) :: kp
       type(G_Kernel) :: gk
@@ -47,9 +43,9 @@ contains
       integer :: npoints
 
       data ep%x_e(1, :)/-1.0, 0.0/
-      data ep%x_e(2, :)/0.0, 0.0/
-      data ep%x_e(3, :)/1.0, 0.0/
-      data ep%x_e(4, :)/2.0, 0.0/
+      data ep%x_e(2, :)/ 0.0, 0.0/
+      data ep%x_e(3, :)/ 1.0, 0.0/
+      data ep%x_e(4, :)/ 2.0, 0.0/
 
       data ep%q/0.0, 0.0/
 
@@ -66,7 +62,7 @@ contains
 
    subroutine test_kernel_params(error)
       type(error_type), allocatable, intent(out) :: error
-      real(dp) :: t, g, h
+      real(rk) :: t, g, h
       type(ElemParams) :: ep
       type(KernelParams) :: kp
 
@@ -82,8 +78,8 @@ contains
       do i = 0, 50
          t = 0.02*i
          call ep%to_kernel_params(t, kp)
-         call check(error, kp%Jac, sqrt(2.0_dp))
-         call check(error, dot_product(kp%n, kp%n), 1.0_dp)
+         call check(error, kp%Jac, sqrt(2.0_rk))
+         call check(error, dot_product(kp%n, kp%n), 1.0_rk)
          g = G_ij(kp)
          h = H_ij(kp)
          !write (output_unit, '(1X,10(";",E18.8))') t, &

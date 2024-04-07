@@ -1,6 +1,6 @@
 module meggermo_grid
 
-   use, intrinsic :: iso_fortran_env, only: rk => real64, output_unit
+   use :: meggermo, only:rk
    use :: meggermo_interpolation, only:n_weights, dn_weights
 
    implicit none
@@ -134,9 +134,9 @@ contains
    subroutine grid_apply_y_function(grid, f)
       interface
          function f(x)
-            use, intrinsic :: iso_fortran_env
-            real(real64), intent(in) :: x
-            real(real64) :: f
+            import rk
+            real(rk), intent(in) :: x
+            real(rk) :: f
          end function
       end interface
       class(T_Grid), intent(inout) :: grid
@@ -236,6 +236,7 @@ contains
    ! Printing
    ! ---------------------------------
    subroutine grid_print(grid)
+      use, intrinsic :: iso_fortran_env, only: output_unit
       class(T_Grid), intent(in) :: grid
       write (output_unit, '(2A18)') "X", "Y"
       write (output_unit, '(2E18.8)') grid%x
