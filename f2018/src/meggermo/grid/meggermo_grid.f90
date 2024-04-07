@@ -1,18 +1,23 @@
 module meggermo_grid
 
-   use :: meggermo, only:rk
-   use :: meggermo_interpolation, only:n_weights, dn_weights
+   use :: meggermo, only: rk
+   use :: meggermo_interpolation, only: n_weights, dn_weights
 
    implicit none
    private
 
    public :: t_grid, t_gridtype
 
+   type :: t_gridparams
+      logical :: disable_kappa = .FALSE.
+   end type
+
    type :: t_grid
       real(rk), allocatable :: x(:, :)
       real(rk), allocatable :: n(:, :)
       real(rk), allocatable :: J(:)
       real(rk), allocatable :: K(:, :)
+      type(t_gridparams) :: grid_params
    contains
       procedure :: nr_of_elements => grid_nr_of_elements
       procedure :: element_view => grid_element_view
@@ -79,11 +84,15 @@ contains
       class(t_grid), intent(in) :: grid
       integer, intent(in) :: i
       !
-      grid_element_view = t_grid(grid%x(:, i - 1:i + 2), grid%n(:, i - 1:i + 2), grid%J(i - 1:i + 2), grid%K(:, i:i))
+      grid_element_view = t_grid(&
+         grid%x(:, i - 1:i + 2), &
+         grid%n(:, i - 1:i + 2), &
+         grid%J(i - 1:i + 2), &
+         grid%K(:, i:i), &
+         grid%grid_params)
    end function
 
    integer function grid_nr_of_elements(grid)
-      !
       class(t_grid), intent(inout) :: grid
       !
       grid_nr_of_elements = size(grid%x, 2) - 3
@@ -109,7 +118,11 @@ contains
    subroutine grid_compute_geom(grid)
       class(t_grid), intent(inout) :: grid
       !
-      call compute_kappa(grid%x, grid%K)
+      if(grid%grid_params%disable_kappa) then
+         grid%K = 0.0
+      else
+         call compute_kappa(grid%x, grid%K)
+      end if
       call compute_jac_and_normal(grid%x, grid%K, grid%J, grid%n)
 
    contains

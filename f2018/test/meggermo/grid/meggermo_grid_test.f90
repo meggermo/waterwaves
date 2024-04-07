@@ -41,11 +41,12 @@ contains
 
       grid_type%x_b = x_b
       grid_type%x_e = x_e
+      grid_type%alpha = (/0.9, 0.9/)
 
       ne = 64
       grid = grid_type%initialize(ne)
       call grid%apply_y_function(f)
-      call grid%compute_geom()
+      call grid%print()
 
    contains
       real(rk) function f(x)
