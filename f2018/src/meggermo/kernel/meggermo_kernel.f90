@@ -9,9 +9,10 @@ module meggermo_kernel
    implicit none
    private
 
-   public ElemParams, KernelParams, Kernel, G_Kernel, H_Kernel, kernel_params, G_ij, H_ij, kernel_function, integrate_kernels
+   public t_elemparams, t_kernelparams, t_kernel, t_gkernel, t_hkernel, &
+      kernel_params, G_ij, H_ij, kernel_function, integrate_kernels
 
-   type KernelParams
+   type t_kernelparams
       real(kind=rk) :: Jac
       !! Jacobian at t
       real(kind=rk) :: X
@@ -22,20 +23,20 @@ module meggermo_kernel
       !! Normal at t
    end type
 
-   type ElemParams
+   type t_elemparams
       real(kind=rk) :: x_e(4, 2)
       real(kind=rk) :: q(2)
    contains
       procedure :: to_kernel_params => kernel_params
    end type
 
-   type, abstract, extends(integration_class_1d) :: Kernel
-      type(ElemParams) :: ep
+   type, abstract, extends(integration_class_1d) :: t_kernel
+      type(t_elemparams) :: ep
       integer :: i
    end type
-   type, extends(Kernel) :: G_Kernel
+   type, extends(t_kernel) :: t_gkernel
    end type
-   type, extends(Kernel) :: H_Kernel
+   type, extends(t_kernel) :: t_hkernel
    end type
 
 contains
@@ -43,8 +44,8 @@ contains
    subroutine integrate_kernels(tol, npoints, gk, hk, g_int, h_int)
       real(kind=rk), intent(in) :: tol
       integer, intent(in) :: npoints
-      class(G_Kernel), intent(inout) :: gk
-      class(H_Kernel), intent(inout) :: hk
+      class(t_gkernel), intent(inout) :: gk
+      class(t_hkernel), intent(inout) :: hk
       real(kind=rk), intent(out) :: g_int(4)
       real(kind=rk), intent(out) :: h_int(4)
 
@@ -67,15 +68,15 @@ contains
       class(integration_class_1d), intent(inout)  :: ker
       real(kind=rk), intent(in) :: t
 
-      type(KernelParams) :: kp
+      type(t_kernelparams) :: kp
 
       select type (ker)
-       class is (Kernel)
+       class is (t_kernel)
          call kernel_params(ker%ep, t, kp)
          select type (ker)
-          class is (G_Kernel)
+          class is (t_gkernel)
             I = overhauser(ker%i, t)*G_IJ(kp)
-          class is (H_Kernel)
+          class is (t_hkernel)
             I = overhauser(ker%i, t)*H_IJ(kp)
          end select
       end select
@@ -83,9 +84,9 @@ contains
 
    subroutine kernel_params(ep, t, kp)
 
-      class(ElemParams), intent(in) :: ep
+      class(t_elemparams), intent(in) :: ep
       real(kind=rk), intent(in) :: t
-      type(KernelParams), intent(out) :: kp
+      type(t_kernelparams), intent(out) :: kp
 
       real(kind=rk) :: x_e(4), y_e(4)
       real(kind=rk) :: Axy(2), A, Ab, Ac, Ad
@@ -133,12 +134,12 @@ contains
    end subroutine
 
    real(kind=rk) function H_ij(kp)
-      type(KernelParams), intent(in) :: kp
+      type(t_kernelparams), intent(in) :: kp
       H_ij = kp%Jac*dot_product(kp%p, kp%n)/kp%X
    end function
 
    real(kind=rk) function G_ij(kp)
-      type(KernelParams), intent(in) :: kp
+      type(t_kernelparams), intent(in) :: kp
       G_ij = kp%Jac*log(kp%X)
    end function
 

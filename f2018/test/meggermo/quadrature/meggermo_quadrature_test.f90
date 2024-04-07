@@ -3,24 +3,24 @@ module meggermo_quadrature_test
    use, intrinsic :: iso_fortran_env, only: rk => real64
    use testdrive, only: check, error_type, new_unittest, unittest_type
 
-   use meggermo_integration, only: T_FunParams, integrate_trapezoid
+   use meggermo_integration, only: t_funparams, integrate_trapezoid
 
    implicit none
    private
 
    public :: run_unit_tests
 
-   type, extends(T_FunParams) :: T_FP
+   type, extends(t_funparams) :: T_FP
       real(rk) :: a = 1.0_rk
    end type
 
 contains
 
    real(rk) function f(fp, x)
-      class(T_FunParams), intent(in) :: fp
+      class(t_funparams), intent(in) :: fp
       real(rk), intent(in) :: x
       select type (fp)
-      class is (T_FP)
+       class is (T_FP)
          f = fp%a*x
       end select
    end function
@@ -28,7 +28,7 @@ contains
    subroutine run_unit_tests(testsuite)
       type(unittest_type), allocatable, intent(out) :: testsuite(:)
       testsuite = [ &
-                  new_unittest("test_integrate_trapezoid", test_integrate_trapezoid)]
+         new_unittest("test_integrate_trapezoid", test_integrate_trapezoid)]
    end subroutine
 
    subroutine test_integrate_trapezoid(error)

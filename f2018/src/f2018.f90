@@ -1,3 +1,6 @@
 module f2018
-  implicit none
+
+   implicit none
+   private
+
 end module f2018

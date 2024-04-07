@@ -5,9 +5,9 @@ module meggermo_vars
    implicit none
    private
 
-   public T_Vars
+   public t_vars
 
-   type T_Vars
+   type t_vars
       real(kind=rk), allocatable :: phi(:, :)
       real(kind=rk), allocatable :: phn(:, :)
    contains
@@ -19,7 +19,7 @@ contains
    ! ---------------------------------
    ! Allocation functions
    ! ---------------------------------
-   type(T_Vars) function allocate_vars(nr_of_elemtents)
+   type(t_vars) function allocate_vars(nr_of_elemtents)
       !
       integer, intent(in):: nr_of_elemtents
       !
@@ -29,18 +29,18 @@ contains
       allocate (phi(2, 0:nr_of_elemtents + 2))
       allocate (phn(2, 0:nr_of_elemtents + 2))
       !
-      allocate_vars = T_Vars(phi, phn)
+      allocate_vars = t_vars(phi, phn)
    end function
 
    ! ---------------------------------
    ! Element view functions
    ! ---------------------------------
-   type(T_Vars) function vars_element_view(vars, i)
+   type(t_vars) function vars_element_view(vars, i)
       !
-      class(T_Vars), intent(in) :: vars
+      class(t_vars), intent(in) :: vars
       integer, intent(in) :: i
       !
-      vars_element_view = T_Vars(vars%phi(:, i - 1:i + 2), vars%phn(:, i - 1:i + 2))
+      vars_element_view = t_vars(vars%phi(:, i - 1:i + 2), vars%phn(:, i - 1:i + 2))
    end function
 
 end module

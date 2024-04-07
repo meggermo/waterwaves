@@ -7,7 +7,7 @@ module meggermo_grid_test
       new_unittest, &
       check
 
-   use meggermo_grid, only: T_Grid, allocate_grid, create_linear_grid, create_cubic_grid
+   use meggermo_grid, only: t_grid, allocate_grid, create_linear_grid, create_cubic_grid
 
    implicit none
    private
@@ -20,16 +20,16 @@ contains
    subroutine test_meggermo_grid(testsuite)
       type(unittest_type), allocatable, intent(out) :: testsuite(:)
       testsuite = [ &
-                  new_unittest("test_grid_allocation", test_grid_allocation), &
-                  new_unittest('test_linear_grid_creation', test_linear_grid_creation), &
-                  new_unittest('test_cubic_grid_creation', test_cubic_grid_creation), &
-                  new_unittest('test_glo_2_loc', test_glo_2_loc), &
-                  new_unittest('test_cubic_compressed_grid', test_cubic_compressed_grid)]
+         new_unittest("test_grid_allocation", test_grid_allocation), &
+         new_unittest('test_linear_grid_creation', test_linear_grid_creation), &
+         new_unittest('test_cubic_grid_creation', test_cubic_grid_creation), &
+         new_unittest('test_glo_2_loc', test_glo_2_loc), &
+         new_unittest('test_cubic_compressed_grid', test_cubic_compressed_grid)]
    end subroutine
 
    subroutine test_grid_allocation(error)
       type(error_type), allocatable, intent(out) :: error
-      type(T_Grid) :: grid
+      type(t_grid) :: grid
 
       grid = allocate_grid(1)
       call check(error, grid%nr_of_elements(), 1)
@@ -41,7 +41,7 @@ contains
 
    subroutine test_linear_grid_creation(error)
       type(error_type), allocatable, intent(out) :: error
-      type(T_Grid) :: grid
+      type(t_grid) :: grid
       integer :: i, ne
       real(dp) :: J
       real(dp) :: x_b(2)
@@ -83,7 +83,7 @@ contains
 
    subroutine test_cubic_compressed_grid(error)
       type(error_type), allocatable, intent(out) :: error
-      type(T_Grid) :: grid
+      type(t_grid) :: grid
       integer :: i, ne
       real(dp) :: J
       real(dp) :: x_b(2)
@@ -113,7 +113,7 @@ contains
 
    subroutine test_cubic_grid_creation(error)
       type(error_type), allocatable, intent(out) :: error
-      type(T_Grid) :: grid
+      type(t_grid) :: grid
       integer :: i, ne
       real(dp) :: J
       real(dp) :: x_b(2)
@@ -146,7 +146,7 @@ contains
 
    subroutine test_glo_2_loc(error)
       type(error_type), allocatable, intent(out) :: error
-      type(T_Grid) :: grid
+      type(t_grid) :: grid
       integer :: i
       integer, parameter :: ne = 3
       real(dp) :: J

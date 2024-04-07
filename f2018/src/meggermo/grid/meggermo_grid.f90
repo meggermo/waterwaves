@@ -6,9 +6,9 @@ module meggermo_grid
    implicit none
    private
 
-   public :: T_Grid, allocate_grid, create_linear_grid, create_cubic_grid
+   public :: t_grid, allocate_grid, create_linear_grid, create_cubic_grid
 
-   type T_Grid
+   type t_grid
       real(rk), allocatable :: x(:, :)
       real(rk), allocatable :: n(:, :)
       real(rk), allocatable :: J(:)
@@ -28,7 +28,7 @@ contains
    ! ---------------------------------
    ! Allocation functions
    ! ---------------------------------
-   type(T_Grid) function allocate_grid(nr_of_elements)
+   type(t_grid) function allocate_grid(nr_of_elements)
       !
       integer, intent(in):: nr_of_elements
       !
@@ -42,23 +42,23 @@ contains
       allocate (J(1:nr_of_elements + 1))
       allocate (K(2, 1:nr_of_elements))
       !
-      allocate_grid = T_Grid(x, n, J, K)
+      allocate_grid = t_grid(x, n, J, K)
    end function
 
    ! ---------------------------------
    ! Element view functions
    ! ---------------------------------
-   type(T_Grid) function grid_element_view(grid, i)
+   type(t_grid) function grid_element_view(grid, i)
       !
-      class(T_Grid), intent(in) :: grid
+      class(t_grid), intent(in) :: grid
       integer, intent(in) :: i
       !
-      grid_element_view = T_Grid(grid%x(:, i - 1:i + 2), grid%n(:, i - 1:i + 2), grid%J(i - 1:i + 2), grid%K(:, i:i))
+      grid_element_view = t_grid(grid%x(:, i - 1:i + 2), grid%n(:, i - 1:i + 2), grid%J(i - 1:i + 2), grid%K(:, i:i))
    end function
 
    integer function grid_nr_of_elements(grid)
       !
-      class(T_Grid), intent(inout) :: grid
+      class(t_grid), intent(inout) :: grid
       !
       grid_nr_of_elements = size(grid%x, 2) - 3
    end function
@@ -70,7 +70,7 @@ contains
       !
       real(rk), intent(in) :: x_b(2)
       real(rk), intent(in) :: x_e(2)
-      class(T_Grid), intent(inout) :: grid
+      class(t_grid), intent(inout) :: grid
       !
       real(rk) :: dx(2), n(2), J
       integer :: i, ne
@@ -102,7 +102,7 @@ contains
       real(rk), intent(in) :: x_b(2)
       real(rk), intent(in) :: x_e(2)
       real(rk), intent(in) :: d_x(2, 2)
-      class(T_Grid), intent(inout) :: grid
+      class(t_grid), intent(inout) :: grid
       !
       real(rk) :: t, dt, dx(2), a(3, 2)
       integer :: i, ne
@@ -139,7 +139,7 @@ contains
             real(rk) :: f
          end function
       end interface
-      class(T_Grid), intent(inout) :: grid
+      class(t_grid), intent(inout) :: grid
       !
       integer :: i, ne
       ne = grid%nr_of_elements()
@@ -149,7 +149,7 @@ contains
    end subroutine
 
    subroutine grid_compute_geom(grid)
-      class(T_Grid), intent(inout) :: grid
+      class(t_grid), intent(inout) :: grid
       call compute_kappa(grid%x, grid%K)
       call compute_jac_and_normal(grid%x, grid%K, grid%J, grid%n)
 
@@ -214,7 +214,7 @@ contains
    ! ---------------------------------
    subroutine grid_g2l(grid, f_g, f_l)
       !
-      class(T_Grid), intent(in) :: grid
+      class(t_grid), intent(in) :: grid
       real(rk), intent(in), allocatable :: f_g(:, :)
       real(rk), intent(inout), allocatable :: f_l(:, :)
       !
@@ -224,7 +224,7 @@ contains
 
    subroutine grid_l2g(grid, f_l, f_g)
       !
-      class(T_Grid), intent(in) :: grid
+      class(t_grid), intent(in) :: grid
       real(rk), intent(in), allocatable :: f_l(:, :)
       real(rk), intent(inout), allocatable :: f_g(:, :)
       !
@@ -237,7 +237,7 @@ contains
    ! ---------------------------------
    subroutine grid_print(grid)
       use, intrinsic :: iso_fortran_env, only: output_unit
-      class(T_Grid), intent(in) :: grid
+      class(t_grid), intent(in) :: grid
       write (output_unit, '(2A18)') "X", "Y"
       write (output_unit, '(2E18.8)') grid%x
       write (output_unit, '(2A18)') "Nx", "Ny"

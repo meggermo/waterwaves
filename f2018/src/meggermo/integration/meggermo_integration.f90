@@ -5,13 +5,13 @@ module meggermo_integration
    implicit none
    private
 
-   public T_FunParams, integrate_trapezoid
+   public t_funparams, integrate_trapezoid
 
-   type, abstract, private :: T_Root
+   type, abstract, private :: t_root
       private
    end type
 
-   type, extends(T_Root), public :: T_FunParams
+   type, extends(t_root), public :: t_funparams
       private
       procedure(eval), pointer :: f => null()
       real(rk) :: x_b = 0.0
@@ -24,9 +24,9 @@ module meggermo_integration
 
    interface
       real(rk) function eval(fp, x)
-         import T_FunParams, rk
+         import t_funparams, rk
          implicit none
-         class(T_FunParams), intent(in) :: fp
+         class(t_funparams), intent(in) :: fp
          real(rk), intent(in) :: x
       end function
    end interface
@@ -34,14 +34,14 @@ module meggermo_integration
 contains
 
    subroutine fp_initialize(fp, f)
-      class(T_FunParams), intent(inout) :: fp
+      class(t_funparams), intent(inout) :: fp
       procedure(eval) :: f
       fp%f => f
    end subroutine
 
    subroutine integrate_trapezoid(fp, x_b, x_e, result)
 
-      class(T_FunParams), intent(inout) :: fp
+      class(t_funparams), intent(inout) :: fp
       real(rk), intent(in) :: x_b, x_e
       real(rk), intent(out) ::result
 

@@ -9,7 +9,7 @@ module meggermo_kernel_test
    use :: meggermo_params
 
    use meggermo_kernel, only: &
-      Kernel, G_Kernel, H_Kernel, KernelParams, ElemParams, &
+      t_kernel, t_gkernel, t_hkernel, t_kernelparams, t_elemparams, &
       kernel_params, kernel_function, &
       G_ij, &
       H_ij, &
@@ -25,8 +25,8 @@ contains
    subroutine test_meggermo_kernel(testsuite)
       type(unittest_type), allocatable, intent(out) :: testsuite(:)
       testsuite = [ &
-                  new_unittest("test_kernel_params", test_kernel_params), &
-                  new_unittest("test_integration", test_integration)]
+         new_unittest("test_kernel_params", test_kernel_params), &
+         new_unittest("test_integration", test_integration)]
    end subroutine
 
    subroutine test_integration(error)
@@ -35,10 +35,10 @@ contains
       real(rk) :: t, g, h, g_ans, h_ans, err, a, b, tol
       real(rk) :: g_int(4)
       real(rk) :: h_int(4)
-      type(ElemParams) :: ep
-      type(KernelParams) :: kp
-      type(G_Kernel) :: gk
-      type(H_Kernel) :: hk
+      type(t_elemparams) :: ep
+      type(t_kernelparams) :: kp
+      type(t_gkernel) :: gk
+      type(t_hkernel) :: hk
 
       integer :: npoints
 
@@ -63,8 +63,8 @@ contains
    subroutine test_kernel_params(error)
       type(error_type), allocatable, intent(out) :: error
       real(rk) :: t, g, h
-      type(ElemParams) :: ep
-      type(KernelParams) :: kp
+      type(t_elemparams) :: ep
+      type(t_kernelparams) :: kp
 
       integer :: i
 
