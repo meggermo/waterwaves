@@ -1,5 +1,6 @@
 module meggermo_network
 
+   use :: meggermo, only: rk
    use :: meggermo_grid, only: t_grid
    use :: meggermo_vars, only: t_vars
 
@@ -32,8 +33,12 @@ contains
       !
       class(t_grid), intent(in) :: grid
       class(t_vars), intent(in) :: vars
+      class(t_network), allocatable :: nw
       !
-      allocate_network = t_network(grid, vars)
+      allocate(t_network::nw)
+      nw%grid = grid
+      nw%vars = vars
+      allocate_network = nw
    end function
 
    ! ---------------------------------
@@ -47,12 +52,13 @@ contains
       network_element_view = t_elementview(i, nw%grid%element_view(i), nw%vars%element_view(i))
    end function
 
-   function get_x_element(ev) result(x_e)
+   function get_x_element(ev) result(res)
       class(t_elementview), intent(in):: ev
-      real(kind=real64), dimension(4, 2) :: x_e
+      real(kind=rk), dimension(4, 2) :: res
+      real(kind=rk), dimension(4, 2) :: x_e
       x_e(:, 1) = ev%grid%x(1, 1:4)
       x_e(:, 2) = ev%grid%x(2, 1:4)
-      x_e
+      res = x_e
    end function
 
 end module

@@ -6,9 +6,9 @@ module meggermo_grid
    implicit none
    private
 
-   public :: t_grid, allocate_grid, create_linear_grid, create_cubic_grid
+   public :: t_grid, t_gridtype
 
-   type t_grid
+   type :: t_grid
       real(rk), allocatable :: x(:, :)
       real(rk), allocatable :: n(:, :)
       real(rk), allocatable :: J(:)
@@ -23,7 +23,33 @@ module meggermo_grid
       procedure :: print => grid_print
    end type
 
+   type, abstract:: t_gridtype
+   contains
+      procedure(s_generate_grid),deferred :: generate
+      procedure :: initialize
+   end type
+   interface
+      subroutine s_generate_grid(grid_type, grid)
+         import t_grid, t_gridtype
+         class(t_gridtype), intent(in) :: grid_type
+         type(t_grid), intent(inout) :: grid
+      end subroutine
+   end interface
+
+
 contains
+
+   type(t_grid) function initialize(grid_type, nr_of_elements)
+      class(t_gridtype), intent(in) :: grid_type
+      integer, intent(in) :: nr_of_elements
+      ! local variables
+      type(t_grid) :: grid
+      !
+      grid = allocate_grid(nr_of_elements)
+      call grid_type%generate(grid)
+      call grid%compute_geom()
+      initialize = grid
+   end function
 
    ! ---------------------------------
    ! Allocation functions
@@ -63,74 +89,6 @@ contains
       grid_nr_of_elements = size(grid%x, 2) - 3
    end function
 
-   ! ---------------------------------
-   ! Grid generation routines
-   ! ---------------------------------
-   subroutine create_linear_grid(x_b, x_e, grid)
-      !
-      real(rk), intent(in) :: x_b(2)
-      real(rk), intent(in) :: x_e(2)
-      class(t_grid), intent(inout) :: grid
-      !
-      real(rk) :: dx(2), n(2), J
-      integer :: i, ne
-      !
-      ne = grid%nr_of_elements()
-      dx = (x_e - x_b)/ne
-      J = sqrt(dot_product(dx, dx))
-      n(1) = dx(2)/J
-      n(2) = -dx(1)/J
-
-      grid%x(1:2, 0) = x_b - dx
-      do i = 1, ne
-         grid%x(1:2, i) = x_b + (i - 1)*dx
-         grid%J(i) = J
-         grid%n(1, i) = n(1)
-         grid%n(2, i) = n(2)
-         grid%K(:, i) = 0.0
-      end do
-      grid%x(1:2, ne + 1) = x_b + ne*dx
-      grid%J(ne + 1) = J
-      grid%n(1, ne + 1) = n(1)
-      grid%n(2, ne + 1) = n(2)
-      grid%x(1:2, ne + 2) = x_b + (ne + 1)*dx
-
-   end subroutine
-
-   subroutine create_cubic_grid(x_b, x_e, d_x, grid)
-      !
-      real(rk), intent(in) :: x_b(2)
-      real(rk), intent(in) :: x_e(2)
-      real(rk), intent(in) :: d_x(2, 2)
-      class(t_grid), intent(inout) :: grid
-      !
-      real(rk) :: t, dt, dx(2), a(3, 2)
-      integer :: i, ne
-      !
-      ne = grid%nr_of_elements()
-      dx = x_e - x_b
-      dt = 1.0/ne
-
-      a(1, :) = d_x(:, 1)
-      a(2, :) = 3.0 - 2.0*d_x(:, 1) - d_x(:, 2)
-      a(3, :) = d_x(:, 1) + d_x(:, 2) - 2.0
-
-      do i = 0, ne + 2
-         t = dt*(i - 1)
-         grid%x(1, i) = x_b(1) + dx(1)*cubic(t, a(:, 1))
-         grid%x(2, i) = x_b(2) + dx(2)*cubic(t, a(:, 2))
-      end do
-
-   contains
-      function cubic(x, alpha) result(f)
-         real(rk), intent(in) :: x
-         real(rk), intent(in) :: alpha(3)
-         real(rk) :: f
-         f = alpha(1)*x + alpha(2)*x*x + alpha(3)*x*x*x
-      end function
-
-   end subroutine
-
    subroutine grid_apply_y_function(grid, f)
       interface
          function f(x)
@@ -150,6 +108,7 @@ contains
 
    subroutine grid_compute_geom(grid)
       class(t_grid), intent(inout) :: grid
+      !
       call compute_kappa(grid%x, grid%K)
       call compute_jac_and_normal(grid%x, grid%K, grid%J, grid%n)
 
@@ -189,7 +148,6 @@ contains
          ne = grid%nr_of_elements()
          do ie = 1, ne
             call dn_weights(-1.0_rk, kappa(1, ie), kappa(2, ie), dw)
-            write (*, '(I2,2E14.4,4E14.2)') ie, dx, dw
             dx(1) = dot_product(dw, x(1, ie - 1:ie + 2))
             dx(2) = dot_product(dw, x(2, ie - 1:ie + 2))
             jac(ie) = sqrt(dot_product(dx, dx))
@@ -239,13 +197,13 @@ contains
       use, intrinsic :: iso_fortran_env, only: output_unit
       class(t_grid), intent(in) :: grid
       write (output_unit, '(2A18)') "X", "Y"
-      write (output_unit, '(2E18.8)') grid%x
+      write (output_unit, '(2E18.10)') grid%x
       write (output_unit, '(2A18)') "Nx", "Ny"
-      write (output_unit, '(2E18.8)') grid%n
+      write (output_unit, '(2E18.10)') grid%n
       write (output_unit, '(A18)') "Jac"
-      write (output_unit, '(E18.8)') grid%J
+      write (output_unit, '(E18.10)') grid%J
       write (output_unit, '(2A18)') "K_1", "K_2"
-      write (output_unit, '(2E18.8)') grid%K
+      write (output_unit, '(2E18.10)') grid%K
    end subroutine
 
 end module

@@ -55,8 +55,6 @@ contains
       gk%ep = ep
       hk%ep = ep
       call integrate_kernels(tol, npoints, gk, hk, g_int, h_int)
-      !write (output_unit, '(1X,4E18.10)') g_int, h_int
-      !write (output_unit, '(1X,2E18.10)') SUM(g_int), SUM(h_int)
 
    end subroutine
 
@@ -82,9 +80,6 @@ contains
          call check(error, dot_product(kp%n, kp%n), 1.0_rk)
          g = G_ij(kp)
          h = H_ij(kp)
-         !write (output_unit, '(1X,10(";",E18.8))') t, &
-         !   n1(t)*g, n2(t)*g, n3(t)*g, n4(t)*g, &
-         !   n1(t)*h, n2(t)*h, n3(t)*h, n4(t)*h
       end do
 
    end subroutine
