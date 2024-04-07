@@ -3,5 +3,10 @@
         "${workspaceFolder}/f2018/src/**",
         "${workspaceFolder}/f2018/test/**"
     ],
-    "fortran.linter.compilerPath": "fortran-linter"
+    "fortran.linter.compilerPath": "fortran-linter",
+    "fortran.formatting.formatter": "findent",
+    "fortran.linter.includePaths": [
+        "${workspaceFolder}/f2018/src",
+        "${workspaceFolder}/f2018/test"
+    ]
 }
