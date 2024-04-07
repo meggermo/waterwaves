@@ -3,6 +3,5 @@
         "${workspaceFolder}/f2018/src/**",
         "${workspaceFolder}/f2018/test/**"
     ],
-    "fortran.linter.modOutput": "${workspaceFolder}/f2018/mod",
     "fortran.linter.compilerPath": "fortran-linter"
 }
