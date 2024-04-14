@@ -1,61 +1,58 @@
 module meggermo_integration
 
+   use :: quadpack, only: dqage
    use :: meggermo, only: rk
 
    implicit none
    private
 
-   public t_funparams, integrate_trapezoid
+   public t_quad_params, t_quad_result, quad
 
-   type, abstract, private :: t_root
-      private
+
+   type t_quad_params
+      real(rk) :: a = -1.0
+      real(rk) :: b =  1.0
+      real(rk) :: eps_abs = 1.0e-6
+      real(rk) :: eps_rel = 1.0e-3
+      integer  :: key = 1
+      integer  :: limit = 8
    end type
 
-   type, extends(t_root), public :: t_funparams
-      private
-      procedure(eval), pointer :: f => null()
-      real(rk) :: x_b = 0.0
-      real(rk) :: x_e = 1.0
-   contains
-      private
-      procedure, public :: initialize => fp_initialize
-      procedure, public :: integrate_trapezoid => integrate_trapezoid
+   type t_quad_result
+      real(rk) :: anwser
+      real(rk) :: err_abs
+      integer  :: i_er
+      integer  :: n_eval
+      integer  :: last
+      type(t_quad_params) :: quad_params
    end type
-
-   interface
-      real(rk) function eval(fp, x)
-         import t_funparams, rk
-         implicit none
-         class(t_funparams), intent(in) :: fp
-         real(rk), intent(in) :: x
-      end function
-   end interface
 
 contains
 
-   subroutine fp_initialize(fp, f)
-      class(t_funparams), intent(inout) :: fp
-      procedure(eval) :: f
-      fp%f => f
-   end subroutine
+   function quad(f, quad_params)
+      interface
+         function f(x)
+            import rk
+            real(kind=rk), intent(in) :: x
+            real(kind=rk) ::f
+         end function
+      end interface
+      class(t_quad_params), intent(in) :: quad_params
+      type(t_quad_result)  :: quad
+      !
+      type(t_quad_result) :: r
+      real(rk), dimension(quad_params%limit) :: alist, blist, rlist, elist
+      integer :: iord(quad_params%limit)
 
-   subroutine integrate_trapezoid(fp, x_b, x_e, result)
+      r%quad_params = quad_params
 
-      class(t_funparams), intent(inout) :: fp
-      real(rk), intent(in) :: x_b, x_e
-      real(rk), intent(out) ::result
+      call dqage(f, &
+         quad_params%a, quad_params%b, quad_params%eps_abs, quad_params%eps_rel, quad_params%key, quad_params%limit, &
+         r%anwser, r%err_abs, r%n_eval, r%i_er, &
+         alist, blist, rlist, elist, &
+         iord, r%last)
 
-      integer :: i
-      integer, parameter :: steps = 10
-      real(rk) :: dx
-
-      result = 0.5*(fp%f(x_b) + fp%f(x_e))
-      dx = (x_e - x_b)/steps
-      do i = 2, steps
-         result = result + fp%f(x_b + dx*(i - 1))
-      end do
-      result = dx*result
-
-   end subroutine
+      quad = r
+   end function
 
 end module

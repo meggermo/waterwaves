@@ -9,14 +9,14 @@ module meggermo_network
 
    public t_network, t_elementview
 
-   type t_network
+   type :: t_network
       type(t_grid) :: grid
       type(t_vars) :: vars
    contains
       procedure :: element_view => network_element_view
    end type
 
-   type t_elementview
+   type :: t_elementview
       integer :: element_index
       type(t_grid) :: grid
       type(t_vars) :: vars

@@ -25,6 +25,7 @@ source-form = "free"
 quadrature-fortran = {git = "https://github.com/jacobwilliams/quadrature-fortran.git"}
 stdlib = "*"
 toml-f = {git = "https://github.com/toml-f/toml-f"}
+quadpack = { git="https://github.com/jacobwilliams/quadpack.git", tag = "2.1.0" }
 
 [dev-dependencies]
 test-drive = {git = "https://github.com/fortran-lang/test-drive", tag = "v0.4.0"}

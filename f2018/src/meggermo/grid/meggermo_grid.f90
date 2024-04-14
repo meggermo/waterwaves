@@ -21,7 +21,7 @@ module meggermo_grid
    contains
       procedure :: nr_of_elements => grid_nr_of_elements
       procedure :: element_view => grid_element_view
-      procedure :: compute_geom => grid_compute_geom
+      procedure :: update_geom => grid_compute_geom
       procedure :: apply_y_function => grid_apply_y_function
       procedure :: glo_2_loc => grid_g2l
       procedure :: loc_2_glo => grid_l2g
@@ -30,7 +30,7 @@ module meggermo_grid
 
    type, abstract:: t_gridtype
    contains
-      procedure(s_generate_grid),deferred :: generate
+      procedure(s_generate_grid),private,deferred :: generate
       procedure :: initialize
    end type
    interface
@@ -52,7 +52,7 @@ contains
       !
       grid = allocate_grid(nr_of_elements)
       call grid_type%generate(grid)
-      call grid%compute_geom()
+      call grid%update_geom()
       initialize = grid
    end function
 
@@ -60,19 +60,16 @@ contains
    ! Allocation functions
    ! ---------------------------------
    type(t_grid) function allocate_grid(nr_of_elements)
-      !
       integer, intent(in):: nr_of_elements
-      !
+      ! Local variables
       real(rk), allocatable :: x(:, :)
       real(rk), allocatable :: n(:, :)
       real(rk), allocatable :: J(:)
       real(rk), allocatable :: K(:, :)
-      !
       allocate (x(2, 0:nr_of_elements + 2))
       allocate (n(2, 1:nr_of_elements + 1))
       allocate (J(1:nr_of_elements + 1))
       allocate (K(2, 1:nr_of_elements))
-      !
       allocate_grid = t_grid(x, n, J, K)
    end function
 
@@ -80,7 +77,6 @@ contains
    ! Element view functions
    ! ---------------------------------
    type(t_grid) function grid_element_view(grid, i)
-      !
       class(t_grid), intent(in) :: grid
       integer, intent(in) :: i
       !
@@ -99,6 +95,7 @@ contains
    end function
 
    subroutine grid_apply_y_function(grid, f)
+      class(t_grid), intent(inout) :: grid
       interface
          function f(x)
             import rk
@@ -106,8 +103,7 @@ contains
             real(rk) :: f
          end function
       end interface
-      class(t_grid), intent(inout) :: grid
-      !
+      ! Local variables
       integer :: i, ne
       ne = grid%nr_of_elements()
       do i = 0, ne + 2
@@ -137,11 +133,11 @@ contains
          ne = grid%nr_of_elements()
          do ie = 1, ne
             dx1 = x(:, ie) - x(:, ie - 1)
-            arc_len(1) = sqrt(dot_product(dx1, dx1))
             dx2 = x(:, ie + 1) - x(:, ie)
-            arc_len(2) = sqrt(dot_product(dx2, dx2))
             dx3 = x(:, ie + 2) - x(:, ie + 1)
-            arc_len(3) = sqrt(dot_product(dx3, dx3))
+            arc_len(1) = norm2(dx1)
+            arc_len(2) = norm2(dx2)
+            arc_len(3) = norm2(dx3)
             ! Because the ratio of arc lenghts is what we need
             ! it is not so important that we use a crude approximation
             kappa(1, ie) = 2.0*arc_len(1)/sum(arc_len(1:2)) - 1.0
@@ -157,14 +153,14 @@ contains
          ! Local variables
          integer :: ie, ne
          real(rk) :: dw(4), dx(2)
-
+         !
          ne = grid%nr_of_elements()
          do ie = 1, ne
             call dn_weights(-1.0_rk, kappa(1, ie), kappa(2, ie), dw)
             dx(1) = dot_product(dw, x(1, ie - 1:ie + 2))
             dx(2) = dot_product(dw, x(2, ie - 1:ie + 2))
-            jac(ie) = sqrt(dot_product(dx, dx))
-            normal(1, ie) = dx(2)/jac(ie)
+            jac(ie) = norm2(dx)
+            normal(1, ie) =  dx(2)/jac(ie)
             normal(2, ie) = -dx(1)/jac(ie)
          end do
          ie = ne
@@ -172,8 +168,8 @@ contains
          call dn_weights(1.0_rk, kappa(1, ie), kappa(2, ie), dw)
          dx(1) = dot_product(dw, x(1, ie - 1:ie + 2))
          dx(2) = dot_product(dw, x(2, ie - 1:ie + 2))
-         jac(ne + 1) = sqrt(dot_product(dx, dx))
-         normal(1, ne + 1) = dx(2)/jac(ne + 1)
+         jac(ne + 1) = norm2(dx)
+         normal(1, ne + 1) =  dx(2)/jac(ne + 1)
          normal(2, ne + 1) = -dx(1)/jac(ne + 1)
 
       end subroutine
@@ -184,7 +180,6 @@ contains
    ! Coordinate transformations
    ! ---------------------------------
    subroutine grid_g2l(grid, f_g, f_l)
-      !
       class(t_grid), intent(in) :: grid
       real(rk), intent(in), allocatable :: f_g(:, :)
       real(rk), intent(inout), allocatable :: f_l(:, :)
@@ -194,7 +189,6 @@ contains
    end subroutine
 
    subroutine grid_l2g(grid, f_l, f_g)
-      !
       class(t_grid), intent(in) :: grid
       real(rk), intent(in), allocatable :: f_l(:, :)
       real(rk), intent(inout), allocatable :: f_g(:, :)
