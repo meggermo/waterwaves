@@ -6,7 +6,7 @@ module meggermo_kernel
    implicit none
    private
 
-   public p_g_kernel, p_h_kernel, allocate_kernel, t_kernel_ref, t_elem_params
+   public :: p_g_kernel, p_h_kernel, allocate_kernel, t_kernel_ref, t_elem_params
 
    character, parameter :: p_g_kernel = 'G'
    character, parameter :: p_h_kernel = 'H'
@@ -195,9 +195,12 @@ contains
       k = elem_params%K
       !
       call compute_kernel_params(elem_params, x, kernel_params)
+
       kernel_val = kernel_ref%kernel%eval(kernel_params)
       interp_val = kernel_ref%kernel%n(x, k(1), k(2))
+
       f = interp_val * kernel_val
+
    end function
 
 

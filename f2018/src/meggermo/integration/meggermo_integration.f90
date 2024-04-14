@@ -9,18 +9,18 @@ module meggermo_integration
    public t_quad_params, t_quad_result, quad
 
 
-   type t_quad_params
-      real(rk) :: a = -1.0
-      real(rk) :: b =  1.0
-      real(rk) :: eps_abs = 1.0e-6
-      real(rk) :: eps_rel = 1.0e-3
+   type :: t_quad_params
+      real(kind=rk) :: a = -1.0
+      real(kind=rk) :: b =  1.0
+      real(kind=rk) :: eps_abs = 1.0e-6
+      real(kind=rk) :: eps_rel = 1.0e-3
       integer  :: key = 1
       integer  :: limit = 8
    end type
 
-   type t_quad_result
-      real(rk) :: anwser
-      real(rk) :: err_abs
+   type :: t_quad_result
+      real(kind=rk) :: anwser
+      real(kind=rk) :: err_abs
       integer  :: i_er
       integer  :: n_eval
       integer  :: last
@@ -41,7 +41,7 @@ contains
       type(t_quad_result)  :: quad
       !
       type(t_quad_result) :: r
-      real(rk), dimension(quad_params%limit) :: alist, blist, rlist, elist
+      real(kind=rk), dimension(quad_params%limit) :: alist, blist, rlist, elist
       integer :: iord(quad_params%limit)
 
       r%quad_params = quad_params

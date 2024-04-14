@@ -13,10 +13,10 @@ module meggermo_grid
    end type
 
    type :: t_grid
-      real(rk), allocatable :: x(:, :)
-      real(rk), allocatable :: n(:, :)
-      real(rk), allocatable :: J(:)
-      real(rk), allocatable :: K(:, :)
+      real(kind=rk), allocatable :: x(:, :)
+      real(kind=rk), allocatable :: n(:, :)
+      real(kind=rk), allocatable :: J(:)
+      real(kind=rk), allocatable :: K(:, :)
       type(t_gridparams) :: grid_params
    contains
       procedure :: nr_of_elements => grid_nr_of_elements
@@ -62,10 +62,10 @@ contains
    type(t_grid) function allocate_grid(nr_of_elements)
       integer, intent(in):: nr_of_elements
       ! Local variables
-      real(rk), allocatable :: x(:, :)
-      real(rk), allocatable :: n(:, :)
-      real(rk), allocatable :: J(:)
-      real(rk), allocatable :: K(:, :)
+      real(kind=rk), allocatable :: x(:, :)
+      real(kind=rk), allocatable :: n(:, :)
+      real(kind=rk), allocatable :: J(:)
+      real(kind=rk), allocatable :: K(:, :)
       allocate (x(2, 0:nr_of_elements + 2))
       allocate (n(2, 1:nr_of_elements + 1))
       allocate (J(1:nr_of_elements + 1))
@@ -99,8 +99,8 @@ contains
       interface
          function f(x)
             import rk
-            real(rk), intent(in) :: x
-            real(rk) :: f
+            real(kind=rk), intent(in) :: x
+            real(kind=rk) :: f
          end function
       end interface
       ! Local variables
@@ -124,11 +124,11 @@ contains
    contains
 
       subroutine compute_kappa(x, kappa)
-         real(rk), allocatable, intent(in) :: x(:, :)
-         real(rk), allocatable, intent(inout) :: kappa(:, :)
+         real(kind=rk), allocatable, intent(in) :: x(:, :)
+         real(kind=rk), allocatable, intent(inout) :: kappa(:, :)
          ! Local variables
          integer :: ie, ne
-         real(rk) :: dx1(2), dx2(2), dx3(2), arc_len(3)
+         real(kind=rk) :: dx1(2), dx2(2), dx3(2), arc_len(3)
          ! Compute acr-length approximations and derive  kappa from it
          ne = grid%nr_of_elements()
          do ie = 1, ne
@@ -146,13 +146,13 @@ contains
       end subroutine
 
       subroutine compute_jac_and_normal(x, kappa, jac, normal)
-         real(rk), allocatable, intent(in) :: x(:, :)
-         real(rk), allocatable, intent(in) :: kappa(:, :)
-         real(rk), allocatable, intent(inout) :: jac(:)
-         real(rk), allocatable, intent(inout) :: normal(:, :)
+         real(kind=rk), allocatable, intent(in) :: x(:, :)
+         real(kind=rk), allocatable, intent(in) :: kappa(:, :)
+         real(kind=rk), allocatable, intent(inout) :: jac(:)
+         real(kind=rk), allocatable, intent(inout) :: normal(:, :)
          ! Local variables
          integer :: ie, ne
-         real(rk) :: dw(4), dx(2)
+         real(kind=rk) :: dw(4), dx(2)
          !
          ne = grid%nr_of_elements()
          do ie = 1, ne
@@ -181,8 +181,8 @@ contains
    ! ---------------------------------
    subroutine grid_g2l(grid, f_g, f_l)
       class(t_grid), intent(in) :: grid
-      real(rk), intent(in), allocatable :: f_g(:, :)
-      real(rk), intent(inout), allocatable :: f_l(:, :)
+      real(kind=rk), intent(in), allocatable :: f_g(:, :)
+      real(kind=rk), intent(inout), allocatable :: f_l(:, :)
       !
       f_l(1, :) = grid%n(2, :)*f_g(1, :) + grid%n(1, :)*f_g(2, :)
       f_l(2, :) = grid%n(2, :)*f_g(2, :) - grid%n(1, :)*f_g(1, :)
@@ -190,8 +190,8 @@ contains
 
    subroutine grid_l2g(grid, f_l, f_g)
       class(t_grid), intent(in) :: grid
-      real(rk), intent(in), allocatable :: f_l(:, :)
-      real(rk), intent(inout), allocatable :: f_g(:, :)
+      real(kind=rk), intent(in), allocatable :: f_l(:, :)
+      real(kind=rk), intent(inout), allocatable :: f_g(:, :)
       !
       f_g(1, :) = grid%n(2, :)*f_l(1, :) - grid%n(1, :)*f_l(2, :)
       f_g(2, :) = grid%n(2, :)*f_l(2, :) + grid%n(1, :)*f_l(1, :)

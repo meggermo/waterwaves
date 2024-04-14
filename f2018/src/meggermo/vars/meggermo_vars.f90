@@ -5,9 +5,9 @@ module meggermo_vars
    implicit none
    private
 
-   public t_vars
+   public :: t_vars
 
-   type t_vars
+   type :: t_vars
       real(kind=rk), allocatable :: phi(:, :)
       real(kind=rk), allocatable :: phn(:, :)
    contains

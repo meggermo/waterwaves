@@ -6,7 +6,7 @@ module meggermo_grid_linear
    implicit none
    private
 
-   public t_linegridtype
+   public :: t_linegridtype
 
    type, extends(t_gridtype) :: t_linegridtype
       real(kind=rk) :: x_b(2)
@@ -28,12 +28,12 @@ contains
 
    subroutine create_grid(x_b, x_e, alpha, grid)
       !
-      real(rk), intent(in) :: x_b(2)
-      real(rk), intent(in) :: x_e(2)
-      real(rk), intent(in) :: alpha(2)
+      real(kind=rk), intent(in) :: x_b(2)
+      real(kind=rk), intent(in) :: x_e(2)
+      real(kind=rk), intent(in) :: alpha(2)
       class(t_grid), intent(inout) :: grid
       !
-      real(rk) :: t, dt, dx(2), a(3)
+      real(kind=rk) :: t, dt, dx(2), a(3)
       integer :: i, ne
       !
       ne = grid%nr_of_elements()
@@ -52,8 +52,8 @@ contains
 
    contains
       function cubic(x) result(f)
-         real(rk), intent(in) :: x
-         real(rk) :: f
+         real(kind=rk), intent(in) :: x
+         real(kind=rk) :: f
          f = a(1)*x + a(2)*x*x + a(3)*x*x*x
       end function
 

@@ -7,7 +7,7 @@ module meggermo_network
    implicit none
    private
 
-   public t_network, t_elementview
+   public :: t_network, t_elementview
 
    type :: t_network
       type(t_grid) :: grid

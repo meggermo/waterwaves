@@ -20,17 +20,23 @@ contains
 
    function initialize(quad_params)
       type(t_quad_params), intent(in) :: quad_params
+      ! Local variables
       type(t_quad) :: quad, initialize
+
       allocate(quad%kernels(4,2))
+      ! G kernels
       quad%kernels(1,1) = allocate_kernel('G', 1)
-      quad%kernels(2,1) = allocate_kernel('G', 1)
-      quad%kernels(3,1) = allocate_kernel('G', 1)
-      quad%kernels(4,1) = allocate_kernel('G', 1)
+      quad%kernels(2,1) = allocate_kernel('G', 2)
+      quad%kernels(3,1) = allocate_kernel('G', 3)
+      quad%kernels(4,1) = allocate_kernel('G', 4)
+      ! H kernels
       quad%kernels(1,2) = allocate_kernel('H', 1)
-      quad%kernels(2,2) = allocate_kernel('H', 1)
-      quad%kernels(3,2) = allocate_kernel('H', 1)
-      quad%kernels(4,2) = allocate_kernel('H', 1)
+      quad%kernels(2,2) = allocate_kernel('H', 2)
+      quad%kernels(3,2) = allocate_kernel('H', 3)
+      quad%kernels(4,2) = allocate_kernel('H', 4)
+
       initialize = quad
+
    end function
 
    subroutine integrate(quad, elem_params, result)
