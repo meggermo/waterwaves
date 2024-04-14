@@ -29,10 +29,10 @@ contains
       type(t_quad) :: kernels
 
       data elem_params%x_e &
-         / -2.0, -1.0, 1.0, 2.0 &
+         / -3.0, -1.0, 1.0, 3.0 &
          ,  0.0,  0.0, 0.0, 0.0 &
          /
-      data elem_params%q / 2.5, 0.5 /
+      data elem_params%q / 0.0, 1.0 /
 
       kernels = initialize(quad_params)
       call kernels%integrate(elem_params, result)

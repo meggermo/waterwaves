@@ -18,6 +18,8 @@ module meggermo_kernel
       !! Distance from p to q at t
       real(kind=rk) :: p(2)
       !! Point on curve at t
+      real(kind=rk) :: q(2)
+      !! Field point
       real(kind=rk) :: n(2)
       !! Normal at t
    end type
@@ -214,6 +216,8 @@ contains
 
       real(kind=rk) :: dx(2), w(4)
 
+      kp%q = ep%q
+
       call n_weights(t, ep%K(1), ep%K(2), w)
       kp%p(1) = dot_product(w, ep%x_e(:, 1))
       kp%p(2) = dot_product(w, ep%x_e(:, 2))
@@ -238,7 +242,7 @@ contains
    real(kind=rk) pure function eval_h(kernel, x)
       class(t_h_kernel), intent(in) :: kernel
       class(t_kernel_params), intent(in) :: x
-      eval_h = x%Jac*dot_product(x%p, x%n)/x%X
+      eval_h = x%Jac*dot_product(x%p - x%q, x%n)/x%X
    end function
 
 end module
